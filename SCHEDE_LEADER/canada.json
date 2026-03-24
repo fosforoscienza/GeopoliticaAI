@@ -1,0 +1,21 @@
+{
+  "id": "canada",
+  "flag": "🇨🇦",
+  "color": "#06b6d4",
+  "coords": [-96, 56],
+  "isoNums": ["124"],
+  "people": [
+    {
+      "name": "Geoffrey Hinton",
+      "imageUrl": "https://picsum.photos/seed/geoffrey-hinton-toronto/400/400",
+      "it": { "role": "«Padrino del Deep Learning» · Nobel Fisica 2024", "desc": "Ha lasciato Google nel 2023 per poter parlare liberamente dei rischi dell'AI. Premio Nobel per la Fisica 2024 per l'invenzione delle reti neurali profonde. Ha dichiarato che una probabilità del 10-20% di estinzione umana causata dall'AI lo tiene sveglio la notte. Una delle voci più autorevoli e scomode nel dibattito sull'AI." },
+      "en": { "role": "'Godfather of Deep Learning' · Nobel Physics 2024", "desc": "He left Google in 2023 to speak freely about AI risks. Nobel Prize in Physics 2024 for the invention of deep neural networks. He stated a 10-20% probability of human extinction from AI keeps him awake at night. One of the most authoritative and uncomfortable voices in the AI debate." }
+    },
+    {
+      "name": "Yoshua Bengio",
+      "imageUrl": "https://picsum.photos/seed/yoshua-bengio-mila/400/400",
+      "it": { "role": "Fondatore di Mila · Turing Award", "desc": "Fondatore di Mila — il più grande istituto accademico di AI al mondo — ha firmato la lettera aperta per una pausa di 6 mesi nello sviluppo AI nel 2023. Il suo laboratorio a Montreal ha formato decine di ricercatori che oggi guidano OpenAI, Google DeepMind e Meta AI. Sostiene una governance AI simile all'AIEA nucleare." },
+      "en": { "role": "Founder of Mila · Turing Award", "desc": "Founder of Mila — the world's largest academic AI institute — he signed the open letter calling for a 6-month AI development pause in 2023. His Montreal lab trained dozens of researchers now leading OpenAI, Google DeepMind and Meta AI. He advocates for AI governance modelled on the nuclear IAEA." }
+    }
+  ]
+}

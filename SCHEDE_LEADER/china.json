@@ -1,0 +1,27 @@
+{
+  "id": "china",
+  "flag": "🇨🇳",
+  "color": "#ef4444",
+  "coords": [104, 35],
+  "isoNums": ["156"],
+  "people": [
+    {
+      "name": "Xi Jinping",
+      "imageUrl": "https://picsum.photos/seed/xi-jinping-china/400/400",
+      "it": { "role": "Presidente della Repubblica Popolare Cinese", "desc": "Xi ha fatto dell'AI il cardine della sua strategia di potere. Il Piano Nazionale 2030 punta alla leadership mondiale nell'AI. La Cina conta 540 milioni di utenti sotto sorveglianza AI — il sistema di controllo sociale più capillare della storia. Investe 15 miliardi di dollari annui in ricerca AI." },
+      "en": { "role": "President of the People's Republic of China", "desc": "Xi made AI the cornerstone of his power strategy. The 2030 National Plan targets global AI leadership. China has 540 million citizens under AI surveillance — the most pervasive social control system in history. He invests $15 billion annually in AI research." }
+    },
+    {
+      "name": "Robin Li",
+      "imageUrl": "https://picsum.photos/seed/robin-li-baidu/400/400",
+      "it": { "role": "Co-fondatore e CEO di Baidu", "desc": "Robin Li è stato il primo in Cina a lanciare una risposta a ChatGPT con ERNIE Bot (2023). La sua scommessa sull'AI autonoma ha portato Apollo — il sistema di guida autonoma di Baidu — a operare commercialmente a Pechino con 1.000 robotaxi senza guidatore, primo caso su scala al mondo." },
+      "en": { "role": "Co-founder & CEO of Baidu", "desc": "Robin Li was the first in China to launch a ChatGPT rival with ERNIE Bot (2023). His bet on autonomous AI brought Apollo — Baidu's self-driving system — to operate commercially in Beijing with 1,000 driverless robotaxis, the first such large-scale deployment in the world." }
+    },
+    {
+      "name": "Liang Wenfeng",
+      "imageUrl": "https://picsum.photos/seed/liang-wenfeng-deepseek/400/400",
+      "it": { "role": "Fondatore di DeepSeek", "desc": "Questo matematico 39enne ha creato nel 2025 il modello AI che ha scosso le fondamenta della Silicon Valley. DeepSeek R1 ha raggiunto prestazioni GPT-4 a un decimo del costo — facendo perdere 600 miliardi di dollari a NVIDIA in un solo giorno. La sua azienda opera ancora nell'anonimato da Hangzhou." },
+      "en": { "role": "Founder of DeepSeek", "desc": "This 39-year-old mathematician created in 2025 the AI model that shook Silicon Valley's foundations. DeepSeek R1 achieved GPT-4-level performance at one-tenth the cost — causing NVIDIA to lose $600 billion in a single day. His company still operates in relative anonymity from Hangzhou." }
+    }
+  ]
+}

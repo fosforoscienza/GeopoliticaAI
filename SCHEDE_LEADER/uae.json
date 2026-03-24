@@ -1,0 +1,21 @@
+{
+  "id": "uae",
+  "flag": "🇦🇪",
+  "color": "#14b8a6",
+  "coords": [54, 24],
+  "isoNums": ["784"],
+  "people": [
+    {
+      "name": "Mohamed bin Zayed",
+      "imageUrl": "https://picsum.photos/seed/mbz-uae-president/400/400",
+      "it": { "role": "Presidente degli Emirati Arabi Uniti", "desc": "MBZ ha fatto dell'AI il cuore della strategia di diversificazione economica degli UAE. Ha fondato MBZUAI (prima università 100% AI al mondo) e autorizzato G42 a investire miliardi in OpenAI e Microsoft. La sua ambizione: fare di Abu Dhabi il centro mondiale dell'AI nel mondo arabo e nel Sud globale." },
+      "en": { "role": "President of the United Arab Emirates", "desc": "MBZ made AI the heart of the UAE's economic diversification strategy. He founded MBZUAI (the world's first 100% AI university) and authorised G42 to invest billions in OpenAI and Microsoft. His ambition: make Abu Dhabi the global AI centre of the Arab world and the Global South." }
+    },
+    {
+      "name": "Peng Xiao",
+      "imageUrl": "https://picsum.photos/seed/peng-xiao-g42/400/400",
+      "it": { "role": "CEO di G42", "desc": "Il CEO del principale conglomerato tech degli UAE ha portato l'AI nel cuore del Golfo. Le sue partnership con OpenAI e Microsoft hanno attirato l'attenzione di Washington per possibili rischi di sicurezza (G42 aveva legami con Huawei). Ha pubblicamente tagliato i rapporti con i fornitori cinesi per rassicurare gli Stati Uniti." },
+      "en": { "role": "CEO of G42", "desc": "The CEO of the UAE's main tech conglomerate brought AI to the heart of the Gulf. His partnerships with OpenAI and Microsoft attracted Washington's attention for possible security risks (G42 had ties with Huawei). He publicly severed ties with Chinese suppliers to reassure the United States." }
+    }
+  ]
+}

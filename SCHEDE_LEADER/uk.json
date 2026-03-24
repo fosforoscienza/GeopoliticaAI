@@ -1,0 +1,21 @@
+{
+  "id": "uk",
+  "flag": "🇬🇧",
+  "color": "#8b5cf6",
+  "coords": [-2, 54],
+  "isoNums": ["826"],
+  "people": [
+    {
+      "name": "Demis Hassabis",
+      "imageUrl": "https://picsum.photos/seed/demis-hassabis-deepmind/400/400",
+      "it": { "role": "CEO di Google DeepMind", "desc": "Questo prodigio degli scacchi e neuroscienziato ha fondato DeepMind a 36 anni. Il suo AlphaFold ha risolto il problema del ripiegamento proteico — sfida aperta da 50 anni — aprendo una nuova era nella medicina. Premio Nobel per la Chimica 2024. Con Google DeepMind lavora ora a modelli multimodali che integrano ragionamento scientifico." },
+      "en": { "role": "CEO of Google DeepMind", "desc": "This chess prodigy and neuroscientist co-founded DeepMind at 36. His AlphaFold solved the protein folding problem — a 50-year open challenge — opening a new era in medicine. Nobel Prize in Chemistry 2024. With Google DeepMind he now works on multimodal models integrating scientific reasoning." }
+    },
+    {
+      "name": "Mustafa Suleyman",
+      "imageUrl": "https://picsum.photos/seed/mustafa-suleyman-microsoft/400/400",
+      "it": { "role": "CEO di Microsoft AI", "desc": "Co-fondatore di DeepMind (poi venduta a Google), ha lasciato per creare Inflection AI — poi è stato assunto da Microsoft per guidare tutta la divisione Microsoft AI. Ha scritto «The Coming Wave», il libro sull'AI più discusso del 2023. Sostiene che le corporation AI abbiano il dovere morale di rallentare il proprio sviluppo." },
+      "en": { "role": "CEO of Microsoft AI", "desc": "Co-founder of DeepMind (later sold to Google), he left to create Inflection AI — then was hired by Microsoft to lead all of Microsoft AI. He wrote 'The Coming Wave', the most discussed AI book of 2023. He argues AI corporations have a moral duty to slow their own development." }
+    }
+  ]
+}

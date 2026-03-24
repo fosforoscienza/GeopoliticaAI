@@ -1,0 +1,21 @@
+{
+  "id": "japan",
+  "flag": "🇯🇵",
+  "color": "#ec4899",
+  "coords": [138, 37],
+  "isoNums": ["392"],
+  "people": [
+    {
+      "name": "Masayoshi Son",
+      "imageUrl": "https://picsum.photos/seed/masayoshi-son-softbank/400/400",
+      "it": { "role": "CEO di SoftBank", "desc": "Il CEO di SoftBank ha investito 100 miliardi di dollari in startup AI e tech attraverso i suoi Vision Fund. Ha dichiarato che l'AGI arriverà entro 10 anni e sarà 10.000 volte più intelligente degli umani. I suoi fallimenti spettacolari (WeWork, -100 miliardi di dollari) non hanno frenato la sua visione cosmica sull'AI." },
+      "en": { "role": "CEO of SoftBank", "desc": "SoftBank's CEO invested $100 billion in AI and tech startups through his Vision Funds. He declared AGI will arrive within 10 years and will be 10,000 times smarter than humans. His spectacular failures (WeWork, -$100B) have not dampened his cosmic vision for AI." }
+    },
+    {
+      "name": "Fumio Kishida",
+      "imageUrl": "https://picsum.photos/seed/kishida-japan-g7/400/400",
+      "it": { "role": "Ex Primo Ministro del Giappone", "desc": "Kishida ha organizzato al G7 di Hiroshima (2023) il primo vertice mondiale dei leader politici sull'AI. Il Processo di Hiroshima sull'AI ha prodotto principi internazionali adottati da 49 paesi. Il Giappone mira a usare l'AI per affrontare la sua crisi demografica — una prospettiva pragmatica, lontana dalle guerre ideologiche occidentali." },
+      "en": { "role": "Former Prime Minister of Japan", "desc": "Kishida organised the first global political leaders' AI summit at the G7 in Hiroshima (2023). The Hiroshima AI Process produced international principles adopted by 49 countries. Japan aims to use AI to address its demographic crisis — a pragmatic perspective, far from Western ideological battles." }
+    }
+  ]
+}
