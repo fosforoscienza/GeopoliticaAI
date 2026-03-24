@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mappa Paesi — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div id="loader"><div class="spinner"></div></div>
+
+  <!-- Map -->
+  <svg id="map-paesi" class="map-svg"></svg>
+
+  <!-- Navigation -->
+  <div id="nav-dots">
+    <button class="nav-dot"></button>
+    <button class="nav-dot active"></button>
+    <button class="nav-dot"></button>
+  </div>
+  <a class="nav-arrow" id="nav-prev" href="index.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="leader.html">&#8594;</a>
+
+  <!-- Lang toggle -->
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <!-- Modal: scheda paese -->
+  <div class="modal-backdrop" id="modal-scheda" onclick="backdropClose(event,'modal-scheda')">
+    <div id="scheda-card">
+      <div id="scheda-image">
+        <img id="scheda-img" src="" alt="" onerror="this.style.opacity='0'" />
+        <div class="img-overlay"></div>
+        <span id="scheda-flag"></span>
+        <button class="modal-close-btn" onclick="closeModal('modal-scheda')">×</button>
+        <span id="scheda-caption"></span>
+      </div>
+      <div id="scheda-body">
+        <div id="scheda-title"></div>
+        <span id="scheda-role"></span>
+        <p id="scheda-desc"></p>
+        <div id="scheda-facts"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/map.js"></script>
+  <script>
+    // ── Scheda modal ──────────────────────────────────
+    let currentActor = null;
+
+    function openScheda(actor) {
+      currentActor = actor;
+      renderScheda(actor);
+      openModal('modal-scheda');
+    }
+
+    function renderScheda(actor) {
+      const loc  = actor[lang];
+      const card = document.getElementById('scheda-card');
+
+      document.getElementById('scheda-image').style.background =
+        `linear-gradient(135deg,#061627,${actor.color}33)`;
+      card.style.borderColor = actor.color + '44';
+      card.style.boxShadow   = `0 0 60px ${actor.color}18`;
+
+      const img = document.getElementById('scheda-img');
+      img.src = actor.imageUrl; img.style.opacity = '1';
+
+      document.getElementById('scheda-flag').textContent    = actor.flag;
+      document.getElementById('scheda-caption').textContent = loc.imageCaption;
+
+      const titleEl = document.getElementById('scheda-title');
+      titleEl.textContent = loc.title;
+      titleEl.style.color = actor.color;
+
+      const roleEl = document.getElementById('scheda-role');
+      roleEl.textContent     = loc.role;
+      roleEl.style.background = actor.color + '1a';
+      roleEl.style.color      = actor.color;
+      roleEl.style.border     = `1px solid ${actor.color}44`;
+
+      document.getElementById('scheda-desc').textContent = loc.desc;
+      document.getElementById('scheda-facts').innerHTML  = loc.facts
+        .map(f => `<span class="fact-chip"
+          style="background:${actor.color}1a;color:${actor.color};border-color:${actor.color}44"
+          >${f}</span>`).join('');
+
+      card.scrollTop = 0;
+    }
+
+    // Re-render on language change
+    function onLangChange() {
+      if (currentActor && document.getElementById('modal-scheda').classList.contains('open')) {
+        renderScheda(currentActor);
+      }
+    }
+
+    // ── Boot ─────────────────────────────────────────
+    async function init() {
+      try {
+        const actors = await loadSchede('SCHEDE');
+        await initMap(
+          'map-paesi',
+          actors,
+          actor => actor.flag,        // marker label
+          actor => openScheda(actor)  // click handler
+        );
+        hideLoader();
+      } catch (err) {
+        console.error(err);
+        showLoadError();
+      }
+    }
+
+    initLangToggle();
+    initNav(1);
+    init();
+  </script>
+</body>
+</html>

@@ -4,686 +4,119 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #040e1a;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #f0f5fb; }
+    /* ── Title-page only ── */
+    body { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-    /* ═══════════════════════════════════════════════
-       SLIDES
-    ═══════════════════════════════════════════════ */
-    #slides-outer { position: fixed; inset: 0; overflow: hidden; }
-    #slides-wrap {
-      display: flex; width: 300vw; height: 100vh;
-      transition: transform 0.7s cubic-bezier(0.77,0,0.175,1);
-      will-change: transform;
+    .title-grid {
+      position: fixed; inset: 0; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(65,183,255,0.07) 1px, transparent 1px);
+      background-size: 48px 48px;
     }
-    .slide { width: 100vw; height: 100vh; flex-shrink: 0; position: relative; overflow: hidden; }
-
-    /* ═══════════════════════════════════════════════
-       SLIDE 1 — TITLE
-    ═══════════════════════════════════════════════ */
-    #slide-1 { background: #040e1a; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; }
-
     .title-glow {
-      position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse 75% 65% at 50% 50%,
-        rgba(65,183,255,0.11) 0%, transparent 65%);
+      position: fixed; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 75% 65% at 50% 50%, rgba(65,183,255,0.11) 0%, transparent 65%);
       animation: glow-pulse 5s ease-in-out infinite;
     }
     @keyframes glow-pulse {
-      0%,100% { opacity:0.5; transform:scale(1);   }
-      50%      { opacity:1;   transform:scale(1.15); }
-    }
-    /* Subtle grid dots */
-    .title-grid {
-      position: absolute; inset: 0; pointer-events: none;
-      background-image: radial-gradient(circle, rgba(65,183,255,0.08) 1px, transparent 1px);
-      background-size: 48px 48px;
+      0%,100% { opacity: 0.5; transform: scale(1);    }
+      50%      { opacity: 1;   transform: scale(1.15); }
     }
 
     .title-content { position: relative; z-index: 1; text-align: center; padding: 0 24px; }
+
     .title-eyebrow {
-      font-size: clamp(11px,1.1vw,14px); font-weight: 600; letter-spacing: 0.18em;
-      text-transform: uppercase; color: rgba(65,183,255,0.7);
-      margin-bottom: clamp(20px,3vh,36px);
+      font-size: clamp(11px, 1.1vw, 14px); font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(65,183,255,0.7); margin-bottom: clamp(20px,3vh,36px);
       animation: fade-up 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s both;
     }
-    h1.display {
-      line-height: 0.95; letter-spacing: -0.03em;
-      font-weight: 900;
+    h1 {
+      line-height: 0.93; letter-spacing: -0.03em; font-weight: 900;
     }
-    .title-l1 {
-      display: block; font-size: clamp(72px,12vw,160px); color: #f0f5fb;
+    .t-l1 {
+      display: block; font-size: clamp(72px, 12vw, 160px); color: #f0f5fb;
       animation: fade-up 1s cubic-bezier(0.16,1,0.3,1) 0.25s both;
     }
-    .title-l2 {
-      display: block; font-size: clamp(72px,12vw,160px); color: #41b7ff;
+    .t-l2 {
+      display: block; font-size: clamp(72px, 12vw, 160px); color: #41b7ff;
       animation: fade-up 1s cubic-bezier(0.16,1,0.3,1) 0.45s both;
     }
     .title-sub {
-      font-size: clamp(15px,1.6vw,22px); color: #64748b; font-weight: 300;
-      margin-top: clamp(18px,2.5vh,32px); letter-spacing: 0.01em;
+      font-size: clamp(15px, 1.6vw, 22px); color: #64748b; font-weight: 300;
+      margin-top: clamp(18px, 2.5vh, 32px); letter-spacing: 0.01em;
       animation: fade-up 1s cubic-bezier(0.16,1,0.3,1) 0.7s both;
     }
-
     @keyframes fade-up {
-      from { opacity:0; transform:translateY(36px); }
-      to   { opacity:1; transform:translateY(0); }
+      from { opacity: 0; transform: translateY(36px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .slide-arrow-hint {
-      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
-      font-size: 22px; color: rgba(65,183,255,0.45);
-      animation: fade-up 1s both 1.1s, bounce-r 1.8s ease-in-out 2s infinite;
+    .slide-hint {
+      position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%);
+      font-size: 22px; color: rgba(65,183,255,0.4);
+      animation: fade-up 1s both 1.1s, bounce-r 1.8s ease-in-out 2.2s infinite;
     }
     @keyframes bounce-r {
       0%,100% { transform: translateX(-50%); }
       50%      { transform: translateX(calc(-50% + 10px)); }
     }
-
-    /* ═══════════════════════════════════════════════
-       SLIDE 2 & 3 — MAPS
-    ═══════════════════════════════════════════════ */
-    .map-svg {
-      display: block; position: absolute;
-      top: 50%; left: 50%; transform: translate(-50%,-50%);
-    }
-
-    /* ═══════════════════════════════════════════════
-       NAVIGATION
-    ═══════════════════════════════════════════════ */
-    #nav-dots {
-      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 10px; z-index: 80;
-    }
-    .nav-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: rgba(255,255,255,0.2); cursor: pointer;
-      transition: all 0.25s; border: none; padding: 0;
-    }
-    .nav-dot.active { background: #41b7ff; transform: scale(1.4); }
-
-    .nav-arrow {
-      position: fixed; top: 50%; transform: translateY(-50%);
-      z-index: 80; width: 44px; height: 44px; border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(13,33,55,0.7); backdrop-filter: blur(8px);
-      color: rgba(255,255,255,0.6); font-size: 18px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s;
-    }
-    .nav-arrow:hover { background: rgba(65,183,255,0.2); color: #41b7ff;
-      border-color: rgba(65,183,255,0.4); }
-    .nav-arrow:disabled { opacity: 0; pointer-events: none; }
-    #nav-prev { left: 18px; }
-    #nav-next { right: 18px; }
-
-    /* ═══════════════════════════════════════════════
-       LANG TOGGLE
-    ═══════════════════════════════════════════════ */
-    #lang-toggle {
-      position: fixed; top: 18px; right: 22px; z-index: 90;
-      display: flex; gap: 2px; padding: 4px;
-      background: rgba(13,33,55,0.80); backdrop-filter: blur(10px);
-      border: 1px solid rgba(65,183,255,0.15); border-radius: 8px;
-    }
-    .lang-btn {
-      padding: 6px 18px; border: none; border-radius: 5px;
-      font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
-      cursor: pointer; background: transparent; color: #64748b; transition: all 0.18s;
-    }
-    .lang-btn.active { background: rgba(65,183,255,0.18); color: #41b7ff; }
-
-    /* ═══════════════════════════════════════════════
-       LOADER
-    ═══════════════════════════════════════════════ */
-    #loader {
-      position: fixed; inset: 0; z-index: 200;
-      display: flex; align-items: center; justify-content: center;
-      background: #040e1a; transition: opacity 0.5s;
-    }
-    .spinner {
-      width: 36px; height: 36px; border: 2px solid #1a3550;
-      border-top-color: #41b7ff; border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ═══════════════════════════════════════════════
-       MARKER ANIMATIONS
-    ═══════════════════════════════════════════════ */
-    .pulse-ring {
-      animation: pulse-expand 2.6s ease-out infinite;
-      transform-box: fill-box; transform-origin: center;
-    }
-    @keyframes pulse-expand {
-      0%   { transform:scale(1);   opacity:0.8; }
-      70%  { transform:scale(3.2); opacity:0;   }
-      100% { transform:scale(3.2); opacity:0;   }
-    }
-    .marker-dot {
-      transition: transform 0.18s ease;
-      transform-box: fill-box; transform-origin: center;
-    }
-    .marker-group { cursor: pointer; }
-    .marker-group:hover .marker-dot { transform: scale(1.9); }
-    .marker-flag,.marker-count { pointer-events:none; user-select:none; }
-
-    /* ═══════════════════════════════════════════════
-       MODAL — SHARED
-    ═══════════════════════════════════════════════ */
-    .modal-backdrop {
-      position: fixed; inset: 0; z-index: 100;
-      background: rgba(4,14,26,0.78); backdrop-filter: blur(7px);
-      display: flex; align-items: center; justify-content: center; padding: 20px;
-      opacity: 0; pointer-events: none; transition: opacity 0.22s;
-    }
-    .modal-backdrop.open { opacity:1; pointer-events:all; }
-
-    /* ═══════════════════════════════════════════════
-       MODAL — SCHEDA (slide 2)
-    ═══════════════════════════════════════════════ */
-    #scheda-card {
-      width: 100%; max-width: 460px; max-height: 88vh;
-      overflow-y: auto; border-radius: 20px; background: #0d2137;
-      border: 1px solid #1a3550;
-      transform: translateY(20px) scale(0.97);
-      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-      scrollbar-width: thin; scrollbar-color: #1a3550 transparent;
-    }
-    #modal-scheda.open #scheda-card { transform: none; }
-    #scheda-image {
-      position: relative; height: 190px; overflow: hidden; border-radius: 20px 20px 0 0;
-    }
-    #scheda-image img { width:100%; height:100%; object-fit:cover; display:block; }
-    .img-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to bottom, transparent 35%, rgba(13,33,55,0.92) 100%);
-    }
-    #scheda-flag { position:absolute; bottom:14px; left:20px;
-      font-size:40px; line-height:1; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.7)); }
-    .modal-close-btn {
-      position:absolute; top:12px; right:12px;
-      width:30px; height:30px; border-radius:50%; border:none;
-      background:rgba(0,0,0,0.55); color:#fff; font-size:18px;
-      cursor:pointer; display:flex; align-items:center; justify-content:center;
-      transition:background 0.18s; line-height:1;
-    }
-    .modal-close-btn:hover { background:rgba(0,0,0,0.8); }
-    #scheda-caption { position:absolute; bottom:10px; right:14px;
-      font-size:11px; color:rgba(255,255,255,0.5); }
-    #scheda-body { padding: 18px 22px 26px; }
-    #scheda-title { font-size:18px; font-weight:700; line-height:1.25; margin-bottom:6px; }
-    #scheda-role {
-      display:inline-block; font-size:12px; font-weight:600;
-      padding:3px 10px; border-radius:100px; margin-bottom:14px;
-    }
-    #scheda-desc { font-size:14px; line-height:1.72; color:#94a3b8; margin-bottom:16px; }
-    #scheda-facts { display:flex; flex-wrap:wrap; gap:7px; }
-    .fact-chip { font-size:12px; padding:5px 12px; border-radius:100px; border:1px solid; white-space:nowrap; }
-
-    /* ═══════════════════════════════════════════════
-       MODAL — LEADER CAROUSEL (slide 3)
-    ═══════════════════════════════════════════════ */
-    #leader-card {
-      width: 100%; max-width: 400px;
-      border-radius: 20px; background: #0d2137; border: 1px solid #1a3550;
-      overflow: hidden;
-      transform: translateY(20px) scale(0.97);
-      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-    }
-    #modal-leader.open #leader-card { transform: none; }
-
-    #leader-photo-wrap {
-      position: relative; height: 280px; overflow: hidden; background: #061627;
-    }
-    #leader-photo {
-      width:100%; height:100%; object-fit:cover; display:block;
-      transition: opacity 0.3s;
-    }
-    .leader-photo-overlay {
-      position:absolute; inset:0;
-      background: linear-gradient(to bottom, transparent 40%, rgba(13,33,55,0.9) 100%);
-    }
-    /* Carousel arrows */
-    .car-btn {
-      position:absolute; top:50%; transform:translateY(-50%);
-      width:36px; height:36px; border-radius:50%; border:none;
-      background:rgba(0,0,0,0.5); color:#fff; font-size:16px;
-      cursor:pointer; display:flex; align-items:center; justify-content:center;
-      transition:all 0.18s; z-index:2;
-    }
-    .car-btn:hover { background:rgba(0,0,0,0.8); }
-    .car-btn:disabled { opacity:0.2; pointer-events:none; }
-    #car-prev { left:10px; }
-    #car-next { right:10px; }
-
-    /* Dots */
-    #car-dots {
-      position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
-      display:flex; gap:6px; z-index:2;
-    }
-    .car-dot {
-      width:6px; height:6px; border-radius:50%; border:none;
-      background:rgba(255,255,255,0.35); cursor:pointer; transition:all 0.2s;
-    }
-    .car-dot.active { background:#fff; transform:scale(1.3); }
-
-    /* Close */
-    #leader-close {
-      position:absolute; top:12px; right:12px;
-    }
-
-    /* Leader info */
-    #leader-info { padding: 18px 22px 24px; }
-    #leader-name { font-size:20px; font-weight:700; margin-bottom:6px; }
-    #leader-role {
-      display:inline-block; font-size:12px; font-weight:600;
-      padding:3px 10px; border-radius:100px; margin-bottom:14px;
-    }
-    #leader-desc { font-size:14px; line-height:1.72; color:#94a3b8; }
-    #leader-country {
-      margin-top:14px; font-size:12px; color:#64748b;
-      display:flex; align-items:center; gap:6px;
-    }
   </style>
 </head>
 <body>
 
-<!-- ── Loader ──────────────────────────────────── -->
-<div id="loader"><div class="spinner"></div></div>
+  <div class="title-grid"></div>
+  <div class="title-glow"></div>
 
-<!-- ── Slides ─────────────────────────────────── -->
-<div id="slides-outer">
-  <div id="slides-wrap">
-
-    <!-- Slide 1: Title -->
-    <div class="slide" id="slide-1">
-      <div class="title-grid"></div>
-      <div class="title-glow"></div>
-      <div class="title-content">
-        <div class="title-eyebrow" id="t-eyebrow">Fosforoscienza · Spettacolo 2025</div>
-        <h1 class="display">
-          <span class="title-l1" id="t-l1">Geopolitica</span>
-          <span class="title-l2" id="t-l2">della AI</span>
-        </h1>
-        <p class="title-sub" id="t-sub">Chi controlla l'intelligenza artificiale controlla il futuro</p>
-      </div>
-      <div class="slide-arrow-hint">→</div>
-    </div>
-
-    <!-- Slide 2: Countries map -->
-    <div class="slide" id="slide-2">
-      <svg id="map-paesi" class="map-svg"></svg>
-    </div>
-
-    <!-- Slide 3: Leaders map -->
-    <div class="slide" id="slide-3">
-      <svg id="map-leader" class="map-svg"></svg>
-    </div>
-
+  <div class="title-content">
+    <div class="title-eyebrow" id="t-eyebrow">Fosforoscienza · Spettacolo 2025</div>
+    <h1>
+      <span class="t-l1" id="t-l1">Geopolitica</span>
+      <span class="t-l2" id="t-l2">della AI</span>
+    </h1>
+    <p class="title-sub" id="t-sub">Chi controlla l'intelligenza artificiale controlla il futuro</p>
   </div>
-</div>
 
-<!-- ── Navigation ─────────────────────────────── -->
-<div id="nav-dots">
-  <button class="nav-dot active" onclick="goTo(0)"></button>
-  <button class="nav-dot"        onclick="goTo(1)"></button>
-  <button class="nav-dot"        onclick="goTo(2)"></button>
-</div>
-<button class="nav-arrow" id="nav-prev" onclick="goTo(currentSlide-1)">&#8592;</button>
-<button class="nav-arrow" id="nav-next" onclick="goTo(currentSlide+1)">&#8594;</button>
+  <div class="slide-hint">→</div>
 
-<!-- ── Lang toggle ────────────────────────────── -->
-<div id="lang-toggle">
-  <button class="lang-btn active" onclick="setLang('it')">IT</button>
-  <button class="lang-btn"        onclick="setLang('en')">EN</button>
-</div>
-
-<!-- ── Modal: Scheda paese (slide 2) ──────────── -->
-<div class="modal-backdrop" id="modal-scheda" onclick="backdropClose(event,'modal-scheda')">
-  <div id="scheda-card">
-    <div id="scheda-image">
-      <img id="scheda-img" src="" alt="" onerror="this.style.opacity='0'" />
-      <div class="img-overlay"></div>
-      <span id="scheda-flag"></span>
-      <button class="modal-close-btn" onclick="closeModal('modal-scheda')">×</button>
-      <span id="scheda-caption"></span>
-    </div>
-    <div id="scheda-body">
-      <div id="scheda-title"></div>
-      <span id="scheda-role"></span>
-      <p id="scheda-desc"></p>
-      <div id="scheda-facts"></div>
-    </div>
+  <!-- Navigation -->
+  <div id="nav-dots">
+    <button class="nav-dot active"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
   </div>
-</div>
+  <a class="nav-arrow hidden" id="nav-prev">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="paesi.html">&#8594;</a>
 
-<!-- ── Modal: Leader carousel (slide 3) ─────── -->
-<div class="modal-backdrop" id="modal-leader" onclick="backdropClose(event,'modal-leader')">
-  <div id="leader-card">
-    <div id="leader-photo-wrap">
-      <img id="leader-photo" src="" alt="" onerror="this.style.opacity='0.3'" />
-      <div class="leader-photo-overlay"></div>
-      <button class="car-btn" id="car-prev" onclick="carMove(-1)">&#8592;</button>
-      <button class="car-btn" id="car-next" onclick="carMove(+1)">&#8594;</button>
-      <div id="car-dots"></div>
-      <button class="modal-close-btn" id="leader-close" onclick="closeModal('modal-leader')">×</button>
-    </div>
-    <div id="leader-info">
-      <div id="leader-name"></div>
-      <span id="leader-role"></span>
-      <p id="leader-desc"></p>
-      <div id="leader-country"></div>
-    </div>
+  <!-- Lang toggle -->
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
   </div>
-</div>
 
-<!-- ── Scripts ───────────────────────────────── -->
-<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
-<script>
-// ─────────────────────────────────────────────────────
-// i18n
-// ─────────────────────────────────────────────────────
-const UI = {
-  it: {
-    pageTitle: "Geopolitica della AI",
-    eyebrow:   "Fosforoscienza · Spettacolo 2025",
-    l1: "Geopolitica", l2: "della AI",
-    sub: "Chi controlla l'intelligenza artificiale controlla il futuro",
-    loadErr: "Errore nel caricamento. Apri via HTTP (es. npx serve .).",
-  },
-  en: {
-    pageTitle: "AI Geopolitics",
-    eyebrow:   "Fosforoscienza · Show 2025",
-    l1: "AI", l2: "Geopolitics",
-    sub: "Who controls artificial intelligence controls the future",
-    loadErr: "Load error. Open via HTTP (e.g. npx serve .).",
-  },
-};
+  <script src="js/common.js"></script>
+  <script>
+    // i18n strings for this page
+    const PAGE_TEXT = {
+      it: { eyebrow: "Fosforoscienza · Spettacolo 2025", l1: "Geopolitica", l2: "della AI",
+            sub: "Chi controlla l'intelligenza artificiale controlla il futuro" },
+      en: { eyebrow: "Fosforoscienza · Show 2025",      l1: "AI",           l2: "Geopolitics",
+            sub: "Who controls artificial intelligence controls the future" },
+    };
 
-// ─────────────────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────────────────
-let lang = 'it';
-let currentSlide = 0;
-let carActors = [];   // people array for current leader popup
-let carIdx = 0;       // carousel index
-let carColor = '#41b7ff';
-let carCountryFlag = '';
-let carCountryName = '';
+    function onLangChange(l) {
+      const t = PAGE_TEXT[l];
+      document.title = l === 'it' ? "Geopolitica della AI" : "AI Geopolitics";
+      document.getElementById('t-eyebrow').textContent = t.eyebrow;
+      document.getElementById('t-l1').textContent      = t.l1;
+      document.getElementById('t-l2').textContent      = t.l2;
+      document.getElementById('t-sub').textContent     = t.sub;
+    }
 
-const SCHEDE_IDS = ['usa','china','eu','uk','russia','india','uae','canada','japan','israel'];
-
-// ─────────────────────────────────────────────────────
-// SLIDE NAVIGATION
-// ─────────────────────────────────────────────────────
-function goTo(n) {
-  n = Math.max(0, Math.min(2, n));
-  currentSlide = n;
-  document.getElementById('slides-wrap').style.transform = `translateX(-${n * 100}vw)`;
-  document.querySelectorAll('.nav-dot').forEach((d,i) => d.classList.toggle('active', i === n));
-  document.getElementById('nav-prev').disabled = (n === 0);
-  document.getElementById('nav-next').disabled = (n === 2);
-}
-
-// ─────────────────────────────────────────────────────
-// LANGUAGE
-// ─────────────────────────────────────────────────────
-function setLang(l) {
-  lang = l;
-  document.documentElement.lang = l;
-  document.title = UI[l].pageTitle;
-  document.querySelectorAll('.lang-btn').forEach(b =>
-    b.classList.toggle('active', b.textContent.trim().toLowerCase() === l));
-  document.getElementById('t-eyebrow').textContent = UI[l].eyebrow;
-  document.getElementById('t-l1').textContent = UI[l].l1;
-  document.getElementById('t-l2').textContent = UI[l].l2;
-  document.getElementById('t-sub').textContent = UI[l].sub;
-  // Refresh open modals
-  if (document.getElementById('modal-leader').classList.contains('open')) renderCarousel();
-}
-
-// ─────────────────────────────────────────────────────
-// MODAL HELPERS
-// ─────────────────────────────────────────────────────
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function backdropClose(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
-
-// ─────────────────────────────────────────────────────
-// LOAD SCHEDE
-// ─────────────────────────────────────────────────────
-async function loadSchede(folder) {
-  const results = await Promise.all(
-    SCHEDE_IDS.map(id =>
-      fetch(`${folder}/${id}.json`)
-        .then(r => { if (!r.ok) throw new Error(id); return r.json(); })
-        .catch(err => { console.warn('Scheda not loaded:', err); return null; })
-    )
-  );
-  return results.filter(Boolean);
-}
-
-// ─────────────────────────────────────────────────────
-// MAP PROJECTION (cover-fill)
-// ─────────────────────────────────────────────────────
-function buildProjection(W, H) {
-  const sphere = { type: 'Sphere' };
-  const proj = d3.geoNaturalEarth1().fitSize([W, H], sphere);
-  const pathTmp = d3.geoPath(proj);
-  const [[x0,y0],[x1,y1]] = pathTmp.bounds(sphere);
-  const cover = Math.max(W / (x1-x0), H / (y1-y0));
-  return proj.scale(proj.scale() * cover).translate([W/2, H/2]);
-}
-
-// ─────────────────────────────────────────────────────
-// DRAW BASE MAP (shared)
-// ─────────────────────────────────────────────────────
-function drawBase(svg, projection, world, isoColorMap) {
-  const path    = d3.geoPath(projection);
-  const land    = topojson.feature(world, world.objects.land);
-  const countries = topojson.feature(world, world.objects.countries);
-  const borders = topojson.mesh(world, world.objects.countries, (a,b) => a !== b);
-
-  svg.append('rect').attr('width', '100%').attr('height', '100%').attr('fill', '#040e1a');
-  svg.append('path').datum(land).attr('d', path).attr('fill', '#0d2137');
-
-  svg.selectAll('.hi').data(countries.features.filter(d => isoColorMap[d.id]))
-    .join('path').attr('class','hi').attr('d', path)
-    .attr('fill',   d => isoColorMap[d.id] + '22')
-    .attr('stroke', d => isoColorMap[d.id] + '60')
-    .attr('stroke-width', 1.2);
-
-  svg.append('path').datum(borders).attr('d', path)
-    .attr('fill','none').attr('stroke','#1a3550').attr('stroke-width', 0.4);
-  svg.append('path').datum(d3.geoGraticule()()).attr('d', path)
-    .attr('fill','none').attr('stroke','rgba(255,255,255,0.04)').attr('stroke-width', 0.5);
-  svg.append('path').datum({type:'Sphere'}).attr('d', path)
-    .attr('fill','none').attr('stroke','#1a3550').attr('stroke-width', 0.8);
-}
-
-// ─────────────────────────────────────────────────────
-// SLIDE 2 — COUNTRY MODAL
-// ─────────────────────────────────────────────────────
-function openScheda(actor) {
-  const loc = actor[lang];
-  const card = document.getElementById('scheda-card');
-  document.getElementById('scheda-image').style.background =
-    `linear-gradient(135deg,#061627,${actor.color}33)`;
-  card.style.borderColor = actor.color + '44';
-  card.style.boxShadow   = `0 0 60px ${actor.color}18`;
-  const img = document.getElementById('scheda-img');
-  img.src = actor.imageUrl; img.style.opacity='1';
-  document.getElementById('scheda-flag').textContent = actor.flag;
-  document.getElementById('scheda-caption').textContent = loc.imageCaption;
-  const t = document.getElementById('scheda-title');
-  t.textContent = loc.title; t.style.color = actor.color;
-  const r = document.getElementById('scheda-role');
-  r.textContent = loc.role;
-  r.style.background = actor.color+'1a'; r.style.color = actor.color;
-  r.style.border = `1px solid ${actor.color}44`;
-  document.getElementById('scheda-desc').textContent = loc.desc;
-  document.getElementById('scheda-facts').innerHTML = loc.facts
-    .map(f=>`<span class="fact-chip" style="background:${actor.color}1a;color:${actor.color};border-color:${actor.color}44">${f}</span>`).join('');
-  card.scrollTop = 0;
-  document.getElementById('modal-scheda').classList.add('open');
-}
-
-// ─────────────────────────────────────────────────────
-// SLIDE 3 — LEADER CAROUSEL
-// ─────────────────────────────────────────────────────
-function openLeader(actor) {
-  carActors    = actor.people;
-  carIdx       = 0;
-  carColor     = actor.color;
-  carCountryFlag = actor.flag;
-  carCountryName = actor[lang]
-    ? (actor[lang].title || actor.id)
-    : actor.id;
-  renderCarousel();
-  document.getElementById('modal-leader').classList.add('open');
-}
-
-function renderCarousel() {
-  if (!carActors.length) return;
-  const person = carActors[carIdx];
-  const loc = person[lang];
-
-  // Photo
-  const img = document.getElementById('leader-photo');
-  img.src = person.imageUrl; img.style.opacity = '1';
-  document.getElementById('leader-photo-wrap').style.background =
-    `linear-gradient(135deg,#061627,${carColor}44)`;
-
-  // Card border
-  const card = document.getElementById('leader-card');
-  card.style.borderColor = carColor + '44';
-  card.style.boxShadow   = `0 0 60px ${carColor}15`;
-
-  // Info
-  document.getElementById('leader-name').textContent  = person.name;
-  const roleEl = document.getElementById('leader-role');
-  roleEl.textContent = loc.role;
-  roleEl.style.background = carColor + '1a';
-  roleEl.style.color       = carColor;
-  roleEl.style.border      = `1px solid ${carColor}44`;
-  document.getElementById('leader-desc').textContent  = loc.desc;
-  document.getElementById('leader-country').innerHTML =
-    `<span>${carCountryFlag}</span><span style="color:${carColor}">${person.name}</span>
-     <span style="color:#44566a">· ${carIdx+1}/${carActors.length}</span>`;
-
-  // Carousel arrows
-  document.getElementById('car-prev').disabled = (carIdx === 0);
-  document.getElementById('car-next').disabled = (carIdx === carActors.length - 1);
-
-  // Dots
-  document.getElementById('car-dots').innerHTML = carActors.map((_,i) =>
-    `<button class="car-dot${i===carIdx?' active':''}" onclick="carGo(${i})"></button>`
-  ).join('');
-}
-
-function carMove(dir) { carGo(carIdx + dir); }
-function carGo(i) {
-  carIdx = Math.max(0, Math.min(carActors.length-1, i));
-  const img = document.getElementById('leader-photo');
-  img.style.opacity = '0';
-  setTimeout(() => renderCarousel(), 200);
-}
-
-// ─────────────────────────────────────────────────────
-// INIT MAP (generic)
-// ─────────────────────────────────────────────────────
-function initMap(svgId, world, actors, clickHandler, markerLabel) {
-  const W = window.innerWidth, H = window.innerHeight;
-  const svg = d3.select(`#${svgId}`)
-    .attr('width', W).attr('height', H);
-
-  const proj = buildProjection(W, H);
-
-  // ISO → color map
-  const isoColorMap = {};
-  actors.forEach(a => a.isoNums.forEach(n => { isoColorMap[n] = a.color; }));
-
-  drawBase(svg, proj, world, isoColorMap);
-
-  // Markers
-  actors.forEach(actor => {
-    const p = proj(actor.coords);
-    if (!p || isNaN(p[0])) return;
-    const [x, y] = p;
-
-    const g = svg.append('g').attr('class','marker-group')
-      .attr('transform', `translate(${x},${y})`)
-      .on('click', () => clickHandler(actor));
-
-    g.append('circle').attr('class','pulse-ring').attr('r',12)
-      .attr('fill','none').attr('stroke',actor.color).attr('stroke-width',1.8);
-    g.append('circle').attr('class','marker-dot').attr('r',7)
-      .attr('fill',actor.color).attr('stroke','#f0f5fb').attr('stroke-width',1.8)
-      .style('filter',`drop-shadow(0 0 6px ${actor.color})`);
-    g.append('text').attr('class','marker-flag')
-      .attr('y',-14).attr('text-anchor','middle')
-      .attr('font-size','15px').text(markerLabel(actor));
-  });
-}
-
-// ─────────────────────────────────────────────────────
-// KEYBOARD
-// ─────────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closeModal('modal-scheda'); closeModal('modal-leader'); return;
-  }
-  const leaderOpen = document.getElementById('modal-leader').classList.contains('open');
-  if (leaderOpen) {
-    if (e.key === 'ArrowLeft')  carMove(-1);
-    if (e.key === 'ArrowRight') carMove(+1);
-    return;
-  }
-  if (e.key === 'ArrowLeft')  goTo(currentSlide - 1);
-  if (e.key === 'ArrowRight') goTo(currentSlide + 1);
-});
-
-// ─────────────────────────────────────────────────────
-// BOOT
-// ─────────────────────────────────────────────────────
-async function init() {
-  document.title = UI[lang].pageTitle;
-  goTo(0);
-
-  try {
-    const [world, schedeP, leaderP] = await Promise.all([
-      d3.json('https://unpkg.com/world-atlas@2/countries-110m.json'),
-      loadSchede('SCHEDE'),
-      loadSchede('SCHEDE_LEADER'),
-    ]);
-
-    initMap('map-paesi', world, schedeP,
-      actor => openScheda(actor),
-      actor => actor.flag
-    );
-
-    initMap('map-leader', world, leaderP,
-      actor => openLeader(actor),
-      actor => actor.flag + (actor.people.length > 1 ? ` ${actor.people.length}` : '')
-    );
-
-  } catch(err) {
-    console.error(err);
-    document.getElementById('loader').innerHTML =
-      `<p style="color:#64748b;font-size:14px;padding:24px;text-align:center">${UI[lang].loadErr}</p>`;
-    return;
-  }
-
-  const loader = document.getElementById('loader');
-  loader.style.opacity = '0';
-  setTimeout(() => loader.remove(), 500);
-}
-
-init();
-</script>
+    initLangToggle();
+    initNav(0);
+    onLangChange(lang); // apply persisted language
+  </script>
 </body>
 </html>
