@@ -1,0 +1,22 @@
+{
+  "id": "israel",
+  "flag": "🇮🇱",
+  "color": "#a78bfa",
+  "coords": [35, 31.5],
+  "isoNums": ["376"],
+  "imageUrl": "https://picsum.photos/seed/tel-aviv-israel-beach/640/320",
+  "it": {
+    "title": "Israele: la Startup Nation dell'AI",
+    "role": "Hub di AI militare e civile",
+    "desc": "Israele ha la più alta concentrazione di startup AI al mondo pro capite. Le tecnologie sviluppate per le forze armate — riconoscimento facciale, droni autonomi, cyber intelligence — vengono poi commercializzate globalmente. La Unit 8200 dell'intelligence militare è la più prolifica incubatrice di imprenditori tech del paese.",
+    "facts": ["N°1 startup AI pro capite nel mondo", "Unit 8200: incubatrice imprenditori tech", "Check Point + Wiz: cybersecurity AI", "IDF: test bed tecnologie AI"],
+    "imageCaption": "Tel Aviv, Israele"
+  },
+  "en": {
+    "title": "Israel: The AI Startup Nation",
+    "role": "Military and civilian AI hub",
+    "desc": "Israel has the world's highest concentration of AI startups per capita. Technologies developed for the armed forces — facial recognition, autonomous drones, cyber intelligence — are commercialized globally. Military intelligence Unit 8200 is the country's most prolific tech entrepreneur incubator.",
+    "facts": ["#1 AI startups per capita globally", "Unit 8200: tech entrepreneur incubator", "Check Point + Wiz: AI cybersecurity", "IDF: AI technology test bed"],
+    "imageCaption": "Tel Aviv, Israel"
+  }
+}

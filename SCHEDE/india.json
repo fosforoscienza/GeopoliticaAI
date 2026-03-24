@@ -1,0 +1,22 @@
+{
+  "id": "india",
+  "flag": "🇮🇳",
+  "color": "#22c55e",
+  "coords": [78, 20],
+  "isoNums": ["356"],
+  "imageUrl": "https://picsum.photos/seed/bangalore-india-tech/640/320",
+  "it": {
+    "title": "India: la fabbrica dei talenti AI",
+    "role": "Serbatoio globale di talenti",
+    "desc": "L'India ha il secondo ecosistema startup AI al mondo dopo gli USA. Il governo ha lanciato IndiaAI (2024) con 1 miliardo di dollari di investimento statale. Il 30% dei CEO delle Big Tech americane è di origine indiana. IIT Bombay, Delhi e Bangalore formano centinaia di migliaia di ingegneri l'anno.",
+    "facts": ["2° ecosistema startup AI al mondo", "IndiaAI: $1B investimento statale (2024)", "30% CEO Big Tech di origine indiana", "IIT: tra le top university mondiali"],
+    "imageCaption": "Bangalore, India"
+  },
+  "en": {
+    "title": "India: The AI Talent Factory",
+    "role": "Global talent powerhouse",
+    "desc": "India has the world's second-largest AI startup ecosystem after the US. The government launched IndiaAI (2024) with $1B in state investment. 30% of American Big Tech CEOs are of Indian origin. IIT Bombay, Delhi and Bangalore train hundreds of thousands of engineers yearly.",
+    "facts": ["2nd largest AI startup ecosystem", "IndiaAI: $1B state investment (2024)", "30% of Big Tech CEOs are Indian-origin", "IIT: among world's top tech universities"],
+    "imageCaption": "Bangalore, India"
+  }
+}

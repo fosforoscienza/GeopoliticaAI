@@ -1,0 +1,22 @@
+{
+  "id": "usa",
+  "flag": "🇺🇸",
+  "color": "#4f8ef7",
+  "coords": [-97, 38],
+  "isoNums": ["840"],
+  "imageUrl": "https://picsum.photos/seed/silicon-valley-tech/640/320",
+  "it": {
+    "title": "Stati Uniti: il colosso dell'AI",
+    "role": "Superpotenza tecnologica",
+    "desc": "Gli USA dominano la corsa all'AI con OpenAI (GPT-4), Google DeepMind (Gemini), Anthropic (Claude) e Meta AI (Llama). Nel 2023 sono stati investiti oltre 67 miliardi di dollari in startup AI americane. Il conflitto commerciale con la Cina sui chip NVIDIA H100 è la nuova «guerra fredda tecnologica»: Washington ha vietato l'export verso Pechino.",
+    "facts": ["OpenAI · Google · Anthropic · Meta", "$67B investiti nel 2023", "AI Safety Executive Order (2023)", "Export ban chip H100 → Cina"],
+    "imageCaption": "Silicon Valley, California"
+  },
+  "en": {
+    "title": "United States: The AI Colossus",
+    "role": "Technological superpower",
+    "desc": "The US dominates the AI race with OpenAI (GPT-4), Google DeepMind (Gemini), Anthropic (Claude), and Meta AI (Llama). In 2023, over $67B was invested in American AI startups. The trade conflict with China over NVIDIA H100 chips is the new 'technological cold war': Washington banned exports to Beijing.",
+    "facts": ["OpenAI · Google · Anthropic · Meta", "$67B invested in 2023", "AI Safety Executive Order (2023)", "H100 chip export ban → China"],
+    "imageCaption": "Silicon Valley, California"
+  }
+}

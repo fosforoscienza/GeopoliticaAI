@@ -14,17 +14,20 @@
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    /* ── Map fills entire viewport ── */
+    /* ── Map: true fullscreen cover ── */
     #map-wrap {
       position: fixed;
       inset: 0;
       width: 100vw;
       height: 100vh;
+      overflow: hidden;
     }
     #world-map {
       display: block;
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
     /* ── Loader ── */
@@ -47,22 +50,22 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Language toggle ── */
+    /* ── Lang toggle ── */
     #lang-toggle {
       position: fixed;
-      top: 20px;
-      right: 24px;
+      top: 18px;
+      right: 22px;
       z-index: 90;
       display: flex;
-      background: rgba(13,33,55,0.85);
-      backdrop-filter: blur(8px);
-      border: 1px solid #1a3550;
+      background: rgba(13,33,55,0.80);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(65,183,255,0.15);
       border-radius: 8px;
       padding: 4px;
       gap: 2px;
     }
     .lang-btn {
-      padding: 6px 16px;
+      padding: 6px 18px;
       border: none;
       border-radius: 5px;
       font-size: 13px;
@@ -85,30 +88,26 @@
       transform-origin: center;
     }
     @keyframes pulse-expand {
-      0%   { transform: scale(1);   opacity: 0.7; }
-      65%  { transform: scale(2.8); opacity: 0;   }
-      100% { transform: scale(2.8); opacity: 0;   }
+      0%   { transform: scale(1);   opacity: 0.8; }
+      70%  { transform: scale(3.0); opacity: 0;   }
+      100% { transform: scale(3.0); opacity: 0;   }
     }
     .marker-dot {
       transition: transform 0.18s ease;
       transform-box: fill-box;
       transform-origin: center;
-      cursor: pointer;
     }
     .marker-group { cursor: pointer; }
-    .marker-group:hover .marker-dot { transform: scale(1.7); }
-    .marker-flag {
-      pointer-events: none;
-      user-select: none;
-    }
+    .marker-group:hover .marker-dot { transform: scale(1.8); }
+    .marker-flag { pointer-events: none; user-select: none; }
 
     /* ── Modal backdrop ── */
     #modal-backdrop {
       position: fixed;
       inset: 0;
       z-index: 100;
-      background: rgba(4,14,26,0.80);
-      backdrop-filter: blur(6px);
+      background: rgba(4,14,26,0.78);
+      backdrop-filter: blur(7px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -131,8 +130,8 @@
       border-radius: 20px;
       background: #0d2137;
       border: 1px solid #1a3550;
-      transform: translateY(18px) scale(0.97);
-      transition: transform 0.24s cubic-bezier(0.34,1.56,0.64,1);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
       scrollbar-width: thin;
       scrollbar-color: #1a3550 transparent;
     }
@@ -140,7 +139,6 @@
       transform: translateY(0) scale(1);
     }
 
-    /* ── Modal image header ── */
     #modal-image {
       position: relative;
       height: 190px;
@@ -151,7 +149,6 @@
       width: 100%; height: 100%;
       object-fit: cover;
       display: block;
-      transition: opacity 0.3s;
     }
     .modal-img-overlay {
       position: absolute;
@@ -160,93 +157,65 @@
     }
     #modal-flag {
       position: absolute;
-      bottom: 14px;
-      left: 20px;
-      font-size: 40px;
-      line-height: 1;
+      bottom: 14px; left: 20px;
+      font-size: 40px; line-height: 1;
       filter: drop-shadow(0 2px 8px rgba(0,0,0,0.7));
     }
     #modal-close {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 12px; right: 12px;
       width: 30px; height: 30px;
-      border-radius: 50%;
-      border: none;
+      border-radius: 50%; border: none;
       background: rgba(0,0,0,0.55);
-      color: #fff;
-      font-size: 18px;
+      color: #fff; font-size: 18px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       transition: background 0.18s;
-      line-height: 1;
     }
     #modal-close:hover { background: rgba(0,0,0,0.8); }
     #modal-img-caption {
       position: absolute;
-      bottom: 10px;
-      right: 14px;
+      bottom: 10px; right: 14px;
       font-size: 11px;
       color: rgba(255,255,255,0.5);
     }
 
-    /* ── Modal body ── */
-    #modal-body {
-      padding: 18px 22px 26px;
-    }
+    #modal-body { padding: 18px 22px 26px; }
     #modal-title {
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.25;
-      margin-bottom: 6px;
+      font-size: 18px; font-weight: 700;
+      line-height: 1.25; margin-bottom: 6px;
     }
     #modal-role {
       display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 100px;
+      font-size: 12px; font-weight: 600;
+      padding: 3px 10px; border-radius: 100px;
       margin-bottom: 14px;
     }
     #modal-desc {
-      font-size: 14px;
-      line-height: 1.72;
-      color: #94a3b8;
-      margin-bottom: 16px;
+      font-size: 14px; line-height: 1.72;
+      color: #94a3b8; margin-bottom: 16px;
     }
-    #modal-facts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-    }
+    #modal-facts { display: flex; flex-wrap: wrap; gap: 7px; }
     .fact-chip {
-      font-size: 12px;
-      padding: 5px 12px;
-      border-radius: 100px;
-      border: 1px solid;
+      font-size: 12px; padding: 5px 12px;
+      border-radius: 100px; border: 1px solid;
       white-space: nowrap;
     }
   </style>
 </head>
 <body>
 
-<!-- Loader -->
 <div id="loader"><div class="spinner"></div></div>
 
-<!-- Full-viewport map -->
 <div id="map-wrap">
   <svg id="world-map"></svg>
 </div>
 
-<!-- Lang toggle -->
 <div id="lang-toggle">
   <button class="lang-btn active" onclick="setLang('it')">IT</button>
   <button class="lang-btn"        onclick="setLang('en')">EN</button>
 </div>
 
-<!-- Modal -->
 <div id="modal-backdrop" onclick="handleBackdropClick(event)">
   <div id="modal-card">
     <div id="modal-image">
@@ -269,213 +238,22 @@
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 <script>
 // ─────────────────────────────────────────────────────────────
-// i18n
+// i18n — UI strings only (actor text lives in SCHEDE/*.json)
 // ─────────────────────────────────────────────────────────────
 const UI = {
-  it: {
-    pageTitle:    "Geopolitica dell'AI",
-    loadError:    "Errore nel caricamento della mappa — verifica la connessione.",
-  },
-  en: {
-    pageTitle:    "AI Geopolitics",
-    loadError:    "Map failed to load — check your internet connection.",
-  },
+  it: { pageTitle: "Geopolitica dell'AI", loadError: "Errore nel caricamento della mappa." },
+  en: { pageTitle: "AI Geopolitics",      loadError: "Map failed to load. Check your connection." },
 };
-
-// ─────────────────────────────────────────────────────────────
-// DATA
-// ─────────────────────────────────────────────────────────────
-const ACTORS = [
-  {
-    id: 'usa', flag: '🇺🇸', color: '#4f8ef7',
-    coords: [-97, 38], isoNums: ['840'],
-    it: {
-      title:  "Stati Uniti: il colosso dell'AI",
-      role:   "Superpotenza tecnologica",
-      desc:   "Gli USA dominano la corsa all'AI con OpenAI (GPT-4), Google DeepMind (Gemini), Anthropic (Claude) e Meta AI (Llama). Nel 2023 sono stati investiti oltre 67 miliardi di dollari in startup AI americane. Il conflitto commerciale con la Cina sui chip NVIDIA H100 è la nuova «guerra fredda tecnologica»: Washington ha vietato l'export verso Pechino.",
-      facts:  ["OpenAI · Google · Anthropic · Meta", "$67B investiti nel 2023", "AI Safety Executive Order (2023)", "Export ban chip H100 → Cina"],
-    },
-    en: {
-      title:  "United States: The AI Colossus",
-      role:   "Technological superpower",
-      desc:   "The US dominates the AI race with OpenAI (GPT-4), Google DeepMind (Gemini), Anthropic (Claude), and Meta AI (Llama). In 2023, over $67B was invested in American AI startups. The trade conflict with China over NVIDIA H100 chips is the new 'technological cold war': Washington banned exports to Beijing.",
-      facts:  ["OpenAI · Google · Anthropic · Meta", "$67B invested in 2023", "AI Safety Executive Order (2023)", "H100 chip export ban → China"],
-    },
-    imageUrl:     "https://picsum.photos/seed/silicon-valley-tech/640/320",
-    imageCaption: { it: "Silicon Valley, California", en: "Silicon Valley, California" },
-  },
-  {
-    id: 'china', flag: '🇨🇳', color: '#ef4444',
-    coords: [104, 35], isoNums: ['156'],
-    it: {
-      title:  "Cina: il piano per il 2030",
-      role:   "Sfidante strategico",
-      desc:   "La Cina vuole diventare il leader mondiale dell'AI entro il 2030. Baidu, Alibaba e Tencent guidano il settore privato. DeepSeek R1 (2025) ha sconvolto l'Occidente con prestazioni paragonabili a GPT-4 a costi irrisori. L'AI è al centro del sistema di sorveglianza di massa, del credito sociale e della strategia militare.",
-      facts:  ["Baidu · Alibaba · Tencent · Huawei", "Piano nazionale AI 2030", "DeepSeek R1 (2025): shock globale", "1.4B utenti, dati senza pari"],
-    },
-    en: {
-      title:  "China: The 2030 Master Plan",
-      role:   "Strategic challenger",
-      desc:   "China aims to become the world AI leader by 2030. Baidu, Alibaba and Tencent lead the private sector. DeepSeek R1 (2025) shocked the West with GPT-4-level performance at minimal cost. AI is central to mass surveillance, the social credit system, and military strategy.",
-      facts:  ["Baidu · Alibaba · Tencent · Huawei", "National AI Plan 2030", "DeepSeek R1 (2025): global shock", "1.4B users, unrivalled data"],
-    },
-    imageUrl:     "https://picsum.photos/seed/beijing-skyline-tech/640/320",
-    imageCaption: { it: "Pechino, Cina", en: "Beijing, China" },
-  },
-  {
-    id: 'eu', flag: '🇪🇺', color: '#f59e0b',
-    coords: [10, 51], isoNums: ['276','250','380','724','56'],
-    it: {
-      title:  "Unione Europea: la potenza regolatoria",
-      role:   "Standard setter globale",
-      desc:   "L'UE ha scelto la «terza via»: né la crescita sfrenata USA né il controllo statale cinese. L'AI Act (2024) è la prima legge al mondo sull'intelligenza artificiale, con approccio basato sul rischio. Il GDPR è già diventato lo standard globale sulla privacy. Sfida: regolare senza soffocare l'innovazione.",
-      facts:  ["AI Act (2024): prima legge al mondo", "GDPR: standard globale privacy", "1.3 miliardi di cittadini tutelati", "Approccio basato sul rischio"],
-    },
-    en: {
-      title:  "European Union: The Regulatory Power",
-      role:   "Global standard setter",
-      desc:   "The EU chose the 'third way': neither US unbridled growth nor Chinese state control. The AI Act (2024) is the world's first AI law, using a risk-based approach. GDPR has already become the global privacy standard. Challenge: regulate without stifling innovation.",
-      facts:  ["AI Act (2024): world's first AI law", "GDPR: global privacy standard", "1.3 billion citizens protected", "Risk-based approach"],
-    },
-    imageUrl:     "https://picsum.photos/seed/european-parliament-brussels/640/320",
-    imageCaption: { it: "Parlamento Europeo, Bruxelles", en: "European Parliament, Brussels" },
-  },
-  {
-    id: 'uk', flag: '🇬🇧', color: '#8b5cf6',
-    coords: [-2, 54], isoNums: ['826'],
-    it: {
-      title:  "Regno Unito: il laboratorio dell'AI Safety",
-      role:   "Campione dell'AI sicura",
-      desc:   "Londra ospita DeepMind (Google), Stability AI e centinaia di startup. Il governo britannico ha organizzato nel 2023 il primo AI Safety Summit a Bletchley Park — dove Alan Turing lavorò nella Seconda Guerra Mondiale. Il UK AI Safety Institute è il primo ente governativo al mondo dedicato ai rischi dei modelli frontiera.",
-      facts:  ["DeepMind (Google): HQ a Londra", "AI Safety Summit 2023 — Bletchley Park", "UK AI Safety Institute: primo al mondo", "£1B National AI Strategy"],
-    },
-    en: {
-      title:  "United Kingdom: The AI Safety Lab",
-      role:   "AI safety champion",
-      desc:   "London hosts DeepMind (Google), Stability AI and hundreds of startups. The UK government organized the first AI Safety Summit in 2023 at Bletchley Park — where Alan Turing worked in WWII. The UK AI Safety Institute is the world's first government body evaluating frontier model risks.",
-      facts:  ["DeepMind (Google): HQ in London", "AI Safety Summit 2023 — Bletchley Park", "UK AI Safety Institute: first in the world", "£1B National AI Strategy"],
-    },
-    imageUrl:     "https://picsum.photos/seed/london-bridge-tech/640/320",
-    imageCaption: { it: "Londra, Regno Unito", en: "London, United Kingdom" },
-  },
-  {
-    id: 'russia', flag: '🇷🇺', color: '#f97316',
-    coords: [60, 60], isoNums: ['643'],
-    it: {
-      title:  "Russia: AI militare e disinformazione",
-      role:   "Potenza militare AI",
-      desc:   "Putin, 2017: «Chi diventerà il leader dell'AI diventerà il dominatore del mondo». La Russia usa l'AI per droni kamikaze in Ucraina, deepfake propagandistici e riconoscimento facciale di massa. Le sanzioni occidentali post-2022 rallentano l'accesso ai chip avanzati, ma le università russe producono ancora matematici d'élite.",
-      facts:  ["Droni AI in Ucraina (conflitto reale)", "Deepfake come arma di propaganda", "Sberbank: principale AI company", "Sanzioni chip post-2022"],
-    },
-    en: {
-      title:  "Russia: Military AI and Disinformation",
-      role:   "Military AI power",
-      desc:   "Putin, 2017: 'Whoever becomes the AI leader will become the ruler of the world.' Russia uses AI for kamikaze drones in Ukraine, propaganda deepfakes, and mass facial recognition. Post-2022 Western sanctions slow access to advanced chips, but Russian universities still produce elite mathematicians.",
-      facts:  ["AI drones in Ukraine (real conflict)", "Deepfakes as propaganda weapon", "Sberbank: main AI company", "Post-2022 chip sanctions"],
-    },
-    imageUrl:     "https://picsum.photos/seed/moscow-kremlin-winter/640/320",
-    imageCaption: { it: "Mosca, Russia", en: "Moscow, Russia" },
-  },
-  {
-    id: 'india', flag: '🇮🇳', color: '#22c55e',
-    coords: [78, 20], isoNums: ['356'],
-    it: {
-      title:  "India: la fabbrica dei talenti AI",
-      role:   "Serbatoio globale di talenti",
-      desc:   "L'India ha il secondo ecosistema startup AI al mondo dopo gli USA. Il governo ha lanciato IndiaAI (2024) con 1 miliardo di dollari di investimento statale. Il 30% dei CEO delle Big Tech americane è di origine indiana. IIT Bombay, Delhi e Bangalore formano centinaia di migliaia di ingegneri l'anno.",
-      facts:  ["2° ecosistema startup AI al mondo", "IndiaAI: $1B investimento statale (2024)", "30% CEO Big Tech di origine indiana", "IIT: tra le top university mondiali"],
-    },
-    en: {
-      title:  "India: The AI Talent Factory",
-      role:   "Global talent powerhouse",
-      desc:   "India has the world's second-largest AI startup ecosystem after the US. The government launched IndiaAI (2024) with $1B in state investment. 30% of American Big Tech CEOs are of Indian origin. IIT Bombay, Delhi and Bangalore train hundreds of thousands of engineers yearly.",
-      facts:  ["2nd largest AI startup ecosystem", "IndiaAI: $1B state investment (2024)", "30% of Big Tech CEOs are Indian-origin", "IIT: among world's top tech universities"],
-    },
-    imageUrl:     "https://picsum.photos/seed/bangalore-india-tech/640/320",
-    imageCaption: { it: "Bangalore, India", en: "Bangalore, India" },
-  },
-  {
-    id: 'uae', flag: '🇦🇪', color: '#14b8a6',
-    coords: [54, 24], isoNums: ['784'],
-    it: {
-      title:  "Emirati Arabi: la scommessa post-petrolio",
-      role:   "Investitore AI emergente",
-      desc:   "Gli Emirati costruiscono la loro fortuna post-petrolio sull'AI. MBZUAI è la prima università al mondo interamente dedicata all'intelligenza artificiale. G42 (Sheikh Tahnoon) ha partnership con OpenAI e Microsoft. Il modello Falcon, sviluppato da TII di Abu Dhabi, è uno dei più grandi LLM open-source al mondo.",
-      facts:  ["MBZUAI: prima università 100% AI", "Falcon LLM: top open-source mondiale", "G42 + OpenAI + Microsoft", "Strategia post-petrolio"],
-    },
-    en: {
-      title:  "UAE: The Post-Oil Bet",
-      role:   "Emerging AI investor",
-      desc:   "The UAE is building its post-oil fortune on AI. MBZUAI is the world's first university entirely dedicated to AI. G42 (Sheikh Tahnoon) has partnerships with OpenAI and Microsoft. The Falcon model, developed by Abu Dhabi's TII, is one of the world's largest open-source LLMs.",
-      facts:  ["MBZUAI: first 100% AI university", "Falcon LLM: top open-source worldwide", "G42 + OpenAI + Microsoft", "Post-oil diversification strategy"],
-    },
-    imageUrl:     "https://picsum.photos/seed/dubai-futuristic-skyline/640/320",
-    imageCaption: { it: "Dubai, Emirati Arabi Uniti", en: "Dubai, United Arab Emirates" },
-  },
-  {
-    id: 'canada', flag: '🇨🇦', color: '#06b6d4',
-    coords: [-96, 56], isoNums: ['124'],
-    it: {
-      title:  "Canada: la culla del deep learning",
-      role:   "Padre fondatore dell'AI moderna",
-      desc:   "Tutto il deep learning moderno è nato in Canada. Geoffrey Hinton (Toronto, Premio Nobel per la Fisica 2024) ha inventato le reti neurali profonde. Yoshua Bengio (Montreal) è tra i padri dei transformer. Vector Institute, Mila e Amii formano la «AI Trinity» canadese. Montreal è diventata capitale mondiale dell'AI.",
-      facts:  ["Geoffrey Hinton: Nobel Fisica 2024", "Yoshua Bengio: padre dei transformer", "Vector Institute + Mila + Amii", "Pan-Canadian AI Strategy: $1B"],
-    },
-    en: {
-      title:  "Canada: The Cradle of Deep Learning",
-      role:   "Founding father of modern AI",
-      desc:   "All modern deep learning was born in Canada. Geoffrey Hinton (Toronto, Nobel Prize in Physics 2024) invented deep neural networks. Yoshua Bengio (Montreal) is among the fathers of transformers. Vector Institute, Mila and Amii form the Canadian 'AI Trinity'. Montreal has become a global AI capital.",
-      facts:  ["Geoffrey Hinton: Nobel in Physics 2024", "Yoshua Bengio: father of transformers", "Vector Institute + Mila + Amii", "Pan-Canadian AI Strategy: $1B"],
-    },
-    imageUrl:     "https://picsum.photos/seed/montreal-canada-winter/640/320",
-    imageCaption: { it: "Montreal, Canada", en: "Montreal, Canada" },
-  },
-  {
-    id: 'japan', flag: '🇯🇵', color: '#ec4899',
-    coords: [138, 37], isoNums: ['392'],
-    it: {
-      title:  "Giappone: robot, Society 5.0 e AI",
-      role:   "Pioniere della robotica AI",
-      desc:   "Il Giappone vede l'AI come soluzione alla propria crisi demografica — il paese con l'invecchiamento più rapido al mondo. La visione «Society 5.0» integra l'AI nel tessuto sociale. SoftBank ha investito massicciamente in OpenAI. Il Giappone è leader mondiale in robotica: 400 robot ogni 10.000 lavoratori.",
-      facts:  ["Society 5.0: AI nel tessuto sociale", "SoftBank: mega-investitore in OpenAI", "400 robot ogni 10.000 lavoratori", "Crisi demografica → AI come soluzione"],
-    },
-    en: {
-      title:  "Japan: Robots, Society 5.0 and AI",
-      role:   "AI robotics pioneer",
-      desc:   "Japan sees AI as a solution to its demographic crisis — the world's fastest-aging country. The 'Society 5.0' vision integrates AI into the social fabric. SoftBank invested massively in OpenAI. Japan leads globally in robotics: 400 robots per 10,000 industrial workers.",
-      facts:  ["Society 5.0: AI in the social fabric", "SoftBank: mega-investor in OpenAI", "400 robots per 10,000 workers", "Demographic crisis → AI as solution"],
-    },
-    imageUrl:     "https://picsum.photos/seed/tokyo-night-japan/640/320",
-    imageCaption: { it: "Tokyo, Giappone", en: "Tokyo, Japan" },
-  },
-  {
-    id: 'israel', flag: '🇮🇱', color: '#a78bfa',
-    coords: [35, 31.5], isoNums: ['376'],
-    it: {
-      title:  "Israele: la Startup Nation dell'AI",
-      role:   "Hub di AI militare e civile",
-      desc:   "Israele ha la più alta concentrazione di startup AI al mondo pro capite. Le tecnologie sviluppate per le forze armate — riconoscimento facciale, droni autonomi, cyber intelligence — vengono poi commercializzate globalmente. La Unit 8200 dell'intelligence militare è la più prolifica incubatrice di imprenditori tech del paese.",
-      facts:  ["N°1 startup AI pro capite nel mondo", "Unit 8200: incubatrice imprenditori tech", "Check Point + Wiz: cybersecurity AI", "IDF: test bed tecnologie AI"],
-    },
-    en: {
-      title:  "Israel: The AI Startup Nation",
-      role:   "Military and civilian AI hub",
-      desc:   "Israel has the world's highest concentration of AI startups per capita. Technologies developed for the armed forces — facial recognition, autonomous drones, cyber intelligence — are commercialized globally. Military intelligence Unit 8200 is the country's most prolific tech entrepreneur incubator.",
-      facts:  ["#1 AI startups per capita globally", "Unit 8200: tech entrepreneur incubator", "Check Point + Wiz: AI cybersecurity", "IDF: AI technology test bed"],
-    },
-    imageUrl:     "https://picsum.photos/seed/tel-aviv-israel-beach/640/320",
-    imageCaption: { it: "Tel Aviv, Israele", en: "Tel Aviv, Israel" },
-  },
-];
 
 // ─────────────────────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────────────────────
 let lang = 'it';
 let currentActor = null;
+let ACTORS = [];
 
-function ui(key) { return UI[lang][key]; }
-function a(actor, key) { return actor[lang][key]; }
+// IDs of all schede to load (order = render order)
+const SCHEDE_IDS = ['usa','china','eu','uk','russia','india','uae','canada','japan','israel'];
 
 // ─────────────────────────────────────────────────────────────
 // LANGUAGE
@@ -483,11 +261,25 @@ function a(actor, key) { return actor[lang][key]; }
 function setLang(l) {
   lang = l;
   document.documentElement.lang = l;
-  document.title = ui('pageTitle');
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent.trim().toLowerCase() === l);
-  });
+  document.title = UI[l].pageTitle;
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.textContent.trim().toLowerCase() === l)
+  );
   if (currentActor) renderModal(currentActor);
+}
+
+// ─────────────────────────────────────────────────────────────
+// LOAD SCHEDE
+// ─────────────────────────────────────────────────────────────
+async function loadSchede() {
+  const results = await Promise.all(
+    SCHEDE_IDS.map(id =>
+      fetch(`SCHEDE/${id}.json`)
+        .then(r => { if (!r.ok) throw new Error(id); return r.json(); })
+        .catch(err => { console.error('Failed to load scheda:', err); return null; })
+    )
+  );
+  return results.filter(Boolean);
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -500,31 +292,33 @@ function openModal(actor) {
 }
 
 function renderModal(actor) {
-  const img = document.getElementById('modal-img');
-  img.src = actor.imageUrl;
-  img.style.opacity = '1';
+  const loc = actor[lang];
 
   document.getElementById('modal-image').style.background =
     `linear-gradient(135deg, #061627 0%, ${actor.color}33 100%)`;
   document.getElementById('modal-card').style.borderColor = actor.color + '44';
   document.getElementById('modal-card').style.boxShadow  = `0 0 60px ${actor.color}18`;
 
-  document.getElementById('modal-flag').textContent = actor.flag;
-  document.getElementById('modal-img-caption').textContent = actor.imageCaption[lang];
+  const img = document.getElementById('modal-img');
+  img.src = actor.imageUrl;
+  img.style.opacity = '1';
+
+  document.getElementById('modal-flag').textContent       = actor.flag;
+  document.getElementById('modal-img-caption').textContent = loc.imageCaption;
 
   const titleEl = document.getElementById('modal-title');
-  titleEl.textContent = a(actor, 'title');
+  titleEl.textContent = loc.title;
   titleEl.style.color = actor.color;
 
   const roleEl = document.getElementById('modal-role');
-  roleEl.textContent = a(actor, 'role');
+  roleEl.textContent     = loc.role;
   roleEl.style.background = actor.color + '1a';
-  roleEl.style.color       = actor.color;
-  roleEl.style.border      = `1px solid ${actor.color}44`;
+  roleEl.style.color      = actor.color;
+  roleEl.style.border     = `1px solid ${actor.color}44`;
 
-  document.getElementById('modal-desc').textContent = a(actor, 'desc');
+  document.getElementById('modal-desc').textContent = loc.desc;
 
-  document.getElementById('modal-facts').innerHTML = a(actor, 'facts').map(f =>
+  document.getElementById('modal-facts').innerHTML = loc.facts.map(f =>
     `<span class="fact-chip" style="background:${actor.color}1a;color:${actor.color};border-color:${actor.color}44">${f}</span>`
   ).join('');
 
@@ -535,133 +329,115 @@ function closeModal() {
   document.getElementById('modal-backdrop').classList.remove('open');
   currentActor = null;
 }
-
 function handleBackdropClick(e) {
   if (e.target === document.getElementById('modal-backdrop')) closeModal();
 }
-
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 // ─────────────────────────────────────────────────────────────
-// MAP
+// MAP — cover-fill projection
 // ─────────────────────────────────────────────────────────────
+function buildProjection(W, H) {
+  const sphere = { type: 'Sphere' };
+  const proj = d3.geoNaturalEarth1();
+
+  // 1. Fit so the sphere fills the viewport maintaining aspect ratio
+  proj.fitSize([W, H], sphere);
+
+  // 2. Compute rendered bounds of the sphere
+  const pathTmp = d3.geoPath(proj);
+  const [[x0, y0], [x1, y1]] = pathTmp.bounds(sphere);
+  const mapW = x1 - x0;
+  const mapH = y1 - y0;
+
+  // 3. Scale up to cover every pixel (object-fit: cover)
+  const coverFactor = Math.max(W / mapW, H / mapH);
+  proj.scale(proj.scale() * coverFactor);
+
+  // 4. Re-center after scale change
+  proj.translate([W / 2, H / 2]);
+
+  return proj;
+}
+
 async function initMap() {
   const W = window.innerWidth;
   const H = window.innerHeight;
 
   const svg = d3.select('#world-map')
-    .attr('viewBox', `0 0 ${W} ${H}`)
-    .attr('width', W)
-    .attr('height', H);
+    .attr('width', W).attr('height', H);
 
-  // Base scale tuned for full-HD viewport
-  const scale  = Math.min(W, H * 1.6) / 5.8;
-  const projection = d3.geoNaturalEarth1()
-    .scale(scale)
-    .translate([W / 2, H / 2]);
-
+  const projection = buildProjection(W, H);
   const path = d3.geoPath(projection);
 
-  // Ocean
+  // Ocean base
   svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#040e1a');
 
-  try {
-    const world = await d3.json('https://unpkg.com/world-atlas@2/countries-110m.json');
+  // Load world topology + all schede in parallel
+  const [world, actors] = await Promise.all([
+    d3.json('https://unpkg.com/world-atlas@2/countries-110m.json'),
+    loadSchede(),
+  ]);
 
-    const land      = topojson.feature(world, world.objects.land);
-    const countries = topojson.feature(world, world.objects.countries);
-    const borders   = topojson.mesh(world, world.objects.countries, (a, b) => a !== b);
+  ACTORS = actors;
 
-    // ISO numeric → actor lookup
-    const isoMap = {};
-    ACTORS.forEach(a => a.isoNums.forEach(n => { isoMap[n] = a; }));
+  const land      = topojson.feature(world, world.objects.land);
+  const countries = topojson.feature(world, world.objects.countries);
+  const borders   = topojson.mesh(world, world.objects.countries, (a, b) => a !== b);
 
-    // Land base
-    svg.append('path')
-      .datum(land)
-      .attr('d', path)
-      .attr('fill', '#0d2137');
+  // ISO numeric → actor lookup
+  const isoMap = {};
+  ACTORS.forEach(a => a.isoNums.forEach(n => { isoMap[n] = a; }));
 
-    // Highlighted countries
-    svg.selectAll('.hi')
-      .data(countries.features.filter(d => isoMap[d.id]))
-      .join('path')
-      .attr('class', 'hi')
-      .attr('d', path)
-      .attr('fill',   d => isoMap[d.id].color + '22')
-      .attr('stroke', d => isoMap[d.id].color + '60')
-      .attr('stroke-width', 1.2);
+  // Land base
+  svg.append('path').datum(land).attr('d', path).attr('fill', '#0d2137');
 
-    // Internal borders
-    svg.append('path')
-      .datum(borders)
-      .attr('d', path)
-      .attr('fill', 'none')
-      .attr('stroke', '#1a3550')
-      .attr('stroke-width', 0.4);
+  // Highlighted countries
+  svg.selectAll('.hi')
+    .data(countries.features.filter(d => isoMap[d.id]))
+    .join('path').attr('class', 'hi')
+    .attr('d', path)
+    .attr('fill',   d => isoMap[d.id].color + '22')
+    .attr('stroke', d => isoMap[d.id].color + '60')
+    .attr('stroke-width', 1.2);
 
-    // Graticule
-    svg.append('path')
-      .datum(d3.geoGraticule()())
-      .attr('d', path)
-      .attr('fill', 'none')
-      .attr('stroke', 'rgba(255,255,255,0.04)')
-      .attr('stroke-width', 0.5);
+  // Internal borders
+  svg.append('path').datum(borders).attr('d', path)
+    .attr('fill', 'none').attr('stroke', '#1a3550').attr('stroke-width', 0.4);
 
-    // Globe outline
-    svg.append('path')
-      .datum({ type: 'Sphere' })
-      .attr('d', path)
-      .attr('fill', 'none')
-      .attr('stroke', '#1a3550')
-      .attr('stroke-width', 0.8);
+  // Graticule
+  svg.append('path').datum(d3.geoGraticule()()).attr('d', path)
+    .attr('fill', 'none').attr('stroke', 'rgba(255,255,255,0.04)').attr('stroke-width', 0.5);
 
-    // Markers
-    ACTORS.forEach(actor => {
-      const proj = projection(actor.coords);
-      if (!proj) return;
-      const [x, y] = proj;
-      if (isNaN(x) || isNaN(y)) return;
+  // Globe outline
+  svg.append('path').datum({ type: 'Sphere' }).attr('d', path)
+    .attr('fill', 'none').attr('stroke', '#1a3550').attr('stroke-width', 0.8);
 
-      const g = svg.append('g')
-        .attr('class', 'marker-group')
-        .attr('transform', `translate(${x},${y})`)
-        .on('click', () => openModal(actor));
+  // Markers
+  ACTORS.forEach(actor => {
+    const proj = projection(actor.coords);
+    if (!proj) return;
+    const [x, y] = proj;
+    if (isNaN(x) || isNaN(y)) return;
 
-      // Pulse ring
-      g.append('circle')
-        .attr('class', 'pulse-ring')
-        .attr('r', 11)
-        .attr('fill', 'none')
-        .attr('stroke', actor.color)
-        .attr('stroke-width', 1.8);
+    const g = svg.append('g')
+      .attr('class', 'marker-group')
+      .attr('transform', `translate(${x},${y})`)
+      .on('click', () => openModal(actor));
 
-      // Main dot
-      g.append('circle')
-        .attr('class', 'marker-dot')
-        .attr('r', 7)
-        .attr('fill', actor.color)
-        .attr('stroke', '#f0f5fb')
-        .attr('stroke-width', 1.8)
-        .style('filter', `drop-shadow(0 0 6px ${actor.color})`);
+    g.append('circle').attr('class', 'pulse-ring')
+      .attr('r', 12).attr('fill', 'none')
+      .attr('stroke', actor.color).attr('stroke-width', 1.8);
 
-      // Flag
-      g.append('text')
-        .attr('class', 'marker-flag')
-        .attr('y', -15)
-        .attr('text-anchor', 'middle')
-        .attr('font-size', '16px')
-        .text(actor.flag);
-    });
+    g.append('circle').attr('class', 'marker-dot')
+      .attr('r', 7).attr('fill', actor.color)
+      .attr('stroke', '#f0f5fb').attr('stroke-width', 1.8)
+      .style('filter', `drop-shadow(0 0 6px ${actor.color})`);
 
-  } catch (err) {
-    console.error(err);
-    svg.append('text')
-      .attr('x', W / 2).attr('y', H / 2)
-      .attr('text-anchor', 'middle')
-      .attr('fill', '#64748b').attr('font-size', '15px')
-      .text(ui('loadError'));
-  }
+    g.append('text').attr('class', 'marker-flag')
+      .attr('y', -15).attr('text-anchor', 'middle')
+      .attr('font-size', '16px').text(actor.flag);
+  });
 
   // Hide loader
   const loader = document.getElementById('loader');
@@ -672,8 +448,12 @@ async function initMap() {
 // ─────────────────────────────────────────────────────────────
 // BOOT
 // ─────────────────────────────────────────────────────────────
-document.title = ui('pageTitle');
-initMap();
+document.title = UI[lang].pageTitle;
+initMap().catch(err => {
+  console.error(err);
+  const loader = document.getElementById('loader');
+  loader.innerHTML = `<p style="color:#64748b;font-size:14px">${UI[lang].loadError}</p>`;
+});
 </script>
 </body>
 </html>

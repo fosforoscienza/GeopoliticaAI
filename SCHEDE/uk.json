@@ -1,0 +1,22 @@
+{
+  "id": "uk",
+  "flag": "🇬🇧",
+  "color": "#8b5cf6",
+  "coords": [-2, 54],
+  "isoNums": ["826"],
+  "imageUrl": "https://picsum.photos/seed/london-bridge-tech/640/320",
+  "it": {
+    "title": "Regno Unito: il laboratorio dell'AI Safety",
+    "role": "Campione dell'AI sicura",
+    "desc": "Londra ospita DeepMind (Google), Stability AI e centinaia di startup. Il governo britannico ha organizzato nel 2023 il primo AI Safety Summit a Bletchley Park — dove Alan Turing lavorò nella Seconda Guerra Mondiale. Il UK AI Safety Institute è il primo ente governativo al mondo dedicato ai rischi dei modelli frontiera.",
+    "facts": ["DeepMind (Google): HQ a Londra", "AI Safety Summit 2023 — Bletchley Park", "UK AI Safety Institute: primo al mondo", "£1B National AI Strategy"],
+    "imageCaption": "Londra, Regno Unito"
+  },
+  "en": {
+    "title": "United Kingdom: The AI Safety Lab",
+    "role": "AI safety champion",
+    "desc": "London hosts DeepMind (Google), Stability AI and hundreds of startups. The UK government organized the first AI Safety Summit in 2023 at Bletchley Park — where Alan Turing worked in WWII. The UK AI Safety Institute is the world's first government body evaluating frontier model risks.",
+    "facts": ["DeepMind (Google): HQ in London", "AI Safety Summit 2023 — Bletchley Park", "UK AI Safety Institute: first in the world", "£1B National AI Strategy"],
+    "imageCaption": "London, United Kingdom"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "eu",
+  "flag": "🇪🇺",
+  "color": "#f59e0b",
+  "coords": [10, 51],
+  "isoNums": ["276", "250", "380", "724", "56"],
+  "imageUrl": "https://picsum.photos/seed/european-parliament-brussels/640/320",
+  "it": {
+    "title": "Unione Europea: la potenza regolatoria",
+    "role": "Standard setter globale",
+    "desc": "L'UE ha scelto la «terza via»: né la crescita sfrenata USA né il controllo statale cinese. L'AI Act (2024) è la prima legge al mondo sull'intelligenza artificiale, con approccio basato sul rischio. Il GDPR è già diventato lo standard globale sulla privacy. Sfida: regolare senza soffocare l'innovazione.",
+    "facts": ["AI Act (2024): prima legge al mondo", "GDPR: standard globale privacy", "1.3 miliardi di cittadini tutelati", "Approccio basato sul rischio"],
+    "imageCaption": "Parlamento Europeo, Bruxelles"
+  },
+  "en": {
+    "title": "European Union: The Regulatory Power",
+    "role": "Global standard setter",
+    "desc": "The EU chose the 'third way': neither US unbridled growth nor Chinese state control. The AI Act (2024) is the world's first AI law, using a risk-based approach. GDPR has already become the global privacy standard. Challenge: regulate without stifling innovation.",
+    "facts": ["AI Act (2024): world's first AI law", "GDPR: global privacy standard", "1.3 billion citizens protected", "Risk-based approach"],
+    "imageCaption": "European Parliament, Brussels"
+  }
+}

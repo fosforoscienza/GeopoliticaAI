@@ -1,0 +1,22 @@
+{
+  "id": "canada",
+  "flag": "🇨🇦",
+  "color": "#06b6d4",
+  "coords": [-96, 56],
+  "isoNums": ["124"],
+  "imageUrl": "https://picsum.photos/seed/montreal-canada-winter/640/320",
+  "it": {
+    "title": "Canada: la culla del deep learning",
+    "role": "Padre fondatore dell'AI moderna",
+    "desc": "Tutto il deep learning moderno è nato in Canada. Geoffrey Hinton (Toronto, Premio Nobel per la Fisica 2024) ha inventato le reti neurali profonde. Yoshua Bengio (Montreal) è tra i padri dei transformer. Vector Institute, Mila e Amii formano la «AI Trinity» canadese. Montreal è diventata capitale mondiale dell'AI.",
+    "facts": ["Geoffrey Hinton: Nobel Fisica 2024", "Yoshua Bengio: padre dei transformer", "Vector Institute + Mila + Amii", "Pan-Canadian AI Strategy: $1B"],
+    "imageCaption": "Montreal, Canada"
+  },
+  "en": {
+    "title": "Canada: The Cradle of Deep Learning",
+    "role": "Founding father of modern AI",
+    "desc": "All modern deep learning was born in Canada. Geoffrey Hinton (Toronto, Nobel Prize in Physics 2024) invented deep neural networks. Yoshua Bengio (Montreal) is among the fathers of transformers. Vector Institute, Mila and Amii form the Canadian 'AI Trinity'. Montreal has become a global AI capital.",
+    "facts": ["Geoffrey Hinton: Nobel in Physics 2024", "Yoshua Bengio: father of transformers", "Vector Institute + Mila + Amii", "Pan-Canadian AI Strategy: $1B"],
+    "imageCaption": "Montreal, Canada"
+  }
+}

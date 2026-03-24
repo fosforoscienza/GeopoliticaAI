@@ -1,0 +1,22 @@
+{
+  "id": "uae",
+  "flag": "🇦🇪",
+  "color": "#14b8a6",
+  "coords": [54, 24],
+  "isoNums": ["784"],
+  "imageUrl": "https://picsum.photos/seed/dubai-futuristic-skyline/640/320",
+  "it": {
+    "title": "Emirati Arabi: la scommessa post-petrolio",
+    "role": "Investitore AI emergente",
+    "desc": "Gli Emirati costruiscono la loro fortuna post-petrolio sull'AI. MBZUAI è la prima università al mondo interamente dedicata all'intelligenza artificiale. G42 (Sheikh Tahnoon) ha partnership con OpenAI e Microsoft. Il modello Falcon, sviluppato da TII di Abu Dhabi, è uno dei più grandi LLM open-source al mondo.",
+    "facts": ["MBZUAI: prima università 100% AI", "Falcon LLM: top open-source mondiale", "G42 + OpenAI + Microsoft", "Strategia post-petrolio"],
+    "imageCaption": "Dubai, Emirati Arabi Uniti"
+  },
+  "en": {
+    "title": "UAE: The Post-Oil Bet",
+    "role": "Emerging AI investor",
+    "desc": "The UAE is building its post-oil fortune on AI. MBZUAI is the world's first university entirely dedicated to AI. G42 (Sheikh Tahnoon) has partnerships with OpenAI and Microsoft. The Falcon model, developed by Abu Dhabi's TII, is one of the world's largest open-source LLMs.",
+    "facts": ["MBZUAI: first 100% AI university", "Falcon LLM: top open-source worldwide", "G42 + OpenAI + Microsoft", "Post-oil diversification strategy"],
+    "imageCaption": "Dubai, United Arab Emirates"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "china",
+  "flag": "🇨🇳",
+  "color": "#ef4444",
+  "coords": [104, 35],
+  "isoNums": ["156"],
+  "imageUrl": "https://picsum.photos/seed/beijing-skyline-tech/640/320",
+  "it": {
+    "title": "Cina: il piano per il 2030",
+    "role": "Sfidante strategico",
+    "desc": "La Cina vuole diventare il leader mondiale dell'AI entro il 2030. Baidu, Alibaba e Tencent guidano il settore privato. DeepSeek R1 (2025) ha sconvolto l'Occidente con prestazioni paragonabili a GPT-4 a costi irrisori. L'AI è al centro del sistema di sorveglianza di massa, del credito sociale e della strategia militare.",
+    "facts": ["Baidu · Alibaba · Tencent · Huawei", "Piano nazionale AI 2030", "DeepSeek R1 (2025): shock globale", "1.4B utenti, dati senza pari"],
+    "imageCaption": "Pechino, Cina"
+  },
+  "en": {
+    "title": "China: The 2030 Master Plan",
+    "role": "Strategic challenger",
+    "desc": "China aims to become the world AI leader by 2030. Baidu, Alibaba and Tencent lead the private sector. DeepSeek R1 (2025) shocked the West with GPT-4-level performance at minimal cost. AI is central to mass surveillance, the social credit system, and military strategy.",
+    "facts": ["Baidu · Alibaba · Tencent · Huawei", "National AI Plan 2030", "DeepSeek R1 (2025): global shock", "1.4B users, unrivalled data"],
+    "imageCaption": "Beijing, China"
+  }
+}

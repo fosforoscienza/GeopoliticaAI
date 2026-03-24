@@ -1,0 +1,22 @@
+{
+  "id": "japan",
+  "flag": "🇯🇵",
+  "color": "#ec4899",
+  "coords": [138, 37],
+  "isoNums": ["392"],
+  "imageUrl": "https://picsum.photos/seed/tokyo-night-japan/640/320",
+  "it": {
+    "title": "Giappone: robot, Society 5.0 e AI",
+    "role": "Pioniere della robotica AI",
+    "desc": "Il Giappone vede l'AI come soluzione alla propria crisi demografica — il paese con l'invecchiamento più rapido al mondo. La visione «Society 5.0» integra l'AI nel tessuto sociale. SoftBank ha investito massicciamente in OpenAI. Il Giappone è leader mondiale in robotica: 400 robot ogni 10.000 lavoratori.",
+    "facts": ["Society 5.0: AI nel tessuto sociale", "SoftBank: mega-investitore in OpenAI", "400 robot ogni 10.000 lavoratori", "Crisi demografica → AI come soluzione"],
+    "imageCaption": "Tokyo, Giappone"
+  },
+  "en": {
+    "title": "Japan: Robots, Society 5.0 and AI",
+    "role": "AI robotics pioneer",
+    "desc": "Japan sees AI as a solution to its demographic crisis — the world's fastest-aging country. The 'Society 5.0' vision integrates AI into the social fabric. SoftBank invested massively in OpenAI. Japan leads globally in robotics: 400 robots per 10,000 industrial workers.",
+    "facts": ["Society 5.0: AI in the social fabric", "SoftBank: mega-investor in OpenAI", "400 robots per 10,000 workers", "Demographic crisis → AI as solution"],
+    "imageCaption": "Tokyo, Japan"
+  }
+}

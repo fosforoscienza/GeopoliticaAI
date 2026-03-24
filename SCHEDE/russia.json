@@ -1,0 +1,22 @@
+{
+  "id": "russia",
+  "flag": "🇷🇺",
+  "color": "#f97316",
+  "coords": [60, 60],
+  "isoNums": ["643"],
+  "imageUrl": "https://picsum.photos/seed/moscow-kremlin-winter/640/320",
+  "it": {
+    "title": "Russia: AI militare e disinformazione",
+    "role": "Potenza militare AI",
+    "desc": "Putin, 2017: «Chi diventerà il leader dell'AI diventerà il dominatore del mondo». La Russia usa l'AI per droni kamikaze in Ucraina, deepfake propagandistici e riconoscimento facciale di massa. Le sanzioni occidentali post-2022 rallentano l'accesso ai chip avanzati, ma le università russe producono ancora matematici d'élite.",
+    "facts": ["Droni AI in Ucraina (conflitto reale)", "Deepfake come arma di propaganda", "Sberbank: principale AI company", "Sanzioni chip post-2022"],
+    "imageCaption": "Mosca, Russia"
+  },
+  "en": {
+    "title": "Russia: Military AI and Disinformation",
+    "role": "Military AI power",
+    "desc": "Putin, 2017: 'Whoever becomes the AI leader will become the ruler of the world.' Russia uses AI for kamikaze drones in Ukraine, propaganda deepfakes, and mass facial recognition. Post-2022 Western sanctions slow access to advanced chips, but Russian universities still produce elite mathematicians.",
+    "facts": ["AI drones in Ukraine (real conflict)", "Deepfakes as propaganda weapon", "Sberbank: main AI company", "Post-2022 chip sanctions"],
+    "imageCaption": "Moscow, Russia"
+  }
+}
