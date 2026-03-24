@@ -34,9 +34,9 @@ function initLangToggle() {
 }
 
 // ════════════════════════════════════════════════════
-// Navigation dots (3 pages: index, paesi, leader)
+// Navigation dots (4 pages: index, timeline, paesi, leader)
 // ════════════════════════════════════════════════════
-const PAGES = ['index.html', 'paesi.html', 'leader.html'];
+const PAGES = ['index.html', 'timeline.html', 'paesi.html', 'leader.html'];
 
 function initNav(activePage) {
   // Dots
@@ -54,7 +54,7 @@ function initNav(activePage) {
     else prev.href = PAGES[activePage - 1];
   }
   if (next) {
-    if (activePage === 2) next.classList.add('hidden');
+    if (activePage === PAGES.length - 1) next.classList.add('hidden');
     else next.href = PAGES[activePage + 1];
   }
   // Keyboard — global (slide nav only, carousels override per-page)
@@ -65,7 +65,7 @@ function initNav(activePage) {
     }
     if (document.querySelector('.modal-backdrop.open')) return; // modal absorbs arrows
     if (e.key === 'ArrowLeft'  && activePage > 0) window.location.href = PAGES[activePage - 1];
-    if (e.key === 'ArrowRight' && activePage < 2) window.location.href = PAGES[activePage + 1];
+    if (e.key === 'ArrowRight' && activePage < PAGES.length - 1) window.location.href = PAGES[activePage + 1];
   });
 }
 

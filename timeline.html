@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timeline — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Timeline page overrides ── */
+    body { overflow: hidden; }
+
+    /* Full-screen scrollable container */
+    #tl-scroll {
+      position: fixed; inset: 0; overflow-y: auto;
+      scrollbar-width: thin; scrollbar-color: #1a3550 transparent;
+    }
+    #tl-scroll::-webkit-scrollbar { width: 4px; }
+    #tl-scroll::-webkit-scrollbar-track { background: transparent; }
+    #tl-scroll::-webkit-scrollbar-thumb { background: #1a3550; border-radius: 2px; }
+
+    #tl-wrap {
+      position: relative;
+      max-width: 860px; margin: 0 auto;
+      padding: 100px 40px 140px;
+    }
+
+    /* Center vertical line */
+    #tl-line {
+      position: absolute;
+      left: 50%; top: 160px; bottom: 140px;
+      width: 2px; margin-left: -1px;
+      background: linear-gradient(to bottom,
+        transparent 0%, #1a3550 6%, #1a3550 94%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* ── Header ── */
+    #tl-head {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: tl-fade-up 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    #tl-eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgba(65,183,255,0.6); margin-bottom: 10px;
+    }
+    #tl-title {
+      font-size: clamp(32px, 5vw, 56px); font-weight: 900;
+      letter-spacing: -0.03em; color: #f0f5fb; line-height: 1;
+    }
+    #tl-sub {
+      margin-top: 10px; font-size: 15px; color: #44566a; font-weight: 300;
+    }
+
+    /* ── Year separator ── */
+    .tl-year-sep {
+      display: flex; align-items: center; gap: 14px;
+      margin: 48px 0 28px; position: relative; z-index: 2;
+      opacity: 0;
+      animation: tl-fade-up 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .tl-year-sep::before,
+    .tl-year-sep::after {
+      content: ''; flex: 1; height: 1px; background: #1a3550;
+    }
+    .tl-year-badge {
+      background: #040e1a; border: 1px solid #1a3550; border-radius: 20px;
+      padding: 5px 18px; font-size: 13px; font-weight: 700;
+      color: #44566a; letter-spacing: 0.12em;
+    }
+
+    /* ── Event row ── */
+    .tl-row {
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr;
+      gap: 0 16px;
+      margin-bottom: 14px;
+      align-items: start;
+      position: relative; z-index: 2;
+      opacity: 0;
+      animation: tl-fade-up 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    /* Dot */
+    .tl-node {
+      display: flex; justify-content: center; padding-top: 16px;
+    }
+    .tl-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid; background: #040e1a;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
+      flex-shrink: 0;
+    }
+    .tl-row:hover .tl-dot {
+      transform: scale(1.8);
+    }
+
+    /* Card */
+    .tl-card {
+      background: rgba(13,33,55,0.45);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px; padding: 14px 18px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .tl-card:hover {
+      background: rgba(13,33,55,0.9);
+      border-color: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .tl-card.open {
+      background: rgba(13,33,55,0.95);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .tl-card-date {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 5px; opacity: 0.6;
+    }
+    .tl-card-title {
+      font-size: 15px; font-weight: 700; line-height: 1.3;
+    }
+    .tl-card-desc {
+      font-size: 13px; line-height: 1.72; color: #94a3b8;
+      margin-top: 0; overflow: hidden;
+      max-height: 0; opacity: 0;
+      transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1),
+                  opacity 0.3s ease,
+                  margin-top 0.3s ease;
+    }
+    .tl-card.open .tl-card-desc {
+      max-height: 300px; opacity: 1; margin-top: 10px;
+    }
+
+    /* Expand hint icon */
+    .tl-card-hint {
+      font-size: 10px; color: #44566a; margin-top: 6px;
+      transition: color 0.2s;
+    }
+    .tl-card:hover .tl-card-hint { color: #64748b; }
+    .tl-card.open .tl-card-hint { display: none; }
+
+    .tl-left  { text-align: right; }
+    .tl-right { text-align: left; }
+    .tl-empty { /* spacer */ }
+
+    /* ── Animations ── */
+    @keyframes tl-fade-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="tl-scroll">
+    <div id="tl-wrap">
+      <div id="tl-line"></div>
+
+      <div id="tl-head">
+        <div id="tl-eyebrow">Geopolitica della AI</div>
+        <div id="tl-title">Cronologia</div>
+        <div id="tl-sub">I momenti chiave dell'intelligenza artificiale</div>
+      </div>
+
+      <div id="tl-events"></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div id="nav-dots">
+    <button class="nav-dot"></button>
+    <button class="nav-dot active"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+  </div>
+  <a class="nav-arrow" id="nav-prev" href="index.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="paesi.html">&#8594;</a>
+
+  <!-- Lang toggle -->
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    // ── Events data ───────────────────────────────────
+    const EVENTS = [
+      {
+        year: 2015, date: { it: '28 giu 2015', en: 'Jun 28, 2015' },
+        color: '#e8a000',
+        it: { title: 'Elon Musk compie 44 anni',
+              desc: 'Elon Musk compie 44 anni il 28 giugno 2015.' },
+        en: { title: 'Elon Musk turns 44',
+              desc: 'Elon Musk turns 44 on June 28, 2015.' },
+      },
+      {
+        year: 2015, date: { it: '12 dic 2015', en: 'Dec 12, 2015' },
+        color: '#41b7ff',
+        it: { title: 'Nasce OpenAI',
+              desc: 'Elon Musk co-fonda OpenAI insieme a Sam Altman, Greg Brockman e altri investitori e ricercatori.' },
+        en: { title: 'OpenAI is founded',
+              desc: 'Elon Musk co-founds OpenAI with Sam Altman, Greg Brockman and other investors and researchers.' },
+      },
+      {
+        year: 2017, date: { it: '2017', en: '2017' },
+        color: '#22c55e',
+        it: { title: '"Attention Is All You Need"',
+              desc: 'Il paper "Attention Is All You Need" introduce i Transformer, che diventeranno lo standard per il linguaggio e poi per molte altre modalità.' },
+        en: { title: '"Attention Is All You Need"',
+              desc: 'The paper "Attention Is All You Need" introduces Transformers, which become the standard for language and many other AI modalities.' },
+      },
+      {
+        year: 2018, date: { it: '2018', en: '2018' },
+        color: '#e8a000',
+        it: { title: 'Musk lascia il board di OpenAI',
+              desc: 'Elon Musk lascia il consiglio di amministrazione di OpenAI nel 2018.' },
+        en: { title: 'Musk leaves the OpenAI board',
+              desc: 'Elon Musk leaves the board of directors of OpenAI in 2018.' },
+      },
+      {
+        year: 2021, date: { it: 'Fine 2020 – inizio 2021', en: 'Late 2020 – early 2021' },
+        color: '#cc785c',
+        it: { title: 'Nasce Anthropic',
+              desc: 'Dario Amodei fonda Anthropic insieme alla sorella Daniela e a un gruppo di circa 5–7 ex ricercatori di OpenAI che lasciano l\'azienda tra fine 2020 e inizio 2021.' },
+        en: { title: 'Anthropic is founded',
+              desc: 'Dario Amodei founds Anthropic with his sister Daniela and a group of about 5–7 former OpenAI researchers who left the company between late 2020 and early 2021.' },
+      },
+      {
+        year: 2022, date: { it: '27 ott 2022', en: 'Oct 27, 2022' },
+        color: '#e2e8f0',
+        it: { title: 'Musk acquisisce Twitter',
+              desc: 'Elon Musk completa l\'acquisizione di Twitter da 44 miliardi di dollari. Diventa proprietario e CEO, e licenzia immediatamente i vertici principali come Parag Agrawal.' },
+        en: { title: 'Musk acquires Twitter',
+              desc: 'Elon Musk completes the $44 billion acquisition of Twitter. He becomes owner and CEO, immediately firing top executives including Parag Agrawal.' },
+      },
+      {
+        year: 2022, date: { it: '30 nov 2022', en: 'Nov 30, 2022' },
+        color: '#41b7ff',
+        it: { title: 'ChatGPT diventa pubblico',
+              desc: 'OpenAI rilascia ChatGPT come "research preview" accessibile gratuitamente sul web. In pochi giorni raggiunge milioni di utenti in tutto il mondo.' },
+        en: { title: 'ChatGPT goes public',
+              desc: 'OpenAI releases ChatGPT as a free "research preview" on the web. Within days it reaches millions of users worldwide.' },
+      },
+      {
+        year: 2023, date: { it: '7 feb 2023', en: 'Feb 7, 2023' },
+        color: '#00a4ef',
+        it: { title: 'Microsoft lancia Copilot',
+              desc: 'Microsoft lancia Copilot il 7 febbraio 2023, inizialmente come Bing Chat integrato in Bing e Microsoft Edge.' },
+        en: { title: 'Microsoft launches Copilot',
+              desc: 'Microsoft launches Copilot on February 7, 2023, initially as Bing Chat integrated into Bing and Microsoft Edge.' },
+      },
+      {
+        year: 2023, date: { it: '24 feb 2023', en: 'Feb 24, 2023' },
+        color: '#4f8ef7',
+        it: { title: 'Meta lancia LLaMA 1',
+              desc: 'Meta rilascia pubblicamente il primo modello LLaMA (LLaMA 1) il 24 febbraio 2023, aprendo la strada ai modelli linguistici open source di grandi dimensioni.' },
+        en: { title: 'Meta launches LLaMA 1',
+              desc: 'Meta publicly releases the first LLaMA model (LLaMA 1) on February 24, 2023, paving the way for large open-source language models.' },
+      },
+      {
+        year: 2023, date: { it: '12 lug 2023', en: 'Jul 12, 2023' },
+        color: '#8b5cf6',
+        it: { title: 'Nasce xAI',
+              desc: 'xAI viene annunciata da Elon Musk il 12 luglio 2023. L\'obiettivo: sviluppare AI per comprendere la vera natura dell\'universo.' },
+        en: { title: 'xAI is announced',
+              desc: 'xAI is announced by Elon Musk on July 12, 2023. Its mission: develop AI to understand the true nature of the universe.' },
+      },
+      {
+        year: 2023, date: { it: '6 dic 2023', en: 'Dec 6, 2023' },
+        color: '#ea4335',
+        it: { title: 'Google lancia Gemini',
+              desc: 'Google annuncia Gemini e lo integra nel chatbot Bard (poi rinominato Gemini), inizialmente in versione Pro per utenti selezionati in oltre 170 paesi in inglese, con rollout graduale.' },
+        en: { title: 'Google launches Gemini',
+              desc: 'Google announces Gemini and integrates it into the Bard chatbot (later renamed Gemini), initially as Pro version for selected users in over 170 countries.' },
+      },
+    ];
+
+    // ── Page i18n ─────────────────────────────────────
+    const TL_TEXT = {
+      it: { eyebrow: 'Geopolitica della AI', title: 'Cronologia',
+            sub: 'I momenti chiave dell\'intelligenza artificiale',
+            hint: 'clicca per saperne di più' },
+      en: { eyebrow: 'AI Geopolitics', title: 'Timeline',
+            sub: 'Key moments in artificial intelligence',
+            hint: 'click to expand' },
+    };
+
+    // ── Render ────────────────────────────────────────
+    function renderTimeline() {
+      const t = TL_TEXT[lang];
+      document.getElementById('tl-eyebrow').textContent = t.eyebrow;
+      document.getElementById('tl-title').textContent   = t.title;
+      document.getElementById('tl-sub').textContent     = t.sub;
+
+      const container = document.getElementById('tl-events');
+      container.innerHTML = '';
+
+      let lastYear  = null;
+      let eventIdx  = 0;  // counts only events (not year separators) for alternation
+      let animDelay = 0.1;
+
+      EVENTS.forEach(ev => {
+        // Year separator
+        if (ev.year !== lastYear) {
+          lastYear = ev.year;
+          const sep = document.createElement('div');
+          sep.className = 'tl-year-sep';
+          sep.style.animationDelay = animDelay + 's';
+          animDelay += 0.08;
+          sep.innerHTML = `<div class="tl-year-badge">${ev.year}</div>`;
+          container.appendChild(sep);
+        }
+
+        const isLeft = (eventIdx % 2 === 0);
+        const loc    = ev[lang];
+
+        const row = document.createElement('div');
+        row.className = 'tl-row';
+        row.style.animationDelay = animDelay + 's';
+        animDelay += 0.08;
+
+        const dot = `<div class="tl-node">
+          <div class="tl-dot" style="border-color:${ev.color};box-shadow:0 0 8px ${ev.color}55"></div>
+        </div>`;
+
+        const card = `<div class="tl-card" onclick="this.classList.toggle('open')">
+          <div class="tl-card-date" style="color:${ev.color}">${ev.date[lang]}</div>
+          <div class="tl-card-title" style="color:${ev.color}">${loc.title}</div>
+          <div class="tl-card-desc">${loc.desc}</div>
+          <div class="tl-card-hint">▸ ${t.hint}</div>
+        </div>`;
+
+        const empty = `<div class="tl-empty"></div>`;
+
+        if (isLeft) {
+          row.innerHTML = `<div class="tl-left">${card}</div>${dot}${empty}`;
+        } else {
+          row.innerHTML = `${empty}${dot}<div class="tl-right">${card}</div>`;
+        }
+
+        container.appendChild(row);
+        eventIdx++;
+      });
+    }
+
+    function onLangChange() { renderTimeline(); }
+
+    initLangToggle();
+    initNav(1);
+    renderTimeline();
+  </script>
+</body>
+</html>
