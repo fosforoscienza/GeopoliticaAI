@@ -6,177 +6,277 @@
   <title>Timeline — Geopolitica della AI</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    /* ── Timeline page overrides ── */
+    /* ── Layout ───────────────────────────────────────── */
     body { overflow: hidden; }
 
-    /* Full-screen scrollable container */
-    #tl-scroll {
-      position: fixed; inset: 0; overflow-y: auto;
-      scrollbar-width: thin; scrollbar-color: #1a3550 transparent;
-    }
-    #tl-scroll::-webkit-scrollbar { width: 4px; }
-    #tl-scroll::-webkit-scrollbar-track { background: transparent; }
-    #tl-scroll::-webkit-scrollbar-thumb { background: #1a3550; border-radius: 2px; }
-
-    #tl-wrap {
-      position: relative;
-      max-width: 860px; margin: 0 auto;
-      padding: 100px 40px 140px;
+    /* Fosforo watermark — drop img/logo-fosforo.png to replace */
+    #tl-watermark {
+      position: fixed; right: 4%; top: 50%; transform: translateY(-50%);
+      width: clamp(180px, 22vw, 360px);
+      opacity: 0.06; pointer-events: none; z-index: 0;
+      filter: blur(0.5px);
     }
 
-    /* Center vertical line */
-    #tl-line {
-      position: absolute;
-      left: 50%; top: 160px; bottom: 140px;
-      width: 2px; margin-left: -1px;
-      background: linear-gradient(to bottom,
-        transparent 0%, #1a3550 6%, #1a3550 94%, transparent 100%);
-      pointer-events: none;
+    /* Big background year */
+    #tl-year-bg {
+      position: fixed; z-index: 0; pointer-events: none; user-select: none;
+      font-size: 32vw; font-weight: 900; letter-spacing: -0.05em;
+      color: rgba(255,255,255,0.035);
+      top: 48%; left: 50%; transform: translate(-50%, -55%);
+      transition: opacity 0.6s ease;
     }
 
-    /* ── Header ── */
-    #tl-head {
-      text-align: center;
-      margin-bottom: 60px;
-      animation: tl-fade-up 0.7s cubic-bezier(0.16,1,0.3,1) both;
-    }
-    #tl-eyebrow {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
-      text-transform: uppercase; color: rgba(65,183,255,0.6); margin-bottom: 10px;
-    }
-    #tl-title {
-      font-size: clamp(32px, 5vw, 56px); font-weight: 900;
-      letter-spacing: -0.03em; color: #f0f5fb; line-height: 1;
-    }
-    #tl-sub {
-      margin-top: 10px; font-size: 15px; color: #44566a; font-weight: 300;
+    /* ── Spotlight (top area) ─────────────────────────── */
+    #tl-spotlight {
+      position: fixed; inset: 0 0 210px 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 2;
     }
 
-    /* ── Year separator ── */
-    .tl-year-sep {
+    /* Start hint */
+    #tl-start-hint {
       display: flex; align-items: center; gap: 14px;
-      margin: 48px 0 28px; position: relative; z-index: 2;
-      opacity: 0;
-      animation: tl-fade-up 0.5s cubic-bezier(0.16,1,0.3,1) both;
+      color: rgba(65,183,255,0.45); font-size: 16px; font-weight: 300;
+      letter-spacing: 0.05em;
+      animation: tl-pulse-hint 2.4s ease-in-out infinite;
+      transition: opacity 0.4s;
     }
-    .tl-year-sep::before,
-    .tl-year-sep::after {
-      content: ''; flex: 1; height: 1px; background: #1a3550;
+    #tl-start-hint .hint-arrow {
+      font-size: 22px;
+      animation: tl-nudge-r 1.8s ease-in-out infinite;
     }
-    .tl-year-badge {
-      background: #040e1a; border: 1px solid #1a3550; border-radius: 20px;
-      padding: 5px 18px; font-size: 13px; font-weight: 700;
-      color: #44566a; letter-spacing: 0.12em;
+    @keyframes tl-nudge-r {
+      0%,100% { transform: translateX(0); }
+      50%      { transform: translateX(10px); }
+    }
+    @keyframes tl-pulse-hint {
+      0%,100% { opacity: 0.6; }
+      50%      { opacity: 1; }
     }
 
-    /* ── Event row ── */
-    .tl-row {
-      display: grid;
-      grid-template-columns: 1fr 40px 1fr;
-      gap: 0 16px;
+    /* Event content panel */
+    #tl-event-wrap {
+      position: absolute;
+      text-align: center; max-width: 720px; padding: 0 48px;
+      opacity: 0; pointer-events: none;
+      transform: translateY(28px);
+      transition: opacity 0.45s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    #tl-event-wrap.visible {
+      opacity: 1; pointer-events: auto; transform: none;
+    }
+
+    #tl-step-counter {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.25em;
+      text-transform: uppercase; color: #44566a; margin-bottom: 22px;
+    }
+    #tl-actor-badge {
+      display: inline-block; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 5px 18px; border-radius: 100px; border: 1px solid;
       margin-bottom: 14px;
-      align-items: start;
-      position: relative; z-index: 2;
-      opacity: 0;
-      animation: tl-fade-up 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    #tl-event-date {
+      font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: #44566a; margin-bottom: 14px;
+    }
+    #tl-event-title {
+      font-size: clamp(26px, 3.8vw, 52px); font-weight: 900;
+      letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 22px;
+    }
+    #tl-event-desc {
+      font-size: clamp(15px, 1.5vw, 18px); line-height: 1.68;
+      color: #94a3b8; max-width: 580px; margin: 0 auto 28px;
+    }
+    #tl-more-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px; padding: 8px 22px;
+      color: rgba(255,255,255,0.35); font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; letter-spacing: 0.05em;
+    }
+    #tl-more-btn:hover {
+      border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.04);
     }
 
-    /* Dot */
-    .tl-node {
-      display: flex; justify-content: center; padding-top: 16px;
+    /* ── Timeline bar ─────────────────────────────────── */
+    #tl-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 210px; padding: 0 72px 52px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      z-index: 5;
+      background: linear-gradient(to top, rgba(4,14,26,0.95) 60%, transparent);
     }
+
+    /* Year labels */
+    #tl-year-labels {
+      position: relative; height: 22px; margin-bottom: 10px;
+    }
+    .tl-year-label {
+      position: absolute; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; color: #2a4460;
+      transform: translateX(-50%);
+      transition: color 0.4s;
+    }
+    .tl-year-label.lit { color: #44566a; }
+
+    /* Track */
+    #tl-track {
+      position: relative; height: 44px;
+    }
+    #tl-track-line {
+      position: absolute; top: 50%; left: 0; right: 0;
+      height: 2px; background: #1a3550; transform: translateY(-50%);
+    }
+    #tl-fill {
+      position: absolute; top: 50%; left: 0;
+      height: 2px; width: 0%;
+      background: linear-gradient(to right, #41b7ff88, #8b5cf688);
+      transform: translateY(-50%);
+      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+    /* Ghost placeholders */
+    .tl-ghost {
+      position: absolute; top: 50%; transform: translate(-50%,-50%);
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(255,255,255,0.07); pointer-events: none;
+    }
+    /* Real dots */
     .tl-dot {
-      width: 14px; height: 14px; border-radius: 50%;
+      position: absolute; top: 50%;
+      transform: translate(-50%,-50%) scale(0);
+      width: 13px; height: 13px; border-radius: 50%;
       border: 2px solid; background: #040e1a;
-      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
-      flex-shrink: 0;
+      cursor: pointer; z-index: 2;
+      transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.3s, width 0.3s, height 0.3s;
     }
-    .tl-row:hover .tl-dot {
-      transform: scale(1.8);
+    .tl-dot.revealed {
+      transform: translate(-50%,-50%) scale(1);
     }
-
-    /* Card */
-    .tl-card {
-      background: rgba(13,33,55,0.45);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px; padding: 14px 18px;
-      cursor: pointer;
-      transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    .tl-dot.active {
+      width: 20px; height: 20px;
     }
-    .tl-card:hover {
-      background: rgba(13,33,55,0.9);
-      border-color: rgba(255,255,255,0.1);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    .tl-dot:hover {
+      transform: translate(-50%,-50%) scale(1.55);
     }
-    .tl-card.open {
+    /* Tooltip above dot */
+    .tl-dot::before {
+      content: attr(data-label);
+      position: absolute; bottom: calc(100% + 10px);
+      left: 50%; transform: translateX(-50%);
+      white-space: nowrap;
       background: rgba(13,33,55,0.95);
-      border-color: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 5px 10px;
+      font-size: 11px; font-weight: 600; color: #f0f5fb;
+      letter-spacing: 0.04em;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .tl-dot.revealed:hover::before { opacity: 1; }
+
+    /* ── Modal ────────────────────────────────────────── */
+    #tl-modal-card {
+      width: 100%; max-width: 600px; border-radius: 24px;
+      background: #0d2137; border: 1px solid #1a3550;
+      padding: 44px 48px 44px; position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .modal-backdrop.open #tl-modal-card { transform: none; }
+
+    #tl-modal-badge {
+      display: inline-block; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 4px 14px; border-radius: 100px; border: 1px solid;
+      margin-bottom: 18px;
+    }
+    #tl-modal-date {
+      font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: #44566a; margin-bottom: 10px;
+    }
+    #tl-modal-title {
+      font-size: 26px; font-weight: 800; letter-spacing: -0.02em;
+      line-height: 1.2; margin-bottom: 20px;
+    }
+    #tl-modal-desc {
+      font-size: 16px; line-height: 1.72; color: #94a3b8;
     }
 
-    .tl-card-date {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; margin-bottom: 5px; opacity: 0.6;
-    }
-    .tl-card-title {
-      font-size: 15px; font-weight: 700; line-height: 1.3;
-    }
-    .tl-card-desc {
-      font-size: 13px; line-height: 1.72; color: #94a3b8;
-      margin-top: 0; overflow: hidden;
-      max-height: 0; opacity: 0;
-      transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1),
-                  opacity 0.3s ease,
-                  margin-top 0.3s ease;
-    }
-    .tl-card.open .tl-card-desc {
-      max-height: 300px; opacity: 1; margin-top: 10px;
-    }
-
-    /* Expand hint icon */
-    .tl-card-hint {
-      font-size: 10px; color: #44566a; margin-top: 6px;
-      transition: color 0.2s;
-    }
-    .tl-card:hover .tl-card-hint { color: #64748b; }
-    .tl-card.open .tl-card-hint { display: none; }
-
-    .tl-left  { text-align: right; }
-    .tl-right { text-align: left; }
-    .tl-empty { /* spacer */ }
-
-    /* ── Animations ── */
+    /* ── Animations ───────────────────────────────────── */
     @keyframes tl-fade-up {
-      from { opacity: 0; transform: translateY(24px); }
+      from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+
+    /* ── Custom nav arrows (repurposed for timeline) ─── */
+    #nav-prev, #nav-next { cursor: pointer; }
   </style>
 </head>
 <body>
 
-  <div id="tl-scroll">
-    <div id="tl-wrap">
-      <div id="tl-line"></div>
+  <!-- Watermark: drop img/logo-fosforo.png to use a real logo -->
+  <div id="tl-watermark">
+    <img src="img/logo-fosforo.png" alt="" onerror="this.parentNode.innerHTML=fosfSvg()" style="width:100%;display:block;" />
+  </div>
 
-      <div id="tl-head">
-        <div id="tl-eyebrow">Geopolitica della AI</div>
-        <div id="tl-title">Cronologia</div>
-        <div id="tl-sub">I momenti chiave dell'intelligenza artificiale</div>
-      </div>
+  <!-- Background year text -->
+  <div id="tl-year-bg"></div>
 
-      <div id="tl-events"></div>
+  <!-- Main spotlight -->
+  <div id="tl-spotlight">
+    <div id="tl-start-hint">
+      <span id="tl-hint-txt">Premi avanti per iniziare</span>
+      <span class="hint-arrow">→</span>
+    </div>
+
+    <div id="tl-event-wrap">
+      <div id="tl-step-counter"></div>
+      <div id="tl-actor-badge"></div>
+      <div id="tl-event-date"></div>
+      <div id="tl-event-title"></div>
+      <div id="tl-event-desc"></div>
+      <button id="tl-more-btn" onclick="openEventModal()">
+        <span id="tl-more-txt">Approfondisci</span> ↗
+      </button>
     </div>
   </div>
 
-  <!-- Navigation -->
+  <!-- Timeline bar -->
+  <div id="tl-bar">
+    <div id="tl-year-labels"></div>
+    <div id="tl-track">
+      <div id="tl-track-line"></div>
+      <div id="tl-fill"></div>
+      <!-- dots injected by JS -->
+    </div>
+  </div>
+
+  <!-- Info modal -->
+  <div class="modal-backdrop" id="modal-tl" onclick="backdropClose(event,'modal-tl')">
+    <div id="tl-modal-card">
+      <button class="modal-close-btn" onclick="closeModal('modal-tl')">×</button>
+      <div id="tl-modal-badge"></div>
+      <div id="tl-modal-date"></div>
+      <div id="tl-modal-title"></div>
+      <div id="tl-modal-desc"></div>
+    </div>
+  </div>
+
+  <!-- Navigation dots (4 pages) -->
   <div id="nav-dots">
     <button class="nav-dot"></button>
     <button class="nav-dot active"></button>
     <button class="nav-dot"></button>
     <button class="nav-dot"></button>
   </div>
-  <a class="nav-arrow" id="nav-prev" href="index.html">&#8592;</a>
-  <a class="nav-arrow" id="nav-next" href="paesi.html">&#8594;</a>
+
+  <!-- Arrows: repurposed as timeline advance/retreat -->
+  <a class="nav-arrow" id="nav-prev">&#8592;</a>
+  <a class="nav-arrow" id="nav-next">&#8594;</a>
 
   <!-- Lang toggle -->
   <div id="lang-toggle">
@@ -186,171 +286,375 @@
 
   <script src="js/common.js"></script>
   <script>
-    // ── Events data ───────────────────────────────────
+    // ── Fosforo SVG watermark (fallback if no logo file) ──
+    function fosfSvg() {
+      return `<svg viewBox="0 0 140 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+        <path d="M70 195 C70 195 42 165 38 128 C35 100 45 80 52 62
+                 C54 78 57 90 58 96 C60 78 62 58 68 30
+                 C75 58 77 78 79 96 C80 90 83 78 85 62
+                 C92 80 102 100 99 128 C95 165 70 195 70 195Z"
+              fill="white" opacity="0.9"/>
+        <path d="M35 185 C35 185 12 158 16 124 C19 100 28 82 35 66
+                 C36 80 38 91 39 96 C41 80 43 64 48 44
+                 C53 62 56 82 53 105 C50 128 35 185 35 185Z"
+              fill="white" opacity="0.6"/>
+        <path d="M105 185 C105 185 128 158 124 124 C121 100 112 82 105 66
+                 C104 80 102 91 101 96 C99 80 97 64 92 44
+                 C87 62 84 82 87 105 C90 128 105 185 105 185Z"
+              fill="white" opacity="0.6"/>
+        <path d="M18 170 C18 170 0 148 5 118 C9 96 18 80 24 66
+                 C25 78 26 88 27 94 C29 78 31 60 36 40
+                 C40 58 42 76 39 97 C36 118 18 170 18 170Z"
+              fill="white" opacity="0.3"/>
+        <path d="M122 170 C122 170 140 148 135 118 C131 96 122 80 116 66
+                 C115 78 114 88 113 94 C111 78 109 60 104 40
+                 C100 58 98 76 101 97 C104 118 122 170 122 170Z"
+              fill="white" opacity="0.3"/>
+      </svg>`;
+    }
+
+    // ── Events data ───────────────────────────────────────
     const EVENTS = [
       {
-        year: 2015, date: { it: '28 giu 2015', en: 'Jun 28, 2015' },
+        year: 2015, pos: 8,
+        date: { it: '28 giu 2015', en: 'Jun 28, 2015' },
         color: '#e8a000',
+        actor: { it: 'Elon Musk', en: 'Elon Musk' },
         it: { title: 'Elon Musk compie 44 anni',
               desc: 'Elon Musk compie 44 anni il 28 giugno 2015.' },
         en: { title: 'Elon Musk turns 44',
               desc: 'Elon Musk turns 44 on June 28, 2015.' },
       },
       {
-        year: 2015, date: { it: '12 dic 2015', en: 'Dec 12, 2015' },
+        year: 2015, pos: 16,
+        date: { it: '12 dic 2015', en: 'Dec 12, 2015' },
         color: '#41b7ff',
+        actor: { it: 'OpenAI', en: 'OpenAI' },
         it: { title: 'Nasce OpenAI',
               desc: 'Elon Musk co-fonda OpenAI insieme a Sam Altman, Greg Brockman e altri investitori e ricercatori.' },
         en: { title: 'OpenAI is founded',
               desc: 'Elon Musk co-founds OpenAI with Sam Altman, Greg Brockman and other investors and researchers.' },
       },
       {
-        year: 2017, date: { it: '2017', en: '2017' },
+        year: 2017, pos: 26,
+        date: { it: '2017', en: '2017' },
         color: '#22c55e',
+        actor: { it: 'Ricerca', en: 'Research' },
         it: { title: '"Attention Is All You Need"',
               desc: 'Il paper "Attention Is All You Need" introduce i Transformer, che diventeranno lo standard per il linguaggio e poi per molte altre modalità.' },
         en: { title: '"Attention Is All You Need"',
-              desc: 'The paper "Attention Is All You Need" introduces Transformers, which become the standard for language and many other AI modalities.' },
+              desc: 'The paper introduces Transformers, which become the standard for language and many other AI modalities.' },
       },
       {
-        year: 2018, date: { it: '2018', en: '2018' },
+        year: 2018, pos: 35,
+        date: { it: '2018', en: '2018' },
         color: '#e8a000',
+        actor: { it: 'Elon Musk', en: 'Elon Musk' },
         it: { title: 'Musk lascia il board di OpenAI',
               desc: 'Elon Musk lascia il consiglio di amministrazione di OpenAI nel 2018.' },
         en: { title: 'Musk leaves the OpenAI board',
               desc: 'Elon Musk leaves the board of directors of OpenAI in 2018.' },
       },
       {
-        year: 2021, date: { it: 'Fine 2020 – inizio 2021', en: 'Late 2020 – early 2021' },
+        year: 2021, pos: 46,
+        date: { it: 'Fine 2020 – inizio 2021', en: 'Late 2020 – early 2021' },
         color: '#cc785c',
+        actor: { it: 'Anthropic', en: 'Anthropic' },
         it: { title: 'Nasce Anthropic',
-              desc: 'Dario Amodei fonda Anthropic insieme alla sorella Daniela e a un gruppo di circa 5–7 ex ricercatori di OpenAI che lasciano l\'azienda tra fine 2020 e inizio 2021.' },
+              desc: 'Dario Amodei fonda Anthropic con la sorella Daniela e un gruppo di circa 5–7 ex ricercatori di OpenAI.' },
         en: { title: 'Anthropic is founded',
-              desc: 'Dario Amodei founds Anthropic with his sister Daniela and a group of about 5–7 former OpenAI researchers who left the company between late 2020 and early 2021.' },
+              desc: 'Dario Amodei founds Anthropic with his sister Daniela and ~5–7 former OpenAI researchers.' },
       },
       {
-        year: 2022, date: { it: '27 ott 2022', en: 'Oct 27, 2022' },
+        year: 2022, pos: 57,
+        date: { it: '27 ott 2022', en: 'Oct 27, 2022' },
         color: '#e2e8f0',
+        actor: { it: 'Twitter / X', en: 'Twitter / X' },
         it: { title: 'Musk acquisisce Twitter',
-              desc: 'Elon Musk completa l\'acquisizione di Twitter da 44 miliardi di dollari. Diventa proprietario e CEO, e licenzia immediatamente i vertici principali come Parag Agrawal.' },
+              desc: 'Elon Musk completa l\'acquisizione da 44 miliardi di dollari. Diventa proprietario e CEO, licenziando i vertici come Parag Agrawal.' },
         en: { title: 'Musk acquires Twitter',
-              desc: 'Elon Musk completes the $44 billion acquisition of Twitter. He becomes owner and CEO, immediately firing top executives including Parag Agrawal.' },
+              desc: 'Elon Musk completes the $44 billion acquisition, becoming owner and CEO and immediately firing top executives.' },
       },
       {
-        year: 2022, date: { it: '30 nov 2022', en: 'Nov 30, 2022' },
+        year: 2022, pos: 65,
+        date: { it: '30 nov 2022', en: 'Nov 30, 2022' },
         color: '#41b7ff',
+        actor: { it: 'OpenAI', en: 'OpenAI' },
         it: { title: 'ChatGPT diventa pubblico',
-              desc: 'OpenAI rilascia ChatGPT come "research preview" accessibile gratuitamente sul web. In pochi giorni raggiunge milioni di utenti in tutto il mondo.' },
+              desc: 'OpenAI rilascia ChatGPT come "research preview" gratuita. In pochi giorni raggiunge milioni di utenti in tutto il mondo.' },
         en: { title: 'ChatGPT goes public',
-              desc: 'OpenAI releases ChatGPT as a free "research preview" on the web. Within days it reaches millions of users worldwide.' },
+              desc: 'OpenAI releases ChatGPT as a free "research preview". It reaches millions of users worldwide within days.' },
       },
       {
-        year: 2023, date: { it: '7 feb 2023', en: 'Feb 7, 2023' },
+        year: 2023, pos: 73,
+        date: { it: '7 feb 2023', en: 'Feb 7, 2023' },
         color: '#00a4ef',
+        actor: { it: 'Microsoft', en: 'Microsoft' },
         it: { title: 'Microsoft lancia Copilot',
               desc: 'Microsoft lancia Copilot il 7 febbraio 2023, inizialmente come Bing Chat integrato in Bing e Microsoft Edge.' },
         en: { title: 'Microsoft launches Copilot',
-              desc: 'Microsoft launches Copilot on February 7, 2023, initially as Bing Chat integrated into Bing and Microsoft Edge.' },
+              desc: 'Microsoft launches Copilot, initially as Bing Chat integrated into Bing and Microsoft Edge.' },
       },
       {
-        year: 2023, date: { it: '24 feb 2023', en: 'Feb 24, 2023' },
+        year: 2023, pos: 80,
+        date: { it: '24 feb 2023', en: 'Feb 24, 2023' },
         color: '#4f8ef7',
+        actor: { it: 'Meta', en: 'Meta' },
         it: { title: 'Meta lancia LLaMA 1',
-              desc: 'Meta rilascia pubblicamente il primo modello LLaMA (LLaMA 1) il 24 febbraio 2023, aprendo la strada ai modelli linguistici open source di grandi dimensioni.' },
+              desc: 'Meta rilascia il primo modello LLaMA il 24 febbraio 2023, aprendo la strada ai grandi modelli open source.' },
         en: { title: 'Meta launches LLaMA 1',
-              desc: 'Meta publicly releases the first LLaMA model (LLaMA 1) on February 24, 2023, paving the way for large open-source language models.' },
+              desc: 'Meta releases the first LLaMA model, paving the way for large open-source language models.' },
       },
       {
-        year: 2023, date: { it: '12 lug 2023', en: 'Jul 12, 2023' },
+        year: 2023, pos: 87,
+        date: { it: '12 lug 2023', en: 'Jul 12, 2023' },
         color: '#8b5cf6',
+        actor: { it: 'xAI', en: 'xAI' },
         it: { title: 'Nasce xAI',
-              desc: 'xAI viene annunciata da Elon Musk il 12 luglio 2023. L\'obiettivo: sviluppare AI per comprendere la vera natura dell\'universo.' },
+              desc: 'Elon Musk annuncia xAI il 12 luglio 2023. Obiettivo: sviluppare AI per comprendere la vera natura dell\'universo.' },
         en: { title: 'xAI is announced',
-              desc: 'xAI is announced by Elon Musk on July 12, 2023. Its mission: develop AI to understand the true nature of the universe.' },
+              desc: 'Elon Musk announces xAI on July 12, 2023. Mission: develop AI to understand the true nature of the universe.' },
       },
       {
-        year: 2023, date: { it: '6 dic 2023', en: 'Dec 6, 2023' },
+        year: 2023, pos: 93,
+        date: { it: '6 dic 2023', en: 'Dec 6, 2023' },
         color: '#ea4335',
+        actor: { it: 'Google', en: 'Google' },
         it: { title: 'Google lancia Gemini',
-              desc: 'Google annuncia Gemini e lo integra nel chatbot Bard (poi rinominato Gemini), inizialmente in versione Pro per utenti selezionati in oltre 170 paesi in inglese, con rollout graduale.' },
+              desc: 'Google annuncia Gemini e lo integra in Bard (poi rinominato Gemini), prima in Pro per utenti selezionati in oltre 170 paesi.' },
         en: { title: 'Google launches Gemini',
-              desc: 'Google announces Gemini and integrates it into the Bard chatbot (later renamed Gemini), initially as Pro version for selected users in over 170 countries.' },
+              desc: 'Google announces Gemini and integrates it into Bard (later renamed Gemini) — initially Pro for selected users in 170+ countries.' },
       },
     ];
 
-    // ── Page i18n ─────────────────────────────────────
-    const TL_TEXT = {
-      it: { eyebrow: 'Geopolitica della AI', title: 'Cronologia',
-            sub: 'I momenti chiave dell\'intelligenza artificiale',
-            hint: 'clicca per saperne di più' },
-      en: { eyebrow: 'AI Geopolitics', title: 'Timeline',
-            sub: 'Key moments in artificial intelligence',
-            hint: 'click to expand' },
+    // ── i18n ──────────────────────────────────────────────
+    const TL_I18N = {
+      it: { hint: 'Premi avanti per iniziare', counter: 'Evento', more: 'Approfondisci',
+            end: 'Fine — premi → per continuare' },
+      en: { hint: 'Press forward to start',     counter: 'Event',   more: 'Learn more',
+            end: 'Done — press → to continue' },
     };
 
-    // ── Render ────────────────────────────────────────
-    function renderTimeline() {
-      const t = TL_TEXT[lang];
-      document.getElementById('tl-eyebrow').textContent = t.eyebrow;
-      document.getElementById('tl-title').textContent   = t.title;
-      document.getElementById('tl-sub').textContent     = t.sub;
+    // ── State ─────────────────────────────────────────────
+    let step = 0;          // 0 = nothing shown; 1..N = events 0..step-1 revealed
+    const N = EVENTS.length;
 
-      const container = document.getElementById('tl-events');
-      container.innerHTML = '';
+    // ── Build timeline DOM ────────────────────────────────
+    function buildTimeline() {
+      const track      = document.getElementById('tl-track');
+      const yearLabels = document.getElementById('tl-year-labels');
 
-      let lastYear  = null;
-      let eventIdx  = 0;  // counts only events (not year separators) for alternation
-      let animDelay = 0.1;
-
+      // Ghost placeholders
       EVENTS.forEach(ev => {
-        // Year separator
-        if (ev.year !== lastYear) {
-          lastYear = ev.year;
-          const sep = document.createElement('div');
-          sep.className = 'tl-year-sep';
-          sep.style.animationDelay = animDelay + 's';
-          animDelay += 0.08;
-          sep.innerHTML = `<div class="tl-year-badge">${ev.year}</div>`;
-          container.appendChild(sep);
+        const g = document.createElement('div');
+        g.className = 'tl-ghost';
+        g.style.left = ev.pos + '%';
+        track.appendChild(g);
+      });
+
+      // Real dots
+      EVENTS.forEach((ev, i) => {
+        const d = document.createElement('div');
+        d.className = 'tl-dot';
+        d.style.left  = ev.pos + '%';
+        d.style.color = ev.color;
+        d.style.borderColor = ev.color;
+        d.dataset.label = ev[lang].title;
+        d.id = 'dot-' + i;
+        d.addEventListener('click', () => {
+          if (i < step) openEventModal(i);
+        });
+        track.appendChild(d);
+      });
+
+      // Year labels (one per unique year, at first event of that year)
+      const seenYears = new Set();
+      EVENTS.forEach(ev => {
+        if (!seenYears.has(ev.year)) {
+          seenYears.add(ev.year);
+          const lbl = document.createElement('div');
+          lbl.className = 'tl-year-label';
+          lbl.style.left = ev.pos + '%';
+          lbl.textContent = ev.year;
+          lbl.id = 'yr-' + ev.year;
+          yearLabels.appendChild(lbl);
         }
-
-        const isLeft = (eventIdx % 2 === 0);
-        const loc    = ev[lang];
-
-        const row = document.createElement('div');
-        row.className = 'tl-row';
-        row.style.animationDelay = animDelay + 's';
-        animDelay += 0.08;
-
-        const dot = `<div class="tl-node">
-          <div class="tl-dot" style="border-color:${ev.color};box-shadow:0 0 8px ${ev.color}55"></div>
-        </div>`;
-
-        const card = `<div class="tl-card" onclick="this.classList.toggle('open')">
-          <div class="tl-card-date" style="color:${ev.color}">${ev.date[lang]}</div>
-          <div class="tl-card-title" style="color:${ev.color}">${loc.title}</div>
-          <div class="tl-card-desc">${loc.desc}</div>
-          <div class="tl-card-hint">▸ ${t.hint}</div>
-        </div>`;
-
-        const empty = `<div class="tl-empty"></div>`;
-
-        if (isLeft) {
-          row.innerHTML = `<div class="tl-left">${card}</div>${dot}${empty}`;
-        } else {
-          row.innerHTML = `${empty}${dot}<div class="tl-right">${card}</div>`;
-        }
-
-        container.appendChild(row);
-        eventIdx++;
       });
     }
 
-    function onLangChange() { renderTimeline(); }
+    // ── Render state ──────────────────────────────────────
+    function renderState() {
+      const t = TL_I18N[lang];
 
+      // Hint visibility
+      const hint = document.getElementById('tl-start-hint');
+      hint.style.opacity = step === 0 ? '1' : '0';
+      hint.style.pointerEvents = step === 0 ? 'auto' : 'none';
+
+      // Event wrap
+      const wrap = document.getElementById('tl-event-wrap');
+
+      if (step === 0) {
+        wrap.classList.remove('visible');
+        document.getElementById('tl-year-bg').textContent = '';
+        document.getElementById('tl-fill').style.width = '0%';
+        return;
+      }
+
+      const ev = EVENTS[step - 1];
+      const loc = ev[lang];
+
+      // Update content (with brief fade swap)
+      wrap.classList.remove('visible');
+      setTimeout(() => {
+        document.getElementById('tl-step-counter').textContent =
+          t.counter + ' ' + step + ' / ' + N;
+
+        const badge = document.getElementById('tl-actor-badge');
+        badge.textContent = ev.actor[lang];
+        badge.style.color = ev.color;
+        badge.style.borderColor = ev.color + '55';
+        badge.style.background = ev.color + '14';
+
+        document.getElementById('tl-event-date').textContent = ev.date[lang];
+
+        const title = document.getElementById('tl-event-title');
+        title.textContent = loc.title;
+        title.style.color = ev.color;
+
+        document.getElementById('tl-event-desc').textContent = loc.desc;
+
+        document.getElementById('tl-more-txt').textContent = t.more;
+
+        // Background year
+        document.getElementById('tl-year-bg').textContent = ev.year;
+
+        wrap.classList.add('visible');
+      }, step > 1 ? 180 : 0);
+
+      // Reveal dots up to step
+      EVENTS.forEach((e, i) => {
+        const dot = document.getElementById('dot-' + i);
+        if (!dot) return;
+        dot.dataset.label = e[lang].title;
+        if (i < step) {
+          dot.classList.add('revealed');
+          dot.classList.toggle('active', i === step - 1);
+          dot.style.boxShadow = i === step - 1
+            ? `0 0 18px ${e.color}88, 0 0 36px ${e.color}44`
+            : `0 0 8px ${e.color}44`;
+        } else {
+          dot.classList.remove('revealed', 'active');
+          dot.style.boxShadow = '';
+        }
+      });
+
+      // Fill line up to active dot
+      document.getElementById('tl-fill').style.width = ev.pos + '%';
+
+      // Light up year labels
+      document.querySelectorAll('.tl-year-label').forEach(lbl => {
+        const yr = parseInt(lbl.id.replace('yr-', ''));
+        lbl.classList.toggle('lit', yr <= ev.year);
+      });
+    }
+
+    // ── Advance / Retreat ─────────────────────────────────
+    function advance() {
+      if (document.getElementById('modal-tl').classList.contains('open')) {
+        closeModal('modal-tl'); return;
+      }
+      if (step < N) {
+        step++;
+        renderState();
+      } else {
+        window.location.href = PAGES[2]; // paesi.html
+      }
+    }
+
+    function retreat() {
+      if (document.getElementById('modal-tl').classList.contains('open')) {
+        closeModal('modal-tl'); return;
+      }
+      if (step > 0) {
+        step--;
+        renderState();
+      } else {
+        window.location.href = PAGES[0]; // index.html
+      }
+    }
+
+    // ── Modal ─────────────────────────────────────────────
+    function openEventModal(idx) {
+      const i = (idx !== undefined) ? idx : step - 1;
+      if (i < 0 || i >= N) return;
+      const ev  = EVENTS[i];
+      const loc = ev[lang];
+
+      const badge = document.getElementById('tl-modal-badge');
+      badge.textContent     = ev.actor[lang];
+      badge.style.color     = ev.color;
+      badge.style.borderColor = ev.color + '55';
+      badge.style.background  = ev.color + '14';
+
+      document.getElementById('tl-modal-date').textContent  = ev.date[lang];
+      const t = document.getElementById('tl-modal-title');
+      t.textContent = loc.title;
+      t.style.color = ev.color;
+      document.getElementById('tl-modal-desc').textContent  = loc.desc;
+
+      const card = document.getElementById('tl-modal-card');
+      card.style.borderColor = ev.color + '44';
+      card.style.boxShadow   = `0 0 60px ${ev.color}18`;
+
+      openModal('modal-tl');
+    }
+
+    // ── Keyboard ──────────────────────────────────────────
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeModal('modal-tl'); return;
+      }
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault(); advance();
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault(); retreat();
+      }
+    });
+
+    // Nav arrow clicks
+    document.getElementById('nav-prev').addEventListener('click', e => {
+      e.preventDefault(); retreat();
+    });
+    document.getElementById('nav-next').addEventListener('click', e => {
+      e.preventDefault(); advance();
+    });
+
+    // Nav dots (from common.js PAGES array)
+    document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === 1);
+      dot.addEventListener('click', () => {
+        if (i !== 1) window.location.href = PAGES[i];
+      });
+    });
+
+    // ── Lang ──────────────────────────────────────────────
+    function onLangChange() {
+      document.getElementById('tl-hint-txt').textContent = TL_I18N[lang].hint;
+      // Rebuild dot labels
+      EVENTS.forEach((ev, i) => {
+        const dot = document.getElementById('dot-' + i);
+        if (dot) dot.dataset.label = ev[lang].title;
+      });
+      if (step > 0) renderState();
+    }
+
+    // ── Init ──────────────────────────────────────────────
     initLangToggle();
-    initNav(1);
-    renderTimeline();
+    buildTimeline();
+    renderState();
+    document.getElementById('tl-hint-txt').textContent = TL_I18N[lang].hint;
   </script>
 </body>
 </html>
