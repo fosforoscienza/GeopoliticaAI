@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geopolitica dell'AI — Mappa Interattiva</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #071525;
+      --bg-card:   #0d2137;
+      --border:    #1a3550;
+      --text:      #f0f5fb;
+      --muted:     #64748b;
+      --body:      #94a3b8;
+      --accent:    #41b7ff;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      padding: 28px 32px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .header-text { max-width: 640px; }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(65,183,255,0.3);
+      border-radius: 100px;
+      padding: 4px 12px;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: clamp(22px, 4vw, 34px);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+    }
+    h1 span { color: var(--accent); }
+    .subtitle {
+      margin-top: 8px;
+      font-size: 15px;
+      color: var(--body);
+      line-height: 1.6;
+    }
+
+    /* ── Lang toggle ── */
+    .lang-toggle {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px;
+      flex-shrink: 0;
+    }
+    .lang-btn {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: rgba(65,183,255,0.15);
+      color: var(--accent);
+    }
+
+    /* ── Map wrapper ── */
+    .map-section {
+      padding: 20px 32px 0;
+    }
+    .map-container {
+      position: relative;
+      width: 100%;
+      background: #040e1a;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    #world-map {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .map-hint {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      padding: 10px;
+    }
+    .map-loader {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #040e1a;
+      z-index: 5;
+      transition: opacity 0.4s;
+    }
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Marker pulse animation ── */
+    .pulse-ring {
+      animation: pulse-expand 2.4s ease-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    @keyframes pulse-expand {
+      0%   { transform: scale(1);   opacity: 0.7; }
+      70%  { transform: scale(2.5); opacity: 0;   }
+      100% { transform: scale(2.5); opacity: 0;   }
+    }
+    .marker-dot {
+      transition: transform 0.2s ease;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .marker-group {
+      cursor: pointer;
+    }
+    .marker-group:hover .marker-dot {
+      transform: scale(1.6);
+    }
+
+    /* ── Legend ── */
+    .legend {
+      padding: 20px 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--body);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .legend-item:hover {
+      border-color: rgba(65,183,255,0.4);
+      color: var(--text);
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Modal backdrop ── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(4,14,26,0.85);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── Modal card ── */
+    .modal-card {
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .modal-backdrop.open .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    /* ── Modal image header ── */
+    .modal-image {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      border-radius: 20px 20px 0 0;
+    }
+    .modal-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .modal-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 30%, rgba(13,33,55,0.9) 100%);
+    }
+    .modal-flag {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      font-size: 42px;
+      line-height: 1;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      line-height: 1;
+    }
+    .modal-close:hover { background: rgba(0,0,0,0.75); }
+    .modal-img-caption {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ── Modal body ── */
+    .modal-body {
+      padding: 20px 24px 28px;
+    }
+    .modal-title-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .modal-role {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-top: 5px;
+      display: inline-block;
+    }
+    .modal-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--body);
+      margin-bottom: 18px;
+    }
+    .facts-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .fact-chip {
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      padding: 24px 32px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .site-header, .map-section, .legend { padding-left: 16px; padding-right: 16px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────── -->
+<header class="site-header">
+  <div class="header-text">
+    <div class="badge" id="badge">Spettacolo · Geopolitica dell'AI</div>
+    <h1 id="main-title">Chi controlla <span>l'intelligenza artificiale</span>?</h1>
+    <p class="subtitle" id="main-subtitle">
+      L'AI non è solo tecnologia — è potere geopolitico. Esplora i 10 attori principali
+      che stanno ridisegnando gli equilibri mondiali nella corsa all'intelligenza artificiale.
+    </p>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('it')">IT</button>
+    <button class="lang-btn"        onclick="setLang('en')">EN</button>
+  </div>
+</header>
+
+<!-- ── Map ─────────────────────────────────────────── -->
+<section class="map-section">
+  <div class="map-container">
+    <div class="map-loader" id="loader"><div class="spinner"></div></div>
+    <svg id="world-map"></svg>
+  </div>
+  <p class="map-hint" id="map-hint">↑ Clicca sui marcatori per aprire la scheda</p>
+</section>
+
+<!-- ── Legend ──────────────────────────────────────── -->
+<div class="legend" id="legend"></div>
+
+<!-- ── Modal ──────────────────────────────────────── -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="handleBackdropClick(event)">
+  <div class="modal-card" id="modal-card">
+    <div class="modal-image" id="modal-image">
+      <img id="modal-img" src="" alt="" onerror="this.style.opacity='0'" />
+      <div class="modal-image-overlay"></div>
+      <span class="modal-flag" id="modal-flag"></span>
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <span class="modal-img-caption" id="modal-img-caption"></span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title-row">
+        <div>
+          <div class="modal-title" id="modal-title"></div>
+          <span class="modal-role" id="modal-role"></span>
+        </div>
+      </div>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="facts-grid" id="modal-facts"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────── -->
+<footer class="site-footer">
+  <span id="footer-text">Fosforoscienza / Next ETS · Science Snack · Dati aggiornati 2025</span>
+</footer>
+
+<!-- ── Scripts ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+// ─────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────
+const ACTORS = [
+  {
+    id: 'usa',
+    flag: '🇺🇸',
+    color: '#4f8ef7',
+    coords: [-97, 38],
+    isoNums: ['840'],
+    titleIt: "Stati Uniti: il colosso dell'AI",
+    titleEn: "United States: The AI Colossus",
+    roleIt: "Superpotenza tecnologica",
+    roleEn: "Technological superpower",
+    descIt: "Gli USA dominano la corsa all'AI con OpenAI (GPT-4), Google DeepMind (Gemini), Anthropic (Claude) e Meta AI (Llama). Nel 2023 sono stati investiti oltre 67 miliardi di dollari in startup AI americane. Il conflitto commerciale con la Cina sui chip NVIDIA H100 è la nuova «guerra fredda tecnologica»: Washington ha vietato l'export verso Pechino.",
+    descEn: "The US dominates the AI race with OpenAI (GPT-4), Google DeepMind (Gemini), Anthropic (Claude), and Meta AI (Llama). In 2023, over $67B was invested in American AI startups. The trade conflict with China over NVIDIA H100 chips is the new 'technological cold war': Washington banned exports to Beijing.",
+    factsIt: ["OpenAI · Google · Anthropic · Meta", "$67B investiti nel 2023", "AI Safety Executive Order (2023)", "Export ban chip H100 → Cina"],
+    factsEn: ["OpenAI · Google · Anthropic · Meta", "$67B invested in 2023", "AI Safety Executive Order (2023)", "H100 chip export ban → China"],
+    imageUrl: "https://picsum.photos/seed/silicon-valley-tech/640/320",
+    imageCaption: "Silicon Valley, California",
+  },
+  {
+    id: 'china',
+    flag: '🇨🇳',
+    color: '#ef4444',
+    coords: [104, 35],
+    isoNums: ['156'],
+    titleIt: "Cina: il piano per il 2030",
+    titleEn: "China: The 2030 Master Plan",
+    roleIt: "Sfidante strategico",
+    roleEn: "Strategic challenger",
+    descIt: "La Cina vuole diventare il leader mondiale dell'AI entro il 2030. Baidu, Alibaba e Tencent guidano il settore privato. DeepSeek R1 (2025) ha sconvolto l'Occidente con prestazioni paragonabili a GPT-4 a costi irrisori. L'AI è al centro del sistema di sorveglianza di massa, del credito sociale e della strategia militare.",
+    descEn: "China aims to become the world AI leader by 2030. Baidu, Alibaba and Tencent lead the private sector. DeepSeek R1 (2025) shocked the West with GPT-4-level performance at minimal cost. AI is central to mass surveillance, the social credit system, and military strategy.",
+    factsIt: ["Baidu · Alibaba · Tencent · Huawei", "Piano nazionale AI 2030", "DeepSeek R1 (2025): shock globale", "1.4B utenti, dati senza pari"],
+    factsEn: ["Baidu · Alibaba · Tencent · Huawei", "National AI Plan 2030", "DeepSeek R1 (2025): global shock", "1.4B users, unrivalled data"],
+    imageUrl: "https://picsum.photos/seed/beijing-skyline-tech/640/320",
+    imageCaption: "Pechino, Cina",
+  },
+  {
+    id: 'eu',
+    flag: '🇪🇺',
+    color: '#f59e0b',
+    coords: [10, 51],
+    isoNums: ['276', '250', '380', '724', '56'],
+    titleIt: "Unione Europea: la potenza regolatoria",
+    titleEn: "European Union: The Regulatory Power",
+    roleIt: "Standard setter globale",
+    roleEn: "Global standard setter",
+    descIt: "L'UE ha scelto la «terza via»: né la crescita sfrenata USA né il controllo statale cinese. L'AI Act (2024) è la prima legge al mondo sull'intelligenza artificiale, con approccio basato sul rischio. Il GDPR è già diventato lo standard globale sulla privacy. Sfida: regolare senza soffocare l'innovazione.",
+    descEn: "The EU chose the 'third way': neither US unbridled growth nor Chinese state control. The AI Act (2024) is the world's first AI law, using a risk-based approach. GDPR has already become the global privacy standard. Challenge: regulate without stifling innovation.",
+    factsIt: ["AI Act (2024): prima legge al mondo", "GDPR: standard globale privacy", "1.3 miliardi di cittadini tutelati", "Approccio basato sul rischio"],
+    factsEn: ["AI Act (2024): world's first AI law", "GDPR: global privacy standard", "1.3 billion citizens protected", "Risk-based approach"],
+    imageUrl: "https://picsum.photos/seed/european-parliament-brussels/640/320",
+    imageCaption: "Parlamento Europeo, Bruxelles",
+  },
+  {
+    id: 'uk',
+    flag: '🇬🇧',
+    color: '#8b5cf6',
+    coords: [-2, 54],
+    isoNums: ['826'],
+    titleIt: "Regno Unito: il laboratorio dell'AI Safety",
+    titleEn: "United Kingdom: The AI Safety Lab",
+    roleIt: "Campione dell'AI sicura",
+    roleEn: "AI safety champion",
+    descIt: "Londra ospita DeepMind (Google), Stability AI e centinaia di startup. Il governo britannico ha organizzato nel 2023 il primo AI Safety Summit a Bletchley Park — dove Alan Turing lavorò nella Seconda Guerra Mondiale. Il UK AI Safety Institute è il primo ente governativo al mondo dedicato alla valutazione dei rischi dei modelli frontiera.",
+    descEn: "London hosts DeepMind (Google), Stability AI and hundreds of startups. The UK government organized the first AI Safety Summit in 2023 at Bletchley Park — where Alan Turing worked in WWII. The UK AI Safety Institute is the world's first government body evaluating frontier model risks.",
+    factsIt: ["DeepMind (Google): quartier generale a Londra", "AI Safety Summit 2023 — Bletchley Park", "UK AI Safety Institute: primo al mondo", "£1B National AI Strategy"],
+    factsEn: ["DeepMind (Google): HQ in London", "AI Safety Summit 2023 — Bletchley Park", "UK AI Safety Institute: first in the world", "£1B National AI Strategy"],
+    imageUrl: "https://picsum.photos/seed/london-bridge-tech/640/320",
+    imageCaption: "Londra, Regno Unito",
+  },
+  {
+    id: 'russia',
+    flag: '🇷🇺',
+    color: '#f97316',
+    coords: [60, 60],
+    isoNums: ['643'],
+    titleIt: "Russia: AI militare e disinformazione",
+    titleEn: "Russia: Military AI and Disinformation",
+    roleIt: "Potenza militare AI",
+    roleEn: "Military AI power",
+    descIt: "Putin, 2017: «Chi diventerà il leader dell'AI diventerà il dominatore del mondo». La Russia usa l'AI per droni kamikaze in Ucraina, deepfake propagandistici e riconoscimento facciale di massa. Le sanzioni occidentali post-2022 rallentano l'accesso ai chip avanzati, ma le università russe producono ancora matematici e ingegneri d'élite.",
+    descEn: "Putin, 2017: 'Whoever becomes the AI leader will become the ruler of the world.' Russia uses AI for kamikaze drones in Ukraine, propaganda deepfakes, and mass facial recognition. Post-2022 Western sanctions slow access to advanced chips, but Russian universities still produce elite mathematicians and engineers.",
+    factsIt: ["Droni AI in Ucraina (conflitto reale)", "Deepfake come arma di propaganda", "Sberbank: principale AI company", "Sanzioni chip post-2022"],
+    factsEn: ["AI drones in Ukraine (real conflict)", "Deepfakes as propaganda weapon", "Sberbank: main AI company", "Post-2022 chip sanctions"],
+    imageUrl: "https://picsum.photos/seed/moscow-kremlin-winter/640/320",
+    imageCaption: "Mosca, Russia",
+  },
+  {
+    id: 'india',
+    flag: '🇮🇳',
+    color: '#22c55e',
+    coords: [78, 20],
+    isoNums: ['356'],
+    titleIt: "India: la fabbrica dei talenti AI",
+    titleEn: "India: The AI Talent Factory",
+    roleIt: "Serbatoio globale di talenti",
+    roleEn: "Global talent powerhouse",
+    descIt: "L'India ha il secondo ecosistema startup AI al mondo dopo gli USA. Il governo ha lanciato IndiaAI (2024) con 1 miliardo di dollari di investimento statale. Il 30% dei CEO delle Big Tech americane è di origine indiana. IIT Bombay, Delhi e Bangalore formano centinaia di migliaia di ingegneri l'anno.",
+    descEn: "India has the world's second-largest AI startup ecosystem after the US. The government launched IndiaAI (2024) with $1B in state investment. 30% of American Big Tech CEOs are of Indian origin. IIT Bombay, Delhi and Bangalore train hundreds of thousands of engineers yearly.",
+    factsIt: ["2° ecosistema startup AI al mondo", "IndiaAI: $1B investimento statale (2024)", "30% CEO Big Tech di origine indiana", "IIT: tra le top university mondiali"],
+    factsEn: ["2nd largest AI startup ecosystem", "IndiaAI: $1B state investment (2024)", "30% of Big Tech CEOs are Indian-origin", "IIT: among world's top tech universities"],
+    imageUrl: "https://picsum.photos/seed/bangalore-india-tech/640/320",
+    imageCaption: "Bangalore, India",
+  },
+  {
+    id: 'uae',
+    flag: '🇦🇪',
+    color: '#14b8a6',
+    coords: [54, 24],
+    isoNums: ['784'],
+    titleIt: "Emirati Arabi: la scommessa post-petrolio",
+    titleEn: "UAE: The Post-Oil Bet",
+    roleIt: "Investitore AI emergente",
+    roleEn: "Emerging AI investor",
+    descIt: "Gli Emirati Arabi costruiscono la loro fortuna post-petrolio sull'AI. MBZUAI è la prima università al mondo interamente dedicata all'intelligenza artificiale. G42 (Sheikh Tahnoon) ha partnership con OpenAI e Microsoft. Il modello Falcon, sviluppato da TII di Abu Dhabi, è uno dei più grandi LLM open-source al mondo.",
+    descEn: "The UAE is building its post-oil fortune on AI. MBZUAI is the world's first university entirely dedicated to AI. G42 (Sheikh Tahnoon) has partnerships with OpenAI and Microsoft. The Falcon model, developed by Abu Dhabi's TII, is one of the world's largest open-source LLMs.",
+    factsIt: ["MBZUAI: prima università 100% AI", "Falcon LLM: top open-source mondiale", "G42 + OpenAI + Microsoft", "Strategia diversificazione dal petrolio"],
+    factsEn: ["MBZUAI: first 100% AI university", "Falcon LLM: top open-source worldwide", "G42 + OpenAI + Microsoft", "Post-oil diversification strategy"],
+    imageUrl: "https://picsum.photos/seed/dubai-futuristic-skyline/640/320",
+    imageCaption: "Dubai, Emirati Arabi Uniti",
+  },
+  {
+    id: 'canada',
+    flag: '🇨🇦',
+    color: '#06b6d4',
+    coords: [-96, 56],
+    isoNums: ['124'],
+    titleIt: "Canada: la culla del deep learning",
+    titleEn: "Canada: The Cradle of Deep Learning",
+    roleIt: "Padre fondatore dell'AI moderna",
+    roleEn: "Founding father of modern AI",
+    descIt: "Tutto il deep learning moderno è nato in Canada. Geoffrey Hinton (Toronto, Premio Nobel per la Fisica 2024) ha inventato le reti neurali profonde. Yoshua Bengio (Montreal) è tra i padri dei transformer. Vector Institute, Mila e Amii formano la «AI Trinity» canadese. Montreal è diventata capitale mondiale dell'AI.",
+    descEn: "All modern deep learning was born in Canada. Geoffrey Hinton (Toronto, Nobel Prize in Physics 2024) invented deep neural networks. Yoshua Bengio (Montreal) is among the fathers of transformers. Vector Institute, Mila and Amii form the Canadian 'AI Trinity'. Montreal has become a global AI capital.",
+    factsIt: ["Geoffrey Hinton: Nobel Fisica 2024", "Yoshua Bengio: padre dei transformer", "Vector Institute + Mila + Amii", "Pan-Canadian AI Strategy: $1B"],
+    factsEn: ["Geoffrey Hinton: Nobel in Physics 2024", "Yoshua Bengio: father of transformers", "Vector Institute + Mila + Amii", "Pan-Canadian AI Strategy: $1B"],
+    imageUrl: "https://picsum.photos/seed/montreal-canada-winter/640/320",
+    imageCaption: "Montreal, Canada",
+  },
+  {
+    id: 'japan',
+    flag: '🇯🇵',
+    color: '#ec4899',
+    coords: [138, 37],
+    isoNums: ['392'],
+    titleIt: "Giappone: robot, Society 5.0 e AI",
+    titleEn: "Japan: Robots, Society 5.0 and AI",
+    roleIt: "Pioniere della robotica AI",
+    roleEn: "AI robotics pioneer",
+    descIt: "Il Giappone vede l'AI come soluzione alla propria crisi demografica — il paese con l'invecchiamento più rapido al mondo. La visione «Society 5.0» integra l'AI nel tessuto sociale. SoftBank ha investito massicciamente in OpenAI. Il Giappone è leader mondiale in robotica: 400 robot ogni 10.000 lavoratori industriali.",
+    descEn: "Japan sees AI as a solution to its demographic crisis — the world's fastest-aging country. The 'Society 5.0' vision integrates AI into the social fabric. SoftBank invested massively in OpenAI. Japan leads globally in robotics: 400 robots per 10,000 industrial workers.",
+    factsIt: ["Society 5.0: AI nel tessuto sociale", "SoftBank: mega-investitore in OpenAI", "400 robot ogni 10.000 lavoratori", "Crisi demografica → AI come soluzione"],
+    factsEn: ["Society 5.0: AI in the social fabric", "SoftBank: mega-investor in OpenAI", "400 robots per 10,000 workers", "Demographic crisis → AI as solution"],
+    imageUrl: "https://picsum.photos/seed/tokyo-night-japan/640/320",
+    imageCaption: "Tokyo, Giappone",
+  },
+  {
+    id: 'israel',
+    flag: '🇮🇱',
+    color: '#a78bfa',
+    coords: [35, 31.5],
+    isoNums: ['376'],
+    titleIt: "Israele: la Startup Nation dell'AI",
+    titleEn: "Israel: The AI Startup Nation",
+    roleIt: "Hub di AI militare e civile",
+    roleEn: "Military and civilian AI hub",
+    descIt: "Israele ha la più alta concentrazione di startup AI al mondo pro capite. Le tecnologie sviluppate per le forze armate (IDF) — riconoscimento facciale, droni autonomi, cyber intelligence — vengono poi commercializzate globalmente. La Unit 8200 dell'intelligence militare è la più prolifica incubatrice di imprenditori tech del paese.",
+    descEn: "Israel has the world's highest concentration of AI startups per capita. Technologies developed for the IDF — facial recognition, autonomous drones, cyber intelligence — are commercialized globally. Military intelligence Unit 8200 is the country's most prolific tech entrepreneur incubator.",
+    factsIt: ["N°1 startup AI pro capite nel mondo", "Unit 8200: incubatrice imprenditori tech", "Check Point + Wiz: cybersecurity AI", "IDF: test bed tecnologie AI"],
+    factsEn: ["#1 AI startups per capita globally", "Unit 8200: tech entrepreneur incubator", "Check Point + Wiz: AI cybersecurity", "IDF: AI technology test bed"],
+    imageUrl: "https://picsum.photos/seed/tel-aviv-israel-beach/640/320",
+    imageCaption: "Tel Aviv, Israele",
+  },
+];
+
+// ─────────────────────────────────────────────────────────────
+// LANGUAGE STATE
+// ─────────────────────────────────────────────────────────────
+let currentLang = 'it';
+let currentActor = null;
+
+function t(actor, key) {
+  const k = currentLang === 'it' ? key + 'It' : key + 'En';
+  return actor[k];
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
+  });
+  updateStaticText();
+  if (currentActor) renderModal(currentActor);
+  buildLegend();
+}
+
+function updateStaticText() {
+  const isIt = currentLang === 'it';
+  document.getElementById('badge').textContent = isIt
+    ? "Spettacolo · Geopolitica dell'AI"
+    : "Show · AI Geopolitics";
+  document.getElementById('main-title').innerHTML = isIt
+    ? "Chi controlla <span>l'intelligenza artificiale</span>?"
+    : "Who controls <span>artificial intelligence</span>?";
+  document.getElementById('main-subtitle').textContent = isIt
+    ? "L'AI non è solo tecnologia — è potere geopolitico. Esplora i 10 attori principali che stanno ridisegnando gli equilibri mondiali nella corsa all'intelligenza artificiale."
+    : "AI isn't just technology — it's geopolitical power. Explore the 10 key players reshaping global power balances in the race for artificial intelligence.";
+  document.getElementById('map-hint').textContent = isIt
+    ? "↑ Clicca sui marcatori per aprire la scheda"
+    : "↑ Click on the markers to open the card";
+  document.getElementById('footer-text').textContent = isIt
+    ? "Fosforoscienza / Next ETS · Science Snack · Dati aggiornati 2025"
+    : "Fosforoscienza / Next ETS · Science Snack · Data updated 2025";
+}
+
+// ─────────────────────────────────────────────────────────────
+// LEGEND
+// ─────────────────────────────────────────────────────────────
+function buildLegend() {
+  const el = document.getElementById('legend');
+  el.innerHTML = ACTORS.map(a => `
+    <div class="legend-item" onclick="openModal('${a.id}')">
+      <span class="legend-dot" style="background:${a.color}"></span>
+      <span>${a.flag} ${currentLang === 'it' ? a.titleIt.split(':')[0] : a.titleEn.split(':')[0]}</span>
+    </div>
+  `).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+// MODAL
+// ─────────────────────────────────────────────────────────────
+function openModal(actorIdOrObj) {
+  currentActor = typeof actorIdOrObj === 'string'
+    ? ACTORS.find(a => a.id === actorIdOrObj)
+    : actorIdOrObj;
+  if (!currentActor) return;
+  renderModal(currentActor);
+  document.getElementById('modal-backdrop').classList.add('open');
+}
+
+function renderModal(actor) {
+  const isIt = currentLang === 'it';
+
+  // Image
+  const img = document.getElementById('modal-img');
+  img.src = actor.imageUrl;
+  img.alt = actor.imageCaption;
+  img.style.opacity = '1';
+
+  // Style modal border/shadow by actor color
+  document.getElementById('modal-card').style.borderColor = actor.color + '44';
+  document.getElementById('modal-card').style.boxShadow = `0 0 60px ${actor.color}18`;
+
+  // Image header gradient
+  document.getElementById('modal-image').style.background =
+    `linear-gradient(135deg, #061627 0%, ${actor.color}33 100%)`;
+
+  document.getElementById('modal-flag').textContent = actor.flag;
+  document.getElementById('modal-img-caption').textContent = actor.imageCaption;
+
+  document.getElementById('modal-title').textContent = isIt ? actor.titleIt : actor.titleEn;
+  document.getElementById('modal-title').style.color = actor.color;
+
+  const roleEl = document.getElementById('modal-role');
+  roleEl.textContent = isIt ? actor.roleIt : actor.roleEn;
+  roleEl.style.background = actor.color + '1a';
+  roleEl.style.color = actor.color;
+  roleEl.style.border = `1px solid ${actor.color}44`;
+
+  document.getElementById('modal-desc').textContent = isIt ? actor.descIt : actor.descEn;
+
+  const facts = isIt ? actor.factsIt : actor.factsEn;
+  document.getElementById('modal-facts').innerHTML = facts.map(f => `
+    <span class="fact-chip" style="background:${actor.color}1a;color:${actor.color};border-color:${actor.color}44">${f}</span>
+  `).join('');
+
+  // Reset scroll
+  document.getElementById('modal-card').scrollTop = 0;
+}
+
+function closeModal() {
+  document.getElementById('modal-backdrop').classList.remove('open');
+  currentActor = null;
+}
+
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('modal-backdrop')) closeModal();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ─────────────────────────────────────────────────────────────
+// MAP
+// ─────────────────────────────────────────────────────────────
+async function initMap() {
+  const svg = d3.select('#world-map');
+  const container = svg.node().parentElement;
+  const W = container.clientWidth || 960;
+  const H = Math.round(Math.min(W * 0.54, 580));
+
+  svg.attr('viewBox', `0 0 ${W} ${H}`)
+     .attr('width', W)
+     .attr('height', H);
+
+  const projection = d3.geoNaturalEarth1()
+    .scale(W / 6.28)
+    .translate([W / 2, H / 2]);
+
+  const path = d3.geoPath(projection);
+
+  // Ocean
+  svg.append('rect')
+    .attr('width', W).attr('height', H)
+    .attr('fill', '#040e1a');
+
+  try {
+    const world = await d3.json('https://unpkg.com/world-atlas@2/countries-110m.json');
+    const countries = topojson.feature(world, world.objects.countries);
+    const land     = topojson.feature(world, world.objects.land);
+    const borders  = topojson.mesh(world, world.objects.countries, (a, b) => a !== b);
+
+    // Build lookup: iso numeric → actor
+    const isoToActor = {};
+    ACTORS.forEach(a => a.isoNums.forEach(n => { isoToActor[n] = a; }));
+
+    // Land fill (all countries)
+    svg.append('path')
+      .datum(land)
+      .attr('d', path)
+      .attr('fill', '#0d2137');
+
+    // Highlighted country fills
+    svg.selectAll('.country-hi')
+      .data(countries.features.filter(d => isoToActor[d.id]))
+      .join('path')
+      .attr('class', 'country-hi')
+      .attr('d', path)
+      .attr('fill', d => (isoToActor[d.id].color + '1f'))
+      .attr('stroke', d => (isoToActor[d.id].color + '55'))
+      .attr('stroke-width', 1);
+
+    // Borders
+    svg.append('path')
+      .datum(borders)
+      .attr('d', path)
+      .attr('fill', 'none')
+      .attr('stroke', '#1a3550')
+      .attr('stroke-width', 0.4);
+
+    // Graticule
+    const graticule = d3.geoGraticule();
+    svg.append('path')
+      .datum(graticule())
+      .attr('d', path)
+      .attr('fill', 'none')
+      .attr('stroke', 'rgba(255,255,255,0.03)')
+      .attr('stroke-width', 0.5);
+
+    // Globe outline
+    svg.append('path')
+      .datum({ type: 'Sphere' })
+      .attr('d', path)
+      .attr('fill', 'none')
+      .attr('stroke', '#1a3550')
+      .attr('stroke-width', 0.8);
+
+    // Markers
+    ACTORS.forEach(actor => {
+      const [x, y] = projection(actor.coords);
+      if (x == null || y == null || isNaN(x) || isNaN(y)) return;
+
+      const g = svg.append('g')
+        .attr('class', 'marker-group')
+        .attr('transform', `translate(${x},${y})`)
+        .on('click', () => openModal(actor));
+
+      // Pulse ring
+      g.append('circle')
+        .attr('class', 'pulse-ring')
+        .attr('r', 10)
+        .attr('fill', 'none')
+        .attr('stroke', actor.color)
+        .attr('stroke-width', 1.5)
+        .style('opacity', 0.7);
+
+      // Main dot
+      g.append('circle')
+        .attr('class', 'marker-dot')
+        .attr('r', 6)
+        .attr('fill', actor.color)
+        .attr('stroke', '#f0f5fb')
+        .attr('stroke-width', 1.5)
+        .style('filter', `drop-shadow(0 0 5px ${actor.color})`);
+
+      // Flag label
+      g.append('text')
+        .attr('y', -13)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '14px')
+        .style('user-select', 'none')
+        .style('pointer-events', 'none')
+        .text(actor.flag);
+    });
+
+  } catch (err) {
+    console.error('Map load error:', err);
+    svg.append('text')
+      .attr('x', W / 2).attr('y', H / 2)
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#64748b')
+      .text('Errore nel caricamento della mappa — verifica la connessione internet.');
+  }
+
+  // Hide loader
+  const loader = document.getElementById('loader');
+  loader.style.opacity = '0';
+  setTimeout(() => loader.style.display = 'none', 400);
+}
+
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
+buildLegend();
+initMap();
+</script>
+</body>
+</html>
