@@ -131,8 +131,8 @@ body { animation: page-in 0.45s ease both; }
    MODAL — SCHEDA PAESE
 ════════════════════════════════════════════════════ */
 #scheda-card {
-  width: 100%; max-width: 460px; max-height: 88vh;
-  overflow-y: auto; border-radius: 20px;
+  width: 100%; max-width: 700px; max-height: 92vh;
+  overflow-y: auto; border-radius: 24px;
   background: #0d2137; border: 1px solid #1a3550;
   transform: translateY(20px) scale(0.97);
   transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
@@ -141,8 +141,8 @@ body { animation: page-in 0.45s ease both; }
 .modal-backdrop.open #scheda-card { transform: none; }
 
 #scheda-image {
-  position: relative; height: 190px;
-  overflow: hidden; border-radius: 20px 20px 0 0;
+  position: relative; height: 300px;
+  overflow: hidden; border-radius: 24px 24px 0 0;
 }
 #scheda-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .img-overlay {
@@ -150,24 +150,24 @@ body { animation: page-in 0.45s ease both; }
   background: linear-gradient(to bottom, transparent 35%, rgba(13,33,55,0.92) 100%);
 }
 #scheda-flag {
-  position: absolute; bottom: 14px; left: 20px;
-  font-size: 40px; line-height: 1;
+  position: absolute; bottom: 18px; left: 28px;
+  font-size: 56px; line-height: 1;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.7));
 }
 #scheda-caption {
-  position: absolute; bottom: 10px; right: 14px;
-  font-size: 11px; color: rgba(255,255,255,0.5);
+  position: absolute; bottom: 14px; right: 18px;
+  font-size: 12px; color: rgba(255,255,255,0.5);
 }
-#scheda-body { padding: 18px 22px 26px; }
-#scheda-title { font-size: 18px; font-weight: 700; line-height: 1.25; margin-bottom: 6px; }
+#scheda-body { padding: 28px 36px 36px; }
+#scheda-title { font-size: 26px; font-weight: 700; line-height: 1.25; margin-bottom: 8px; }
 #scheda-role {
-  display: inline-block; font-size: 12px; font-weight: 600;
-  padding: 3px 10px; border-radius: 100px; margin-bottom: 14px;
+  display: inline-block; font-size: 14px; font-weight: 600;
+  padding: 5px 14px; border-radius: 100px; margin-bottom: 20px;
 }
-#scheda-desc { font-size: 14px; line-height: 1.72; color: #94a3b8; margin-bottom: 16px; }
-#scheda-facts { display: flex; flex-wrap: wrap; gap: 7px; }
+#scheda-desc { font-size: 16px; line-height: 1.76; color: #94a3b8; margin-bottom: 22px; }
+#scheda-facts { display: flex; flex-wrap: wrap; gap: 9px; }
 .fact-chip {
-  font-size: 12px; padding: 5px 12px;
+  font-size: 13px; padding: 6px 16px;
   border-radius: 100px; border: 1px solid; white-space: nowrap;
 }
 
@@ -175,8 +175,8 @@ body { animation: page-in 0.45s ease both; }
    MODAL — LEADER CAROUSEL
 ════════════════════════════════════════════════════ */
 #leader-card {
-  width: 100%; max-width: 400px;
-  border-radius: 20px; background: #0d2137; border: 1px solid #1a3550;
+  width: 100%; max-width: 620px;
+  border-radius: 24px; background: #0d2137; border: 1px solid #1a3550;
   overflow: hidden;
   transform: translateY(20px) scale(0.97);
   transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
@@ -184,7 +184,7 @@ body { animation: page-in 0.45s ease both; }
 .modal-backdrop.open #leader-card { transform: none; }
 
 #leader-photo-wrap {
-  position: relative; height: 280px; overflow: hidden; background: #061627;
+  position: relative; height: 400px; overflow: hidden; background: #061627;
 }
 #leader-photo {
   width: 100%; height: 100%; object-fit: cover; display: block;
@@ -196,33 +196,33 @@ body { animation: page-in 0.45s ease both; }
 }
 .car-btn {
   position: absolute; top: 50%; transform: translateY(-50%);
-  width: 36px; height: 36px; border-radius: 50%; border: none;
-  background: rgba(0,0,0,0.5); color: #fff; font-size: 16px;
+  width: 44px; height: 44px; border-radius: 50%; border: none;
+  background: rgba(0,0,0,0.5); color: #fff; font-size: 20px;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: all 0.18s; z-index: 2;
 }
 .car-btn:hover { background: rgba(0,0,0,0.8); }
 .car-btn:disabled { opacity: 0.2; pointer-events: none; }
-#car-prev { left: 10px; }
-#car-next { right: 10px; }
+#car-prev { left: 14px; }
+#car-next { right: 14px; }
 #car-dots {
-  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-  display: flex; gap: 6px; z-index: 2;
+  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 2;
 }
 .car-dot {
-  width: 6px; height: 6px; border-radius: 50%; border: none;
+  width: 8px; height: 8px; border-radius: 50%; border: none;
   background: rgba(255,255,255,0.35); cursor: pointer; transition: all 0.2s;
 }
 .car-dot.active { background: #fff; transform: scale(1.3); }
 
-#leader-info { padding: 18px 22px 24px; }
-#leader-name { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+#leader-info { padding: 28px 36px 32px; }
+#leader-name { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
 #leader-role {
-  display: inline-block; font-size: 12px; font-weight: 600;
-  padding: 3px 10px; border-radius: 100px; margin-bottom: 14px;
+  display: inline-block; font-size: 14px; font-weight: 600;
+  padding: 5px 14px; border-radius: 100px; margin-bottom: 18px;
 }
-#leader-desc { font-size: 14px; line-height: 1.72; color: #94a3b8; }
+#leader-desc { font-size: 16px; line-height: 1.76; color: #94a3b8; }
 #leader-meta {
-  margin-top: 14px; font-size: 12px; color: #44566a;
-  display: flex; align-items: center; gap: 6px;
+  margin-top: 18px; font-size: 13px; color: #44566a;
+  display: flex; align-items: center; gap: 8px;
 }
