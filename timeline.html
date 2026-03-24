@@ -274,9 +274,9 @@
     <button class="nav-dot"></button>
   </div>
 
-  <!-- Arrows: repurposed as timeline advance/retreat -->
-  <a class="nav-arrow" id="nav-prev">&#8592;</a>
-  <a class="nav-arrow" id="nav-next">&#8594;</a>
+  <!-- Arrows: page navigation -->
+  <a class="nav-arrow" id="nav-prev" href="index.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="paesi.html">&#8594;</a>
 
   <!-- Lang toggle -->
   <div id="lang-toggle">
@@ -621,14 +621,6 @@
       if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
         e.preventDefault(); retreat();
       }
-    });
-
-    // Nav arrow clicks
-    document.getElementById('nav-prev').addEventListener('click', e => {
-      e.preventDefault(); retreat();
-    });
-    document.getElementById('nav-next').addEventListener('click', e => {
-      e.preventDefault(); advance();
     });
 
     // Nav dots (from common.js PAGES array)
