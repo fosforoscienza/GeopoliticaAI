@@ -85,6 +85,34 @@
       margin-top: 16px; font-size: 12px; color: #44566a;
       display: flex; align-items: center; gap: 7px;
     }
+
+    /* ── Globe controls (bottom-left) ── */
+    #globe-controls {
+      position: fixed; bottom: 26px; left: 22px;
+      z-index: 80; display: flex; gap: 8px;
+    }
+    .globe-ctrl-btn {
+      height: 36px; padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(13,33,55,0.84);
+      backdrop-filter: blur(12px);
+      color: rgba(255,255,255,0.65);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      display: flex; align-items: center; gap: 5px;
+      transition: all 0.2s;
+    }
+    .globe-ctrl-btn:hover {
+      background: rgba(65,183,255,0.15);
+      color: #41b7ff;
+      border-color: rgba(65,183,255,0.3);
+    }
+    .globe-ctrl-btn.paused {
+      background: rgba(65,183,255,0.12);
+      color: #41b7ff;
+      border-color: rgba(65,183,255,0.28);
+    }
   </style>
 </head>
 <body>
@@ -117,6 +145,12 @@
     <button class="lang-btn" data-lang="en">EN</button>
   </div>
 
+  <!-- Globe controls -->
+  <div id="globe-controls">
+    <button class="globe-ctrl-btn" id="btn-texture" onclick="toggleTexture()"></button>
+    <button class="globe-ctrl-btn" id="btn-rotate"  onclick="toggleRotation()"></button>
+  </div>
+
   <!-- Modal: leader carousel -->
   <div class="modal-backdrop" id="modal-leader" onclick="backdropClose(event,'modal-leader')">
     <div id="leader-card">
@@ -144,14 +178,59 @@
 
     // ── i18n ──────────────────────────────────────────────
     const GLB_I18N = {
-      it: { title: "Leader & CEO dell'AI", sub: 'Luoghi di nascita · clicca un punto per scoprire' },
-      en: { title: 'AI Leaders & CEOs',    sub: 'Birthplaces · click a dot to discover' },
+      it: {
+        title:    "Leader & CEO dell'AI",
+        sub:      'Luoghi di nascita · clicca un punto per scoprire',
+        toDark:   '🌑 Vista scura',
+        toMarble: '🌍 Vista reale',
+        rotStop:  '⏸ Ferma',
+        rotPlay:  '▶ Ruota',
+      },
+      en: {
+        title:    'AI Leaders & CEOs',
+        sub:      'Birthplaces · click a dot to discover',
+        toDark:   '🌑 Dark view',
+        toMarble: '🌍 Real view',
+        rotStop:  '⏸ Stop',
+        rotPlay:  '▶ Rotate',
+      },
     };
 
     function updateHeader() {
       const t = GLB_I18N[lang];
       document.getElementById('gh-title').textContent = t.title;
       document.getElementById('gh-sub').textContent   = t.sub;
+      updateCtrlBtns();
+    }
+
+    // ── Globe controls state ───────────────────────────────
+    const TEXTURES = {
+      marble: '//unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
+      dark:   '//unpkg.com/three-globe/example/img/earth-dark.jpg',
+    };
+    let currentTexture = 'marble';
+    let isRotating     = true;
+
+    function updateCtrlBtns() {
+      const t      = GLB_I18N[lang];
+      const texBtn = document.getElementById('btn-texture');
+      const rotBtn = document.getElementById('btn-rotate');
+      if (!texBtn || !rotBtn) return;
+      texBtn.textContent = currentTexture === 'marble' ? t.toDark : t.toMarble;
+      rotBtn.textContent = isRotating ? t.rotStop : t.rotPlay;
+      rotBtn.classList.toggle('paused', !isRotating);
+    }
+
+    function toggleTexture() {
+      currentTexture = currentTexture === 'marble' ? 'dark' : 'marble';
+      if (globeRef) globeRef.globeImageUrl(TEXTURES[currentTexture]);
+      updateCtrlBtns();
+    }
+
+    function toggleRotation() {
+      isRotating = !isRotating;
+      if (globeRef) globeRef.controls().autoRotate = isRotating;
+      updateCtrlBtns();
     }
 
     // ── Birthplace coordinates ─────────────────────────────
@@ -205,7 +284,7 @@
 
     function closeLeaderModal() {
       closeModal('modal-leader');
-      if (globeRef) globeRef.controls().autoRotate = true;
+      if (globeRef) globeRef.controls().autoRotate = isRotating;
     }
 
     function renderCarousel() {
@@ -264,7 +343,7 @@
     function watchModalClose() {
       new MutationObserver(() => {
         if (!document.getElementById('modal-leader').classList.contains('open') && globeRef) {
-          globeRef.controls().autoRotate = true;
+          globeRef.controls().autoRotate = isRotating; // rispetta lo stato utente
         }
       }).observe(document.getElementById('modal-leader'), {
         attributes: true, attributeFilter: ['class'],
@@ -273,7 +352,7 @@
 
     // Lang change
     function onLangChange() {
-      updateHeader();
+      updateHeader(); // chiama anche updateCtrlBtns()
       if (globeRef) globeRef.pointLabel(makeLabel);
       if (document.getElementById('modal-leader').classList.contains('open')) {
         renderCarousel();
@@ -372,7 +451,7 @@
 
         watchModalClose();
         hideLoader();
-        updateHeader();
+        updateHeader();   // popola titolo + bottoni
 
       } catch (err) {
         console.error(err);
