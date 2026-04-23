@@ -5,13 +5,101 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Leader & CEO — Geopolitica della AI</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Globe fills screen ── */
+    #globe-container {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+    }
+    #globe-container canvas { display: block; }
+
+    /* ── Header overlay ── */
+    #globe-header {
+      position: fixed; top: 22px; left: 50%; transform: translateX(-50%);
+      text-align: center; z-index: 10; pointer-events: none;
+    }
+    #gh-eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: rgba(65,183,255,0.5); margin-bottom: 5px;
+    }
+    #gh-title {
+      font-size: 20px; font-weight: 800;
+      color: rgba(240,245,251,0.92);
+      text-shadow: 0 2px 24px rgba(0,0,0,0.9);
+    }
+    #gh-sub {
+      font-size: 12px; color: #44566a; margin-top: 3px;
+    }
+
+    /* ── Leader modal — bigger ── */
+    #leader-card {
+      width: 100%; max-width: 540px;
+      border-radius: 20px; background: #0d2137; border: 1px solid #1a3550;
+      overflow: hidden;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .modal-backdrop.open #leader-card { transform: none; }
+
+    #leader-photo-wrap {
+      position: relative; height: 320px; overflow: hidden; background: #061627;
+    }
+    #leader-photo {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: opacity 0.25s;
+    }
+    .leader-photo-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, rgba(13,33,55,0.9) 100%);
+    }
+    .car-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 40px; height: 40px; border-radius: 50%; border: none;
+      background: rgba(0,0,0,0.5); color: #fff; font-size: 18px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.18s; z-index: 2;
+    }
+    .car-btn:hover { background: rgba(0,0,0,0.82); }
+    .car-btn:disabled { opacity: 0.18; pointer-events: none; }
+    #car-prev { left: 12px; }
+    #car-next { right: 12px; }
+    #car-dots {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; z-index: 2;
+    }
+    .car-dot {
+      width: 7px; height: 7px; border-radius: 50%; border: none;
+      background: rgba(255,255,255,0.35); cursor: pointer; transition: all 0.2s;
+      padding: 0;
+    }
+    .car-dot.active { background: #fff; transform: scale(1.35); }
+
+    #leader-info { padding: 22px 26px 28px; }
+    #leader-name { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    #leader-role {
+      display: inline-block; font-size: 12px; font-weight: 600;
+      padding: 4px 12px; border-radius: 100px; margin-bottom: 16px;
+    }
+    #leader-desc { font-size: 14px; line-height: 1.75; color: #94a3b8; }
+    #leader-meta {
+      margin-top: 16px; font-size: 12px; color: #44566a;
+      display: flex; align-items: center; gap: 7px;
+    }
+  </style>
 </head>
 <body>
 
   <div id="loader"><div class="spinner"></div></div>
 
-  <!-- Map -->
-  <svg id="map-leader" class="map-svg"></svg>
+  <!-- 3D Globe -->
+  <div id="globe-container"></div>
+
+  <!-- Title overlay -->
+  <div id="globe-header">
+    <div id="gh-eyebrow">Geopolitica della AI</div>
+    <div id="gh-title"></div>
+    <div id="gh-sub"></div>
+  </div>
 
   <!-- Navigation -->
   <div id="nav-dots">
@@ -33,12 +121,12 @@
   <div class="modal-backdrop" id="modal-leader" onclick="backdropClose(event,'modal-leader')">
     <div id="leader-card">
       <div id="leader-photo-wrap">
-        <img id="leader-photo" src="" alt="" onerror="this.style.opacity='0.2'" />
+        <img id="leader-photo" src="" alt="" onerror="this.style.opacity='0.15'" />
         <div class="leader-photo-overlay"></div>
         <button class="car-btn" id="car-prev" onclick="carMove(-1)">&#8592;</button>
         <button class="car-btn" id="car-next" onclick="carMove(+1)">&#8594;</button>
         <div id="car-dots"></div>
-        <button class="modal-close-btn" onclick="closeModal('modal-leader')">×</button>
+        <button class="modal-close-btn" onclick="closeLeaderModal()">×</button>
       </div>
       <div id="leader-info">
         <div id="leader-name"></div>
@@ -49,25 +137,75 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <!-- Globe.gl (Three.js based) -->
+  <script src="https://cdn.jsdelivr.net/npm/globe.gl/dist/globe.gl.min.js"></script>
   <script src="js/common.js"></script>
-  <script src="js/map.js"></script>
   <script>
-    // ── Carousel state ────────────────────────────────
+
+    // ── i18n ──────────────────────────────────────────────
+    const GLB_I18N = {
+      it: { title: "Leader & CEO dell'AI", sub: 'Luoghi di nascita · clicca un punto per scoprire' },
+      en: { title: 'AI Leaders & CEOs',    sub: 'Birthplaces · click a dot to discover' },
+    };
+
+    function updateHeader() {
+      const t = GLB_I18N[lang];
+      document.getElementById('gh-title').textContent = t.title;
+      document.getElementById('gh-sub').textContent   = t.sub;
+    }
+
+    // ── Birthplace coordinates ─────────────────────────────
+    const BP = {
+      'Sam Altman':            { lat:  38.63, lng:  -90.20, city: { it: 'St. Louis, USA',              en: 'St. Louis, USA' } },
+      'Jensen Huang':          { lat:  23.00, lng:  120.20, city: { it: 'Tainan, Taiwan',              en: 'Tainan, Taiwan' } },
+      'Sundar Pichai':         { lat:   9.93, lng:   78.12, city: { it: 'Madurai, India',              en: 'Madurai, India' } },
+      'Mark Zuckerberg':       { lat:  41.03, lng:  -73.76, city: { it: 'White Plains, USA',           en: 'White Plains, USA' } },
+      'Elon Musk':             { lat: -25.75, lng:   28.19, city: { it: 'Pretoria, Sud Africa',        en: 'Pretoria, South Africa' } },
+      'Xi Jinping':            { lat:  39.91, lng:  116.39, city: { it: 'Pechino, Cina',               en: 'Beijing, China' } },
+      'Robin Li':              { lat:  37.86, lng:  113.56, city: { it: 'Yangquan, Cina',              en: 'Yangquan, China' } },
+      'Liang Wenfeng':         { lat:  21.27, lng:  110.35, city: { it: 'Zhanjiang, Cina',             en: 'Zhanjiang, China' } },
+      'Emmanuel Macron':       { lat:  49.90, lng:    2.30, city: { it: 'Amiens, Francia',             en: 'Amiens, France' } },
+      'Ursula von der Leyen':  { lat:  50.85, lng:    4.35, city: { it: 'Bruxelles, Belgio',           en: 'Brussels, Belgium' } },
+      'Yann LeCun':            { lat:  48.93, lng:    2.22, city: { it: 'Francia',                     en: 'France' } },
+      'Demis Hassabis':        { lat:  51.60, lng:   -0.10, city: { it: 'Londra, UK',                  en: 'London, UK' } },
+      'Mustafa Suleyman':      { lat:  51.49, lng:   -0.06, city: { it: 'Londra, UK',                  en: 'London, UK' } },
+      'Vladimir Putin':        { lat:  59.95, lng:   30.32, city: { it: 'San Pietroburgo, Russia',     en: 'Saint Petersburg, Russia' } },
+      'Herman Gref':           { lat:  52.30, lng:   76.95, city: { it: 'Pavlodar, Kazakhstan',        en: 'Pavlodar, Kazakhstan' } },
+      'Narendra Modi':         { lat:  23.78, lng:   72.63, city: { it: 'Vadnagar, India',             en: 'Vadnagar, India' } },
+      'Satya Nadella':         { lat:  17.38, lng:   78.48, city: { it: 'Hyderabad, India',            en: 'Hyderabad, India' } },
+      'Arvind Krishna':        { lat:  16.50, lng:   80.62, city: { it: 'Andhra Pradesh, India',       en: 'Andhra Pradesh, India' } },
+      'Mohamed bin Zayed':     { lat:  24.47, lng:   54.37, city: { it: 'Abu Dhabi, EAU',              en: 'Abu Dhabi, UAE' } },
+      'Peng Xiao':             { lat:  31.22, lng:  121.47, city: { it: 'Shanghai, Cina',              en: 'Shanghai, China' } },
+      'Geoffrey Hinton':       { lat:  51.43, lng:   -0.20, city: { it: 'Wimbledon, UK',               en: 'Wimbledon, UK' } },
+      'Yoshua Bengio':         { lat:  48.85, lng:    2.35, city: { it: 'Parigi, Francia',             en: 'Paris, France' } },
+      'Masayoshi Son':         { lat:  33.38, lng:  130.50, city: { it: 'Tosu, Giappone',              en: 'Tosu, Japan' } },
+      'Fumio Kishida':         { lat:  35.69, lng:  139.69, city: { it: 'Tokyo, Giappone',             en: 'Tokyo, Japan' } },
+      'Yoav Shoham':           { lat:  32.08, lng:   34.78, city: { it: 'Tel Aviv, Israele',           en: 'Tel Aviv, Israel' } },
+      'Amnon Shashua':         { lat:  31.78, lng:   35.22, city: { it: 'Gerusalemme, Israele',        en: 'Jerusalem, Israel' } },
+    };
+
+    // ── Globe reference ────────────────────────────────────
+    let globeRef = null;
+
+    // ── Carousel state ─────────────────────────────────────
     let carPeople = [];
     let carIdx    = 0;
     let carColor  = '#41b7ff';
     let carFlag   = '';
 
-    // ── Open carousel for a country ──────────────────
-    function openLeader(actor) {
-      carPeople = actor.people;
-      carIdx    = 0;
-      carColor  = actor.color;
-      carFlag   = actor.flag;
+    function openLeaderPin(pin) {
+      carPeople = pin.actor.people;
+      carIdx    = pin.personIdx;
+      carColor  = pin.actor.color;
+      carFlag   = pin.actor.flag;
       renderCarousel();
       openModal('modal-leader');
+      if (globeRef) globeRef.controls().autoRotate = false;
+    }
+
+    function closeLeaderModal() {
+      closeModal('modal-leader');
+      if (globeRef) globeRef.controls().autoRotate = true;
     }
 
     function renderCarousel() {
@@ -75,24 +213,18 @@
       const person = carPeople[carIdx];
       const loc    = person[lang];
 
-      // Photo (fade)
+      // Photo fade-swap
       const img = document.getElementById('leader-photo');
       img.style.opacity = '0';
-      setTimeout(() => {
-        img.src = person.imageUrl;
-        img.style.opacity = '1';
-      }, 150);
+      setTimeout(() => { img.src = person.imageUrl; img.style.opacity = '1'; }, 150);
 
-      // Wrap background
       document.getElementById('leader-photo-wrap').style.background =
         `linear-gradient(135deg,#061627,${carColor}44)`;
 
-      // Card border
       const card = document.getElementById('leader-card');
       card.style.borderColor = carColor + '44';
-      card.style.boxShadow   = `0 0 60px ${carColor}15`;
+      card.style.boxShadow   = `0 0 70px ${carColor}18`;
 
-      // Info
       document.getElementById('leader-name').textContent = person.name;
 
       const roleEl = document.getElementById('leader-role');
@@ -107,15 +239,11 @@
          <span style="color:${carColor}">${person.name}</span>
          <span>· ${carIdx + 1} / ${carPeople.length}</span>`;
 
-      // Arrows
       document.getElementById('car-prev').disabled = (carIdx === 0);
       document.getElementById('car-next').disabled = (carIdx === carPeople.length - 1);
-
-      // Dots
       document.getElementById('car-dots').innerHTML = carPeople
         .map((_, i) =>
-          `<button class="car-dot${i === carIdx ? ' active' : ''}"
-            onclick="carGo(${i})"></button>`)
+          `<button class="car-dot${i === carIdx ? ' active' : ''}" onclick="carGo(${i})"></button>`)
         .join('');
     }
 
@@ -125,31 +253,127 @@
       renderCarousel();
     }
 
-    // Keyboard: arrows navigate carousel when modal is open
+    // Carousel keyboard arrows (only when modal open)
     document.addEventListener('keydown', e => {
       if (!document.getElementById('modal-leader').classList.contains('open')) return;
       if (e.key === 'ArrowLeft')  carMove(-1);
       if (e.key === 'ArrowRight') carMove(+1);
     });
 
-    // Re-render on language change
+    // Resume rotation whenever the modal loses .open (ESC, backdrop, etc.)
+    function watchModalClose() {
+      new MutationObserver(() => {
+        if (!document.getElementById('modal-leader').classList.contains('open') && globeRef) {
+          globeRef.controls().autoRotate = true;
+        }
+      }).observe(document.getElementById('modal-leader'), {
+        attributes: true, attributeFilter: ['class'],
+      });
+    }
+
+    // Lang change
     function onLangChange() {
+      updateHeader();
+      if (globeRef) globeRef.pointLabel(makeLabel);
       if (document.getElementById('modal-leader').classList.contains('open')) {
         renderCarousel();
       }
     }
 
-    // ── Boot ─────────────────────────────────────────
+    // Tooltip HTML builder
+    function makeLabel(d) {
+      const city = (d.city[lang] || '');
+      return `
+        <div style="
+          background:rgba(4,14,26,0.93);
+          padding:9px 15px;
+          border-radius:11px;
+          border:1px solid ${d.color}66;
+          color:${d.color};
+          font-family:'Segoe UI',system-ui,sans-serif;
+          font-size:13px; font-weight:700;
+          line-height:1.5; white-space:nowrap;
+          box-shadow:0 4px 28px rgba(0,0,0,0.65)">
+          ${d.flag} ${d.name}
+          <div style="color:#64748b;font-size:11px;font-weight:400;margin-top:1px">${city}</div>
+        </div>`;
+    }
+
+    // ── Main init ──────────────────────────────────────────
     async function init() {
       try {
         const actors = await loadSchede('SCHEDE_LEADER');
-        await initMap(
-          'map-leader',
-          actors,
-          actor => actor.flag + (actor.people.length > 1 ? ` ${actor.people.length}` : ''),
-          actor => openLeader(actor)
-        );
+
+        // Flatten to one pin per person
+        const pins = [];
+        actors.forEach(actor => {
+          actor.people.forEach((person, personIdx) => {
+            const bp = BP[person.name];
+            if (!bp) return;
+            pins.push({
+              lat:       bp.lat,
+              lng:       bp.lng,
+              city:      bp.city,
+              name:      person.name,
+              color:     actor.color,
+              flag:      actor.flag,
+              actor,
+              personIdx,
+            });
+          });
+        });
+
+        const container = document.getElementById('globe-container');
+
+        globeRef = Globe({ animateIn: false })
+          .width(window.innerWidth)
+          .height(window.innerHeight)
+
+          // Earth textures
+          .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+          .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+          .atmosphereColor('#1a4a7a')
+          .atmosphereAltitude(0.14)
+
+          // Dots (one per person)
+          .pointsData(pins)
+          .pointAltitude(0.018)
+          .pointColor(d => d.color)
+          .pointRadius(0.5)
+          .pointResolution(16)
+          .pointLabel(makeLabel)
+          .onPointClick(pin => openLeaderPin(pin))
+          .onPointHover(pin => {
+            container.style.cursor = pin ? 'pointer' : 'default';
+          })
+
+          // Pulsing rings
+          .ringsData(pins)
+          .ringColor(d => t => {
+            const alpha = Math.round((1 - t) * 170).toString(16).padStart(2, '0');
+            return d.color + alpha;
+          })
+          .ringMaxRadius(2.8)
+          .ringPropagationSpeed(1.4)
+          .ringRepeatPeriod(1800)
+
+          (container);
+
+        // Auto-rotate controls
+        globeRef.controls().autoRotate      = true;
+        globeRef.controls().autoRotateSpeed = 0.38;
+        globeRef.controls().enableDamping   = true;
+        globeRef.controls().dampingFactor   = 0.08;
+
+        // Responsive
+        window.addEventListener('resize', () => {
+          globeRef.width(window.innerWidth).height(window.innerHeight);
+        });
+
+        watchModalClose();
         hideLoader();
+        updateHeader();
+
       } catch (err) {
         console.error(err);
         showLoadError();
@@ -158,6 +382,7 @@
 
     initLangToggle();
     initNav(3);
+    updateHeader();
     init();
   </script>
 </body>
