@@ -2,26 +2,53 @@
   "id": "eu",
   "flag": "🇪🇺",
   "color": "#f59e0b",
-  "coords": [10, 51],
-  "isoNums": ["276", "250", "380", "724", "56"],
+  "coords": [
+    10,
+    51
+  ],
+  "isoNums": [
+    "276",
+    "250",
+    "380",
+    "724",
+    "56"
+  ],
   "people": [
     {
       "name": "Emmanuel Macron",
-      "imageUrl": "https://picsum.photos/seed/macron-france-ai/400/400",
-      "it": { "role": "Presidente della Repubblica Francese", "desc": "Macron si è autoproclamato campione dell'AI europea. Ha ospitato il Paris AI Action Summit 2025 e trasformato la Francia in hub europeo con 109 miliardi di euro di investimenti annunciati. Il suo obiettivo: fare di Mistral AI — la startup francese dei transformer — l'antidoto europeo a OpenAI." },
-      "en": { "role": "President of the French Republic", "desc": "Macron proclaimed himself champion of European AI. He hosted the Paris AI Action Summit 2025 and turned France into Europe's AI hub with €109 billion in announced investments. His goal: make Mistral AI — the French transformer startup — Europe's antidote to OpenAI." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Emmanuel_Macron_2025_%28cropped%29.jpg/400px-Emmanuel_Macron_2025_%28cropped%29.jpg",
+      "it": {
+        "role": "Presidente della Repubblica Francese",
+        "desc": "Macron si è autoproclamato campione dell'AI europea. Ha ospitato il Paris AI Action Summit 2025 e trasformato la Francia in hub europeo con 109 miliardi di euro di investimenti annunciati. Il suo obiettivo: fare di Mistral AI — la startup francese dei transformer — l'antidoto europeo a OpenAI."
+      },
+      "en": {
+        "role": "President of the French Republic",
+        "desc": "Macron proclaimed himself champion of European AI. He hosted the Paris AI Action Summit 2025 and turned France into Europe's AI hub with €109 billion in announced investments. His goal: make Mistral AI — the French transformer startup — Europe's antidote to OpenAI."
+      }
     },
     {
       "name": "Ursula von der Leyen",
-      "imageUrl": "https://picsum.photos/seed/von-der-leyen-eu/400/400",
-      "it": { "role": "Presidente della Commissione Europea", "desc": "Von der Leyen ha guidato la negoziazione dell'AI Act — la prima legge al mondo sull'intelligenza artificiale. Il suo approccio regolatorio basato sul rischio è ora studiato da 60 paesi come modello globale. Critica verso i giganti tech americani, mantiene rapporti stretti con Silicon Valley per evitare fughe di investimenti." },
-      "en": { "role": "President of the European Commission", "desc": "Von der Leyen led negotiations on the AI Act — the world's first AI law. Her risk-based regulatory approach is now studied by 60 countries as a global model. Critical of American tech giants, she maintains close ties with Silicon Valley to prevent investment flight." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Ursula_von_der_Leyen_2024.jpg/400px-Ursula_von_der_Leyen_2024.jpg",
+      "it": {
+        "role": "Presidente della Commissione Europea",
+        "desc": "Von der Leyen ha guidato la negoziazione dell'AI Act — la prima legge al mondo sull'intelligenza artificiale. Il suo approccio regolatorio basato sul rischio è ora studiato da 60 paesi come modello globale. Critica verso i giganti tech americani, mantiene rapporti stretti con Silicon Valley per evitare fughe di investimenti."
+      },
+      "en": {
+        "role": "President of the European Commission",
+        "desc": "Von der Leyen led negotiations on the AI Act — the world's first AI law. Her risk-based regulatory approach is now studied by 60 countries as a global model. Critical of American tech giants, she maintains close ties with Silicon Valley to prevent investment flight."
+      }
     },
     {
       "name": "Yann LeCun",
-      "imageUrl": "https://picsum.photos/seed/yann-lecun-meta/400/400",
-      "it": { "role": "Chief AI Scientist di Meta (francese)", "desc": "Padre del deep learning e vincitore del Turing Award, è oggi Chief AI Scientist di Meta. È il critico più autorevole dell'AI pericolosa: secondo lui i modelli attuali non possono raggiungere l'intelligenza umana senza una rivoluzione architetturale. La sua voce è una doccia fredda sul panico da superintelligenza." },
-      "en": { "role": "Chief AI Scientist at Meta (French)", "desc": "Father of deep learning and Turing Award winner, he is Meta's Chief AI Scientist. He is the most authoritative critic of dangerous AI theories: according to him, current models cannot achieve human intelligence without an architectural revolution. His voice is cold water on superintelligence panic." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Laura_Chaubard_%26_Yann_Le_Cun_-_2024_%2853814052697%29_%28cropped%29.jpg/400px-Laura_Chaubard_%26_Yann_Le_Cun_-_2024_%2853814052697%29_%28cropped%29.jpg",
+      "it": {
+        "role": "Chief AI Scientist di Meta (francese)",
+        "desc": "Padre del deep learning e vincitore del Turing Award, è oggi Chief AI Scientist di Meta. È il critico più autorevole dell'AI pericolosa: secondo lui i modelli attuali non possono raggiungere l'intelligenza umana senza una rivoluzione architetturale. La sua voce è una doccia fredda sul panico da superintelligenza."
+      },
+      "en": {
+        "role": "Chief AI Scientist at Meta (French)",
+        "desc": "Father of deep learning and Turing Award winner, he is Meta's Chief AI Scientist. He is the most authoritative critic of dangerous AI theories: according to him, current models cannot achieve human intelligence without an architectural revolution. His voice is cold water on superintelligence panic."
+      }
     }
   ]
 }

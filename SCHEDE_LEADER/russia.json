@@ -2,20 +2,37 @@
   "id": "russia",
   "flag": "🇷🇺",
   "color": "#f97316",
-  "coords": [60, 60],
-  "isoNums": ["643"],
+  "coords": [
+    60,
+    60
+  ],
+  "isoNums": [
+    "643"
+  ],
   "people": [
     {
       "name": "Vladimir Putin",
-      "imageUrl": "https://picsum.photos/seed/putin-russia-ai/400/400",
-      "it": { "role": "Presidente della Federazione Russa", "desc": "Putin, 2017: «Chi diventerà il leader dell'AI diventerà il dominatore del mondo». Investe in AI militare: sistemi d'arma autonomi, droni da sciame, deepfake per la guerra dell'informazione in Ucraina. Le sanzioni occidentali post-2022 hanno tagliato l'accesso ai chip avanzati, ma le università russe resistono nella matematica pura." },
-      "en": { "role": "President of the Russian Federation", "desc": "Putin, 2017: 'Whoever becomes the AI leader will become the ruler of the world.' He invests in military AI: autonomous weapons, swarm drones, deepfakes for information warfare in Ukraine. Post-2022 Western sanctions cut access to advanced chips, but Russian universities resist in pure mathematics." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/%D0%92%D0%BB%D0%B0%D0%B4%D0%B8%D0%BC%D0%B8%D1%80_%D0%9F%D1%83%D1%82%D0%B8%D0%BD_%2808-03-2024%29_%28cropped%29_%28higher_res%29_2.jpg/400px-%D0%92%D0%BB%D0%B0%D0%B4%D0%B8%D0%BC%D0%B8%D1%80_%D0%9F%D1%83%D1%82%D0%B8%D0%BD_%2808-03-2024%29_%28cropped%29_%28higher_res%29_2.jpg",
+      "it": {
+        "role": "Presidente della Federazione Russa",
+        "desc": "Putin, 2017: «Chi diventerà il leader dell'AI diventerà il dominatore del mondo». Investe in AI militare: sistemi d'arma autonomi, droni da sciame, deepfake per la guerra dell'informazione in Ucraina. Le sanzioni occidentali post-2022 hanno tagliato l'accesso ai chip avanzati, ma le università russe resistono nella matematica pura."
+      },
+      "en": {
+        "role": "President of the Russian Federation",
+        "desc": "Putin, 2017: 'Whoever becomes the AI leader will become the ruler of the world.' He invests in military AI: autonomous weapons, swarm drones, deepfakes for information warfare in Ukraine. Post-2022 Western sanctions cut access to advanced chips, but Russian universities resist in pure mathematics."
+      }
     },
     {
       "name": "Herman Gref",
-      "imageUrl": "https://picsum.photos/seed/herman-gref-sberbank/400/400",
-      "it": { "role": "CEO di Sberbank", "desc": "Il CEO della più grande banca russa ha trasformato Sberbank in uno dei principali investitori AI di Russia. Sotto la sua guida sono nati GigaChat (LLM russo), Kandinsky (generazione immagini) e decine di applicazioni AI per il mercato russo, parzialmente isolato dai provider occidentali dopo le sanzioni del 2022." },
-      "en": { "role": "CEO of Sberbank", "desc": "The CEO of Russia's largest bank transformed Sberbank into one of Russia's leading AI investors. Under his leadership came GigaChat (a Russian LLM), Kandinsky (image generation), and dozens of AI applications for the Russian market, partially isolated from Western providers after 2022 sanctions." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/%D0%93%D0%B5%D1%80%D0%BC%D0%B0%D0%BD_%D0%93%D1%80%D0%B5%D1%84_%D0%BD%D0%B0_%D0%9F%D0%9C%D0%AD%D0%A4-2023_%28cropped%29.jpg/400px-%D0%93%D0%B5%D1%80%D0%BC%D0%B0%D0%BD_%D0%93%D1%80%D0%B5%D1%84_%D0%BD%D0%B0_%D0%9F%D0%9C%D0%AD%D0%A4-2023_%28cropped%29.jpg",
+      "it": {
+        "role": "CEO di Sberbank",
+        "desc": "Il CEO della più grande banca russa ha trasformato Sberbank in uno dei principali investitori AI di Russia. Sotto la sua guida sono nati GigaChat (LLM russo), Kandinsky (generazione immagini) e decine di applicazioni AI per il mercato russo, parzialmente isolato dai provider occidentali dopo le sanzioni del 2022."
+      },
+      "en": {
+        "role": "CEO of Sberbank",
+        "desc": "The CEO of Russia's largest bank transformed Sberbank into one of Russia's leading AI investors. Under his leadership came GigaChat (a Russian LLM), Kandinsky (image generation), and dozens of AI applications for the Russian market, partially isolated from Western providers after 2022 sanctions."
+      }
     }
   ]
 }

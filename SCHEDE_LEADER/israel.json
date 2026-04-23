@@ -2,20 +2,37 @@
   "id": "israel",
   "flag": "🇮🇱",
   "color": "#a78bfa",
-  "coords": [35, 31.5],
-  "isoNums": ["376"],
+  "coords": [
+    35,
+    31.5
+  ],
+  "isoNums": [
+    "376"
+  ],
   "people": [
     {
       "name": "Yoav Shoham",
-      "imageUrl": "https://picsum.photos/seed/yoav-shoham-ai21/400/400",
-      "it": { "role": "Co-fondatore di AI21 Labs", "desc": "Uno dei pionieri dell'AI accademica e commerciale, ha fondato AI21 Labs a Tel Aviv. I suoi modelli Jurassic e Jamba competono con GPT-4 nel mercato enterprise. Professore a Stanford per decenni, è una voce equilibrata nel dibattito: né catastrofista né utopista. AI21 è tra le 10 startup AI più finanziate al mondo." },
-      "en": { "role": "Co-founder of AI21 Labs", "desc": "One of the pioneers of both academic and commercial AI, he founded AI21 Labs in Tel Aviv. His Jurassic and Jamba models compete with GPT-4 in the enterprise market. A Stanford professor for decades, he is a balanced voice in the debate: neither catastrophist nor utopian. AI21 is among the world's 10 best-funded AI startups." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Yoav_Shoham_2016.jpg/400px-Yoav_Shoham_2016.jpg",
+      "it": {
+        "role": "Co-fondatore di AI21 Labs",
+        "desc": "Uno dei pionieri dell'AI accademica e commerciale, ha fondato AI21 Labs a Tel Aviv. I suoi modelli Jurassic e Jamba competono con GPT-4 nel mercato enterprise. Professore a Stanford per decenni, è una voce equilibrata nel dibattito: né catastrofista né utopista. AI21 è tra le 10 startup AI più finanziate al mondo."
+      },
+      "en": {
+        "role": "Co-founder of AI21 Labs",
+        "desc": "One of the pioneers of both academic and commercial AI, he founded AI21 Labs in Tel Aviv. His Jurassic and Jamba models compete with GPT-4 in the enterprise market. A Stanford professor for decades, he is a balanced voice in the debate: neither catastrophist nor utopian. AI21 is among the world's 10 best-funded AI startups."
+      }
     },
     {
       "name": "Amnon Shashua",
-      "imageUrl": "https://picsum.photos/seed/amnon-shashua-mobileye/400/400",
-      "it": { "role": "Co-fondatore di Mobileye & OrCam", "desc": "Co-fondatore di Mobileye — acquisita da Intel per 15 miliardi di dollari e poi quotata — è il padre della guida autonoma basata su visione artificiale. Le sue telecamere MobilEye sono oggi in 100 milioni di veicoli. Professore alla Hebrew University di Gerusalemme, combina ricerca pura e imprenditoria tech ad alto impatto." },
-      "en": { "role": "Co-founder of Mobileye & OrCam", "desc": "Co-founder of Mobileye — acquired by Intel for $15B and then re-listed — he is the father of vision-based autonomous driving. His MobilEye cameras are now in 100 million vehicles. A Hebrew University of Jerusalem professor, he combines pure research with high-impact tech entrepreneurship." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Prof._Amnon_Shashua.jpg",
+      "it": {
+        "role": "Co-fondatore di Mobileye & OrCam",
+        "desc": "Co-fondatore di Mobileye — acquisita da Intel per 15 miliardi di dollari e poi quotata — è il padre della guida autonoma basata su visione artificiale. Le sue telecamere MobilEye sono oggi in 100 milioni di veicoli. Professore alla Hebrew University di Gerusalemme, combina ricerca pura e imprenditoria tech ad alto impatto."
+      },
+      "en": {
+        "role": "Co-founder of Mobileye & OrCam",
+        "desc": "Co-founder of Mobileye — acquired by Intel for $15B and then re-listed — he is the father of vision-based autonomous driving. His MobilEye cameras are now in 100 million vehicles. A Hebrew University of Jerusalem professor, he combines pure research with high-impact tech entrepreneurship."
+      }
     }
   ]
 }

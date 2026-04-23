@@ -2,38 +2,73 @@
   "id": "usa",
   "flag": "🇺🇸",
   "color": "#4f8ef7",
-  "coords": [-97, 38],
-  "isoNums": ["840"],
+  "coords": [
+    -97,
+    38
+  ],
+  "isoNums": [
+    "840"
+  ],
   "people": [
     {
       "name": "Sam Altman",
-      "imageUrl": "https://picsum.photos/seed/sam-altman-openai/400/400",
-      "it": { "role": "CEO di OpenAI", "desc": "Sam Altman ha trasformato OpenAI da laboratorio accademico a impresa da 90 miliardi di dollari. Sotto la sua guida sono nati GPT-4 e ChatGPT — l'applicazione consumer con la crescita più rapida della storia. Nel novembre 2023 è stato licenziato e reintegrato dal board in 48 ore convulse che hanno paralizzato la Silicon Valley." },
-      "en": { "role": "CEO of OpenAI", "desc": "Sam Altman transformed OpenAI from an academic lab into a $90B enterprise. Under his leadership GPT-4 and ChatGPT were born — the fastest-growing consumer app in history. In November 2023 he was fired and reinstated by the board in 48 turbulent hours that paralysed Silicon Valley." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped_3%29.jpg/400px-Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped_3%29.jpg",
+      "it": {
+        "role": "CEO di OpenAI",
+        "desc": "Sam Altman ha trasformato OpenAI da laboratorio accademico a impresa da 90 miliardi di dollari. Sotto la sua guida sono nati GPT-4 e ChatGPT — l'applicazione consumer con la crescita più rapida della storia. Nel novembre 2023 è stato licenziato e reintegrato dal board in 48 ore convulse che hanno paralizzato la Silicon Valley."
+      },
+      "en": {
+        "role": "CEO of OpenAI",
+        "desc": "Sam Altman transformed OpenAI from an academic lab into a $90B enterprise. Under his leadership GPT-4 and ChatGPT were born — the fastest-growing consumer app in history. In November 2023 he was fired and reinstated by the board in 48 turbulent hours that paralysed Silicon Valley."
+      }
     },
     {
       "name": "Jensen Huang",
-      "imageUrl": "https://picsum.photos/seed/jensen-huang-nvidia/400/400",
-      "it": { "role": "CEO di NVIDIA", "desc": "Jensen Huang ha costruito l'azienda che fornisce il 90% dei chip AI al mondo. Il chip H100, soprannominato «oro digitale», è al centro della guerra commerciale USA–Cina. Nel 2024 NVIDIA è diventata l'azienda più capitalizzata al mondo, superando Apple e Microsoft con 3.000 miliardi di dollari di valore." },
-      "en": { "role": "CEO of NVIDIA", "desc": "Jensen Huang built the company supplying 90% of the world's AI chips. The H100 chip, nicknamed 'digital gold', sits at the center of the US–China trade war. In 2024 NVIDIA became the world's most valuable company, surpassing Apple and Microsoft at $3 trillion in market cap." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Jen-Hsun_Huang_2025.jpg/400px-Jen-Hsun_Huang_2025.jpg",
+      "it": {
+        "role": "CEO di NVIDIA",
+        "desc": "Jensen Huang ha costruito l'azienda che fornisce il 90% dei chip AI al mondo. Il chip H100, soprannominato «oro digitale», è al centro della guerra commerciale USA–Cina. Nel 2024 NVIDIA è diventata l'azienda più capitalizzata al mondo, superando Apple e Microsoft con 3.000 miliardi di dollari di valore."
+      },
+      "en": {
+        "role": "CEO of NVIDIA",
+        "desc": "Jensen Huang built the company supplying 90% of the world's AI chips. The H100 chip, nicknamed 'digital gold', sits at the center of the US–China trade war. In 2024 NVIDIA became the world's most valuable company, surpassing Apple and Microsoft at $3 trillion in market cap."
+      }
     },
     {
       "name": "Sundar Pichai",
-      "imageUrl": "https://picsum.photos/seed/sundar-pichai-google/400/400",
-      "it": { "role": "CEO di Google & DeepMind", "desc": "Figlio di un ingegnere indiano, Pichai guida Google e il suo laboratorio DeepMind — responsabile di AlphaFold, Gemini e delle tecnologie AI più avanzate al mondo. Deve bilanciare l'innovazione AI con il rischio di cannibalizzare il business delle ricerche web da 200 miliardi di dollari." },
-      "en": { "role": "CEO of Google & DeepMind", "desc": "Son of an Indian engineer, Pichai leads Google and its DeepMind lab — responsible for AlphaFold, Gemini and some of the world's most advanced AI technologies. He must balance AI innovation against the risk of cannibalising the $200B web search business." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg/400px-Sundar_Pichai_-_2023_%28cropped%29.jpg",
+      "it": {
+        "role": "CEO di Google & DeepMind",
+        "desc": "Figlio di un ingegnere indiano, Pichai guida Google e il suo laboratorio DeepMind — responsabile di AlphaFold, Gemini e delle tecnologie AI più avanzate al mondo. Deve bilanciare l'innovazione AI con il rischio di cannibalizzare il business delle ricerche web da 200 miliardi di dollari."
+      },
+      "en": {
+        "role": "CEO of Google & DeepMind",
+        "desc": "Son of an Indian engineer, Pichai leads Google and its DeepMind lab — responsible for AlphaFold, Gemini and some of the world's most advanced AI technologies. He must balance AI innovation against the risk of cannibalising the $200B web search business."
+      }
     },
     {
       "name": "Mark Zuckerberg",
-      "imageUrl": "https://picsum.photos/seed/mark-zuckerberg-meta/400/400",
-      "it": { "role": "CEO di Meta AI", "desc": "Zuckerberg ha scommesso sull'AI open-source: Llama 3 di Meta è scaricabile gratuitamente da chiunque. Una scelta controversa — democratizzazione contro perdita di controllo — che lo mette in rotta di collisione con la filosofia closed-source di OpenAI. Meta ha investito oltre 35 miliardi di dollari in AI nel 2024." },
-      "en": { "role": "CEO of Meta AI", "desc": "Zuckerberg bet on open-source AI: Meta's Llama 3 is freely downloadable by anyone. A controversial choice — democratisation vs. loss of control — putting him on a collision course with OpenAI's closed-source philosophy. Meta invested over $35B in AI in 2024." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Mark_Zuckerberg_in_September_2025_%28cropped%29.jpg/400px-Mark_Zuckerberg_in_September_2025_%28cropped%29.jpg",
+      "it": {
+        "role": "CEO di Meta AI",
+        "desc": "Zuckerberg ha scommesso sull'AI open-source: Llama 3 di Meta è scaricabile gratuitamente da chiunque. Una scelta controversa — democratizzazione contro perdita di controllo — che lo mette in rotta di collisione con la filosofia closed-source di OpenAI. Meta ha investito oltre 35 miliardi di dollari in AI nel 2024."
+      },
+      "en": {
+        "role": "CEO of Meta AI",
+        "desc": "Zuckerberg bet on open-source AI: Meta's Llama 3 is freely downloadable by anyone. A controversial choice — democratisation vs. loss of control — putting him on a collision course with OpenAI's closed-source philosophy. Meta invested over $35B in AI in 2024."
+      }
     },
     {
       "name": "Elon Musk",
-      "imageUrl": "https://picsum.photos/seed/elon-musk-xai/400/400",
-      "it": { "role": "CEO di xAI & Tesla", "desc": "Co-fondatore di OpenAI (poi uscito in polemica), Musk ha creato xAI nel 2023 con il modello Grok. È convinto che l'AI rappresenti la maggiore minaccia esistenziale per l'umanità — eppure continua a svilupparla. Il suo controllo su X (Twitter) lo rende il più potente amplificatore di narrativa AI al mondo." },
-      "en": { "role": "CEO of xAI & Tesla", "desc": "Co-founder of OpenAI (later departed in controversy), Musk created xAI in 2023 with the Grok model. He believes AI represents the greatest existential threat to humanity — yet continues to develop it. His control of X (Twitter) makes him the world's most powerful AI narrative amplifier." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Elon_Musk_-_54820081119_%28cropped%29.jpg/400px-Elon_Musk_-_54820081119_%28cropped%29.jpg",
+      "it": {
+        "role": "CEO di xAI & Tesla",
+        "desc": "Co-fondatore di OpenAI (poi uscito in polemica), Musk ha creato xAI nel 2023 con il modello Grok. È convinto che l'AI rappresenti la maggiore minaccia esistenziale per l'umanità — eppure continua a svilupparla. Il suo controllo su X (Twitter) lo rende il più potente amplificatore di narrativa AI al mondo."
+      },
+      "en": {
+        "role": "CEO of xAI & Tesla",
+        "desc": "Co-founder of OpenAI (later departed in controversy), Musk created xAI in 2023 with the Grok model. He believes AI represents the greatest existential threat to humanity — yet continues to develop it. His control of X (Twitter) makes him the world's most powerful AI narrative amplifier."
+      }
     }
   ]
 }

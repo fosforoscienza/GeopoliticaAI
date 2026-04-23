@@ -2,26 +2,49 @@
   "id": "india",
   "flag": "🇮🇳",
   "color": "#22c55e",
-  "coords": [78, 20],
-  "isoNums": ["356"],
+  "coords": [
+    78,
+    20
+  ],
+  "isoNums": [
+    "356"
+  ],
   "people": [
     {
       "name": "Narendra Modi",
-      "imageUrl": "https://picsum.photos/seed/modi-india-ai/400/400",
-      "it": { "role": "Primo Ministro dell'India", "desc": "Modi ha fatto dell'AI un pilastro del programma «Digital India». Il governo ha lanciato IndiaAI (2024) con 1 miliardo di dollari per costruire capacità computazionale nazionale. Nei suoi discorsi, l'AI è un motore di sviluppo e crescita — una visione ottimista che contrasta con il pessimismo europeo e le preoccupazioni americane." },
-      "en": { "role": "Prime Minister of India", "desc": "Modi made AI a pillar of the 'Digital India' programme. The government launched IndiaAI (2024) with $1 billion to build national computing capacity. In his speeches, AI is an engine of development and growth — an optimistic vision contrasting with European pessimism and American concerns." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/The_official_portrait_of_Shri_Narendra_Modi%2C_the_Prime_Minister_of_the_Republic_of_India.jpg/400px-The_official_portrait_of_Shri_Narendra_Modi%2C_the_Prime_Minister_of_the_Republic_of_India.jpg",
+      "it": {
+        "role": "Primo Ministro dell'India",
+        "desc": "Modi ha fatto dell'AI un pilastro del programma «Digital India». Il governo ha lanciato IndiaAI (2024) con 1 miliardo di dollari per costruire capacità computazionale nazionale. Nei suoi discorsi, l'AI è un motore di sviluppo e crescita — una visione ottimista che contrasta con il pessimismo europeo e le preoccupazioni americane."
+      },
+      "en": {
+        "role": "Prime Minister of India",
+        "desc": "Modi made AI a pillar of the 'Digital India' programme. The government launched IndiaAI (2024) with $1 billion to build national computing capacity. In his speeches, AI is an engine of development and growth — an optimistic vision contrasting with European pessimism and American concerns."
+      }
     },
     {
       "name": "Satya Nadella",
-      "imageUrl": "https://picsum.photos/seed/satya-nadella-microsoft/400/400",
-      "it": { "role": "CEO di Microsoft (origini indiane)", "desc": "Il CEO di Microsoft di origine indiana ha scommesso tutto su OpenAI con un investimento da 13 miliardi di dollari. Ha integrato GPT-4 in ogni prodotto Microsoft: Word, Excel, Teams, Azure. La sua visione: l'AI come «co-pilota» per miliardi di utenti. Sotto la sua guida, Microsoft ha superato Apple nella capitalizzazione nel 2024." },
-      "en": { "role": "CEO of Microsoft (Indian origin)", "desc": "Microsoft's Indian-origin CEO bet everything on OpenAI with a $13B investment. He integrated GPT-4 into every Microsoft product: Word, Excel, Teams, Azure. His vision: AI as a 'copilot' for billions of users. Under his leadership, Microsoft surpassed Apple in market cap in 2024." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg/400px-MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg",
+      "it": {
+        "role": "CEO di Microsoft (origini indiane)",
+        "desc": "Il CEO di Microsoft di origine indiana ha scommesso tutto su OpenAI con un investimento da 13 miliardi di dollari. Ha integrato GPT-4 in ogni prodotto Microsoft: Word, Excel, Teams, Azure. La sua visione: l'AI come «co-pilota» per miliardi di utenti. Sotto la sua guida, Microsoft ha superato Apple nella capitalizzazione nel 2024."
+      },
+      "en": {
+        "role": "CEO of Microsoft (Indian origin)",
+        "desc": "Microsoft's Indian-origin CEO bet everything on OpenAI with a $13B investment. He integrated GPT-4 into every Microsoft product: Word, Excel, Teams, Azure. His vision: AI as a 'copilot' for billions of users. Under his leadership, Microsoft surpassed Apple in market cap in 2024."
+      }
     },
     {
       "name": "Arvind Krishna",
-      "imageUrl": "https://picsum.photos/seed/arvind-krishna-ibm/400/400",
-      "it": { "role": "CEO di IBM", "desc": "Il CEO di IBM guida la transizione del gigante tech verso l'«AI for Business». La sua scommessa: WatsonX, la piattaforma AI enterprise per aziende che vogliono l'AI senza rischi reputazionali. Sostiene che le aziende debbano costruire AI proprie invece di dipendere da OpenAI o Google — la via «sovrana» all'intelligenza artificiale." },
-      "en": { "role": "CEO of IBM", "desc": "IBM's CEO leads the tech giant's transition toward 'AI for Business'. His bet: WatsonX, the enterprise AI platform for companies that want AI without reputational risks. He argues companies should build their own AI rather than depending on OpenAI or Google — the 'sovereign' path to AI." }
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/30/Arvind_Krishna_in_2025_%28cropped%29.jpg",
+      "it": {
+        "role": "CEO di IBM",
+        "desc": "Il CEO di IBM guida la transizione del gigante tech verso l'«AI for Business». La sua scommessa: WatsonX, la piattaforma AI enterprise per aziende che vogliono l'AI senza rischi reputazionali. Sostiene che le aziende debbano costruire AI proprie invece di dipendere da OpenAI o Google — la via «sovrana» all'intelligenza artificiale."
+      },
+      "en": {
+        "role": "CEO of IBM",
+        "desc": "IBM's CEO leads the tech giant's transition toward 'AI for Business'. His bet: WatsonX, the enterprise AI platform for companies that want AI without reputational risks. He argues companies should build their own AI rather than depending on OpenAI or Google — the 'sovereign' path to AI."
+      }
     }
   ]
 }
