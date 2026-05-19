@@ -582,29 +582,50 @@
           _audioCtx = new AC();
         }
         const ctx = _audioCtx;
-        if (ctx.state === 'suspended') ctx.resume();
-        const now = ctx.currentTime;
-        const dur = 0.38;
 
-        const bufSize = Math.floor(ctx.sampleRate * dur);
-        const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-        const data = buf.getChannelData(0);
-        for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+        const run = () => {
+          const now = ctx.currentTime + 0.01;
+          const dur = 0.55;
 
-        const noise  = ctx.createBufferSource(); noise.buffer = buf;
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'bandpass'; filter.Q.value = 1.1;
-        filter.frequency.setValueAtTime(380, now);
-        filter.frequency.exponentialRampToValueAtTime(5200, now + dur * 0.65);
-        filter.frequency.exponentialRampToValueAtTime(900,  now + dur);
+          // === Noise component: bandpass sweep ===
+          const bufSize = Math.floor(ctx.sampleRate * dur);
+          const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+          const data = buf.getChannelData(0);
+          for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
 
-        const gain = ctx.createGain();
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(0.22, now + 0.045);
-        gain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+          const noise = ctx.createBufferSource(); noise.buffer = buf;
+          const nFilter = ctx.createBiquadFilter();
+          nFilter.type = 'bandpass'; nFilter.Q.value = 0.9;
+          nFilter.frequency.setValueAtTime(260, now);
+          nFilter.frequency.exponentialRampToValueAtTime(3800, now + dur * 0.5);
+          nFilter.frequency.exponentialRampToValueAtTime(700,  now + dur);
 
-        noise.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
-        noise.start(now); noise.stop(now + dur);
+          const nGain = ctx.createGain();
+          nGain.gain.setValueAtTime(0, now);
+          nGain.gain.linearRampToValueAtTime(0.55, now + 0.06);
+          nGain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+
+          noise.connect(nFilter); nFilter.connect(nGain); nGain.connect(ctx.destination);
+          noise.start(now); noise.stop(now + dur + 0.02);
+
+          // === Sine sweep: descending pitch adds the "whoosh" body ===
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1000, now);
+          osc.frequency.exponentialRampToValueAtTime(160, now + dur);
+          const oGain = ctx.createGain();
+          oGain.gain.setValueAtTime(0, now);
+          oGain.gain.linearRampToValueAtTime(0.18, now + 0.05);
+          oGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+          osc.connect(oGain); oGain.connect(ctx.destination);
+          osc.start(now); osc.stop(now + dur + 0.02);
+        };
+
+        if (ctx.state === 'suspended') {
+          ctx.resume().then(run).catch(() => {});
+        } else {
+          run();
+        }
       } catch (e) { /* silently ignore */ }
     }
 
