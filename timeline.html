@@ -574,58 +574,79 @@
 
     // ── Swoosh sound (Web Audio, no files) ────────────────
     let _audioCtx = null;
-    function playSwoosh() {
+    let _audioUnlocked = false;
+
+    function _ensureCtx() {
+      if (_audioCtx) return _audioCtx;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      _audioCtx = new AC();
+      return _audioCtx;
+    }
+
+    // iOS Safari requires unlocking inside a user gesture by playing
+    // a 1-sample silent buffer. Run once on the first interaction.
+    function _unlockAudio() {
+      if (_audioUnlocked) return;
+      const ctx = _ensureCtx();
+      if (!ctx) return;
       try {
-        if (!_audioCtx) {
-          const AC = window.AudioContext || window.webkitAudioContext;
-          if (!AC) return;
-          _audioCtx = new AC();
-        }
-        const ctx = _audioCtx;
+        if (ctx.state === 'suspended') ctx.resume();
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+        _audioUnlocked = true;
+      } catch (e) { /* ignore */ }
+    }
+    ['touchstart', 'pointerdown', 'keydown', 'click'].forEach(ev =>
+      document.addEventListener(ev, _unlockAudio, { passive: true, capture: true })
+    );
 
-        const run = () => {
-          const now = ctx.currentTime + 0.01;
-          const dur = 0.55;
+    function playSwoosh() {
+      const ctx = _ensureCtx();
+      if (!ctx) return;
+      try {
+        // Fire-and-forget resume; scheduling stays synchronous so iOS
+        // keeps it tied to the user gesture.
+        if (ctx.state === 'suspended') ctx.resume();
 
-          // === Noise component: bandpass sweep ===
-          const bufSize = Math.floor(ctx.sampleRate * dur);
-          const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-          const data = buf.getChannelData(0);
-          for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+        const now = ctx.currentTime + 0.01;
+        const dur = 0.55;
 
-          const noise = ctx.createBufferSource(); noise.buffer = buf;
-          const nFilter = ctx.createBiquadFilter();
-          nFilter.type = 'bandpass'; nFilter.Q.value = 0.9;
-          nFilter.frequency.setValueAtTime(260, now);
-          nFilter.frequency.exponentialRampToValueAtTime(3800, now + dur * 0.5);
-          nFilter.frequency.exponentialRampToValueAtTime(700,  now + dur);
+        // === Noise component: bandpass sweep ===
+        const bufSize = Math.floor(ctx.sampleRate * dur);
+        const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
 
-          const nGain = ctx.createGain();
-          nGain.gain.setValueAtTime(0, now);
-          nGain.gain.linearRampToValueAtTime(0.55, now + 0.06);
-          nGain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+        const noise = ctx.createBufferSource(); noise.buffer = buf;
+        const nFilter = ctx.createBiquadFilter();
+        nFilter.type = 'bandpass'; nFilter.Q.value = 0.9;
+        nFilter.frequency.setValueAtTime(260, now);
+        nFilter.frequency.exponentialRampToValueAtTime(3800, now + dur * 0.5);
+        nFilter.frequency.exponentialRampToValueAtTime(700,  now + dur);
 
-          noise.connect(nFilter); nFilter.connect(nGain); nGain.connect(ctx.destination);
-          noise.start(now); noise.stop(now + dur + 0.02);
+        const nGain = ctx.createGain();
+        nGain.gain.setValueAtTime(0, now);
+        nGain.gain.linearRampToValueAtTime(0.55, now + 0.06);
+        nGain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
 
-          // === Sine sweep: descending pitch adds the "whoosh" body ===
-          const osc = ctx.createOscillator();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(1000, now);
-          osc.frequency.exponentialRampToValueAtTime(160, now + dur);
-          const oGain = ctx.createGain();
-          oGain.gain.setValueAtTime(0, now);
-          oGain.gain.linearRampToValueAtTime(0.18, now + 0.05);
-          oGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-          osc.connect(oGain); oGain.connect(ctx.destination);
-          osc.start(now); osc.stop(now + dur + 0.02);
-        };
+        noise.connect(nFilter); nFilter.connect(nGain); nGain.connect(ctx.destination);
+        noise.start(now); noise.stop(now + dur + 0.02);
 
-        if (ctx.state === 'suspended') {
-          ctx.resume().then(run).catch(() => {});
-        } else {
-          run();
-        }
+        // === Sine sweep: descending pitch adds the "whoosh" body ===
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1000, now);
+        osc.frequency.exponentialRampToValueAtTime(160, now + dur);
+        const oGain = ctx.createGain();
+        oGain.gain.setValueAtTime(0, now);
+        oGain.gain.linearRampToValueAtTime(0.18, now + 0.05);
+        oGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+        osc.connect(oGain); oGain.connect(ctx.destination);
+        osc.start(now); osc.stop(now + dur + 0.02);
       } catch (e) { /* silently ignore */ }
     }
 
