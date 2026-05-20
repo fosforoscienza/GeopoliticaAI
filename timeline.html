@@ -150,6 +150,15 @@
       transform: translateY(-50%);
       transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
     }
+    /* Vertical year-boundary dividers */
+    .tl-year-divider {
+      position: absolute;
+      top: -12px; bottom: -12px;
+      width: 1px;
+      background: rgba(255,255,255,0.06);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
     /* Ghost placeholders */
     .tl-ghost {
       position: absolute; top: 50%; transform: translate(-50%,-50%);
@@ -190,6 +199,24 @@
       transition: opacity 0.2s;
     }
     .tl-dot.revealed:hover::before { opacity: 1; }
+    /* Date label below the active dot */
+    .tl-dot::after {
+      content: attr(data-date);
+      position: absolute;
+      top: calc(100% + 18px);
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: clamp(13px, 1vw, 17px);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: currentColor;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s;
+    }
+    .tl-dot.active::after { opacity: 1; }
 
     /* ── Modal ────────────────────────────────────────── */
     #tl-modal-card {
@@ -452,10 +479,41 @@
     let step = 0;          // 0 = nothing shown; 1..N = events 0..step-1 revealed
     const N = EVENTS.length;
 
+    // Short date label (day + month) for under the active dot.
+    // Returns '' for fuzzy/range dates so they don't clutter the bar.
+    function shortDateLabel(ev, l) {
+      const s = ev.date[l] || '';
+      if (/[–—]/.test(s)) return '';                       // ranges like "Fine 2020 – inizio 2021"
+      const yr = String(ev.year);
+      const r = s.replace(new RegExp(yr, 'g'), '')
+                 .replace(/[,;]/g, ' ')
+                 .replace(/\s+/g, ' ')
+                 .trim();
+      return r;
+    }
+
     // ── Build timeline DOM ────────────────────────────────
     function buildTimeline() {
       const track      = document.getElementById('tl-track');
       const yearLabels = document.getElementById('tl-year-labels');
+
+      // Group event positions by year, for centered labels + boundary dividers
+      const groups = {};
+      EVENTS.forEach(ev => {
+        (groups[ev.year] ||= []).push(ev.pos);
+      });
+      const years = Object.keys(groups).map(Number).sort((a, b) => a - b);
+
+      // Vertical dividers at the midpoint between adjacent years
+      for (let i = 0; i < years.length - 1; i++) {
+        const cur = groups[years[i]];
+        const nxt = groups[years[i + 1]];
+        const boundary = (cur[cur.length - 1] + nxt[0]) / 2;
+        const div = document.createElement('div');
+        div.className = 'tl-year-divider';
+        div.style.left = boundary + '%';
+        track.appendChild(div);
+      }
 
       // Ghost placeholders
       EVENTS.forEach(ev => {
@@ -473,6 +531,7 @@
         d.style.color = ev.color;
         d.style.borderColor = ev.color;
         d.dataset.label = ev[lang].title;
+        d.dataset.date  = shortDateLabel(ev, lang);
         d.id = 'dot-' + i;
         d.addEventListener('click', () => {
           if (i < step) openEventModal(i);
@@ -480,18 +539,16 @@
         track.appendChild(d);
       });
 
-      // Year labels (one per unique year, at first event of that year)
-      const seenYears = new Set();
-      EVENTS.forEach(ev => {
-        if (!seenYears.has(ev.year)) {
-          seenYears.add(ev.year);
-          const lbl = document.createElement('div');
-          lbl.className = 'tl-year-label';
-          lbl.style.left = ev.pos + '%';
-          lbl.textContent = ev.year;
-          lbl.id = 'yr-' + ev.year;
-          yearLabels.appendChild(lbl);
-        }
+      // Year labels — centered on the group of events for that year
+      years.forEach(yr => {
+        const positions = groups[yr];
+        const center = positions.reduce((a, b) => a + b, 0) / positions.length;
+        const lbl = document.createElement('div');
+        lbl.className = 'tl-year-label';
+        lbl.style.left = center + '%';
+        lbl.textContent = yr;
+        lbl.id = 'yr-' + yr;
+        yearLabels.appendChild(lbl);
       });
     }
 
@@ -769,10 +826,13 @@
     // ── Lang ──────────────────────────────────────────────
     function onLangChange() {
       document.getElementById('tl-hint-txt').textContent = TL_I18N[lang].hint;
-      // Rebuild dot labels
+      // Rebuild dot labels + date hints
       EVENTS.forEach((ev, i) => {
         const dot = document.getElementById('dot-' + i);
-        if (dot) dot.dataset.label = ev[lang].title;
+        if (dot) {
+          dot.dataset.label = ev[lang].title;
+          dot.dataset.date  = shortDateLabel(ev, lang);
+        }
       });
       if (step > 0) renderState();
     }
