@@ -41,7 +41,13 @@
       font-size: clamp(22px, 2.2vw, 32px); font-weight: 300;
       letter-spacing: 0.05em;
       animation: tl-pulse-hint 2.4s ease-in-out infinite;
-      transition: opacity 0.4s;
+      transition: opacity 0.4s, visibility 0s linear 0.4s;
+    }
+    #tl-start-hint.hidden {
+      opacity: 0;
+      animation: none;
+      visibility: hidden;
+      pointer-events: none;
     }
     #tl-start-hint .hint-arrow {
       font-size: clamp(30px, 3vw, 44px);
@@ -558,8 +564,7 @@
 
       // Hint visibility
       const hint = document.getElementById('tl-start-hint');
-      hint.style.opacity = step === 0 ? '1' : '0';
-      hint.style.pointerEvents = step === 0 ? 'auto' : 'none';
+      hint.classList.toggle('hidden', step > 0);
 
       // Event wrap
       const wrap = document.getElementById('tl-event-wrap');
