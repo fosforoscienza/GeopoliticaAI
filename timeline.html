@@ -572,82 +572,125 @@
       });
     }
 
-    // ── Swoosh sound (Web Audio, no files) ────────────────
-    let _audioCtx = null;
-    let _audioUnlocked = false;
+    // ── Swoosh sound ─────────────────────────────────────
+    // Pre-render the swoosh to a WAV blob via OfflineAudioContext,
+    // then play through an <audio> element. More reliable on iOS
+    // Safari (esp. with Bluetooth keyboards) than live Web Audio.
+    let _swooshAudio = null;
+    let _swooshPrimed = false;
 
-    function _ensureCtx() {
-      if (_audioCtx) return _audioCtx;
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return null;
-      _audioCtx = new AC();
-      return _audioCtx;
+    function _audioBufferToWav(buffer) {
+      const numCh = 1;
+      const sr = buffer.sampleRate;
+      const samples = buffer.getChannelData(0);
+      const out = new ArrayBuffer(44 + samples.length * 2);
+      const v = new DataView(out);
+      const wStr = (off, s) => { for (let i = 0; i < s.length; i++) v.setUint8(off + i, s.charCodeAt(i)); };
+      wStr(0, 'RIFF');
+      v.setUint32(4, 36 + samples.length * 2, true);
+      wStr(8, 'WAVE'); wStr(12, 'fmt ');
+      v.setUint32(16, 16, true);
+      v.setUint16(20, 1, true);
+      v.setUint16(22, numCh, true);
+      v.setUint32(24, sr, true);
+      v.setUint32(28, sr * numCh * 2, true);
+      v.setUint16(32, numCh * 2, true);
+      v.setUint16(34, 16, true);
+      wStr(36, 'data');
+      v.setUint32(40, samples.length * 2, true);
+      let o = 44;
+      for (let i = 0; i < samples.length; i++) {
+        const s = Math.max(-1, Math.min(1, samples[i]));
+        v.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        o += 2;
+      }
+      return new Blob([out], { type: 'audio/wav' });
     }
 
-    // iOS Safari requires unlocking inside a user gesture by playing
-    // a 1-sample silent buffer. Run once on the first interaction.
-    function _unlockAudio() {
-      if (_audioUnlocked) return;
-      const ctx = _ensureCtx();
-      if (!ctx) return;
+    async function _renderSwoosh() {
+      const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      if (!OAC) return null;
+      const sr  = 44100;
+      const dur = 0.55;
+      const offline = new OAC(1, Math.ceil(sr * dur), sr);
+      const now = 0;
+
+      // Noise bandpass sweep
+      const bufSize = Math.floor(sr * dur);
+      const nb = offline.createBuffer(1, bufSize, sr);
+      const data = nb.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+      const noise = offline.createBufferSource(); noise.buffer = nb;
+      const nF = offline.createBiquadFilter();
+      nF.type = 'bandpass'; nF.Q.value = 0.9;
+      nF.frequency.setValueAtTime(260, now);
+      nF.frequency.exponentialRampToValueAtTime(3800, now + dur * 0.5);
+      nF.frequency.exponentialRampToValueAtTime(700,  now + dur);
+      const nG = offline.createGain();
+      nG.gain.setValueAtTime(0, now);
+      nG.gain.linearRampToValueAtTime(0.55, now + 0.06);
+      nG.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+      noise.connect(nF); nF.connect(nG); nG.connect(offline.destination);
+      noise.start(now); noise.stop(now + dur);
+
+      // Descending sine for whoosh body
+      const osc = offline.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1000, now);
+      osc.frequency.exponentialRampToValueAtTime(160, now + dur);
+      const oG = offline.createGain();
+      oG.gain.setValueAtTime(0, now);
+      oG.gain.linearRampToValueAtTime(0.18, now + 0.05);
+      oG.gain.exponentialRampToValueAtTime(0.001, now + dur);
+      osc.connect(oG); oG.connect(offline.destination);
+      osc.start(now); osc.stop(now + dur);
+
+      const rendered = await offline.startRendering();
+      return _audioBufferToWav(rendered);
+    }
+
+    (async () => {
       try {
-        if (ctx.state === 'suspended') ctx.resume();
-        const buf = ctx.createBuffer(1, 1, 22050);
-        const src = ctx.createBufferSource();
-        src.buffer = buf;
-        src.connect(ctx.destination);
-        src.start(0);
-        _audioUnlocked = true;
+        const blob = await _renderSwoosh();
+        if (!blob) return;
+        _swooshAudio = new Audio();
+        _swooshAudio.preload = 'auto';
+        _swooshAudio.src = URL.createObjectURL(blob);
+        _swooshAudio.load();
       } catch (e) { /* ignore */ }
+    })();
+
+    // iOS requires the <audio> element to be touched inside a user
+    // gesture before subsequent play() calls work. Prime on first event.
+    function _primeSwoosh() {
+      if (_swooshPrimed || !_swooshAudio) return;
+      _swooshPrimed = true;
+      const v = _swooshAudio.volume;
+      _swooshAudio.muted = true;
+      const p = _swooshAudio.play();
+      if (p && p.then) {
+        p.then(() => {
+          _swooshAudio.pause();
+          _swooshAudio.currentTime = 0;
+          _swooshAudio.muted = false;
+          _swooshAudio.volume = v;
+        }).catch(() => {
+          _swooshAudio.muted = false;
+          _swooshPrimed = false; // let next gesture retry
+        });
+      }
     }
     ['touchstart', 'pointerdown', 'keydown', 'click'].forEach(ev =>
-      document.addEventListener(ev, _unlockAudio, { passive: true, capture: true })
+      document.addEventListener(ev, _primeSwoosh, { passive: true, capture: true })
     );
 
     function playSwoosh() {
-      const ctx = _ensureCtx();
-      if (!ctx) return;
+      if (!_swooshAudio) return;
       try {
-        // Fire-and-forget resume; scheduling stays synchronous so iOS
-        // keeps it tied to the user gesture.
-        if (ctx.state === 'suspended') ctx.resume();
-
-        const now = ctx.currentTime + 0.01;
-        const dur = 0.55;
-
-        // === Noise component: bandpass sweep ===
-        const bufSize = Math.floor(ctx.sampleRate * dur);
-        const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-        const data = buf.getChannelData(0);
-        for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
-
-        const noise = ctx.createBufferSource(); noise.buffer = buf;
-        const nFilter = ctx.createBiquadFilter();
-        nFilter.type = 'bandpass'; nFilter.Q.value = 0.9;
-        nFilter.frequency.setValueAtTime(260, now);
-        nFilter.frequency.exponentialRampToValueAtTime(3800, now + dur * 0.5);
-        nFilter.frequency.exponentialRampToValueAtTime(700,  now + dur);
-
-        const nGain = ctx.createGain();
-        nGain.gain.setValueAtTime(0, now);
-        nGain.gain.linearRampToValueAtTime(0.55, now + 0.06);
-        nGain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
-
-        noise.connect(nFilter); nFilter.connect(nGain); nGain.connect(ctx.destination);
-        noise.start(now); noise.stop(now + dur + 0.02);
-
-        // === Sine sweep: descending pitch adds the "whoosh" body ===
-        const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(1000, now);
-        osc.frequency.exponentialRampToValueAtTime(160, now + dur);
-        const oGain = ctx.createGain();
-        oGain.gain.setValueAtTime(0, now);
-        oGain.gain.linearRampToValueAtTime(0.18, now + 0.05);
-        oGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-        osc.connect(oGain); oGain.connect(ctx.destination);
-        osc.start(now); osc.stop(now + dur + 0.02);
-      } catch (e) { /* silently ignore */ }
+        _swooshAudio.currentTime = 0;
+        const p = _swooshAudio.play();
+        if (p && p.catch) p.catch(() => {});
+      } catch (e) { /* ignore */ }
     }
 
     // ── Advance / Retreat ─────────────────────────────────
