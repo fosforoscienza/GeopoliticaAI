@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pappagallo Stocastico — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html, body { background: #040e1a !important; overflow: hidden; height: 100%; margin: 0; }
+    body {
+      display: flex; flex-direction: row;
+      align-items: center; justify-content: center;
+      gap: clamp(32px, 4vw, 72px);
+      padding: 0 4vw;
+    }
+
+    .parrot-img-col {
+      flex: 0 0 auto;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .parrot-img {
+      height: clamp(300px, 72vh, 820px);
+      width: auto;
+      max-width: 42vw;
+      object-fit: contain;
+      border-radius: 4px;
+      filter: drop-shadow(0 0 40px rgba(16,185,129,0.25));
+      animation: img-in 0.9s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes img-in {
+      from { opacity: 0; transform: translateX(-24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .parrot-text-col {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 600px;
+      animation: text-in 0.9s 0.15s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes text-in {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .parrot-eyebrow {
+      font-size: clamp(12px, 1vw, 16px);
+      font-weight: 700; letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #10b981;
+      margin-bottom: clamp(12px, 1.5vh, 20px);
+    }
+    .parrot-title {
+      font-size: clamp(36px, 5.5vw, 88px);
+      font-weight: 900; letter-spacing: -0.03em;
+      line-height: 0.95;
+      color: #10b981;
+      text-transform: uppercase;
+      margin: 0 0 clamp(20px, 2.5vh, 36px);
+    }
+    .parrot-desc {
+      font-size: clamp(15px, 1.3vw, 21px);
+      color: #94a3b8; font-weight: 300;
+      line-height: 1.6;
+      margin-bottom: clamp(24px, 3vh, 40px);
+    }
+    .parrot-quote {
+      font-size: clamp(14px, 1.2vw, 19px);
+      font-style: italic;
+      color: rgba(255,255,255,0.5);
+      border-left: 2px solid #10b981;
+      padding-left: 18px;
+      line-height: 1.6;
+    }
+    .parrot-quote cite {
+      display: block;
+      margin-top: 10px;
+      font-style: normal;
+      font-size: 0.82em;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="parrot-img-col">
+    <img class="parrot-img" src="img/pappagallo.png" alt="Pappagallo" />
+  </div>
+
+  <div class="parrot-text-col">
+    <div class="parrot-eyebrow" id="parrot-eyebrow"></div>
+    <h1 class="parrot-title" id="parrot-title"></h1>
+    <p class="parrot-desc" id="parrot-desc"></p>
+    <blockquote class="parrot-quote">
+      <span id="parrot-quote"></span>
+      <cite id="parrot-cite"></cite>
+    </blockquote>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        eyebrow: 'Critica & Teoria',
+        title: 'Pappagallo Stocastico',
+        desc: 'I grandi modelli linguistici non "capiscono" il mondo: assemblano sequenze di parole statisticamente plausibili addestrate su miliardi di testi umani. Come un pappagallo che ripete suoni senza comprenderli — ma su scala planetaria e con un\'eloquenza che inganna.',
+        quote: '«I modelli linguistici di grandi dimensioni sono pappagalli stocastici: sono in grado di cucire insieme sequenze di unità linguistiche statisticamente plausibili, ma senza alcun riferimento al significato.»',
+        cite: '— Bender, Gebru et al., "On the Dangers of Stochastic Parrots" (FAccT 2021)'
+      },
+      en: {
+        eyebrow: 'Critique & Theory',
+        title: 'Stochastic Parrot',
+        desc: 'Large language models do not "understand" the world: they stitch together statistically plausible word sequences trained on billions of human texts. Like a parrot repeating sounds without comprehending them — but at planetary scale and with a fluency that deceives.',
+        quote: '"Large language models are stochastic parrots: they are able to stitch together sequences of linguistic form that are statistically plausible, but without any reference to meaning."',
+        cite: '— Bender, Gebru et al., "On the Dangers of Stochastic Parrots" (FAccT 2021)'
+      }
+    };
+
+    function renderTexts() {
+      const t = TXT[lang];
+      document.getElementById('parrot-eyebrow').textContent = t.eyebrow;
+      document.getElementById('parrot-title').textContent   = t.title;
+      document.getElementById('parrot-desc').textContent    = t.desc;
+      document.getElementById('parrot-quote').textContent   = t.quote;
+      document.getElementById('parrot-cite').textContent    = t.cite;
+    }
+    function onLangChange() { renderTexts(); }
+
+    initLangToggle();
+    renderTexts();
+    initNav();
+  </script>
+</body>
+</html>
