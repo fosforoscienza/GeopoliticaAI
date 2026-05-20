@@ -316,8 +316,9 @@
     </div>
   </div>
 
-  <!-- Navigation dots (9 pages) -->
+  <!-- Navigation dots (10 pages) -->
   <div id="nav-dots">
+    <button class="nav-dot"></button>
     <button class="nav-dot"></button>
     <button class="nav-dot"></button>
     <button class="nav-dot"></button>
@@ -774,7 +775,7 @@
         step++;
         renderState();
       } else {
-        window.location.href = PAGES[7]; // paesi.html
+        window.location.href = PAGES[8]; // paesi.html
       }
     }
 
@@ -786,7 +787,7 @@
         step--;
         renderState();
       } else {
-        window.location.href = PAGES[5]; // pechino-3.html
+        window.location.href = PAGES[6]; // pechino-3.html
       }
     }
 
@@ -831,9 +832,9 @@
 
     // Nav dots (from common.js PAGES array)
     document.querySelectorAll('.nav-dot').forEach((dot, i) => {
-      dot.classList.toggle('active', i === 6);
+      dot.classList.toggle('active', i === 7);
       dot.addEventListener('click', () => {
-        if (i !== 6) window.location.href = PAGES[i];
+        if (i !== 7) window.location.href = PAGES[i];
       });
     });
 

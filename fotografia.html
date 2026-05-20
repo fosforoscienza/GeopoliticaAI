@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fotografia — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html, body { background: #040e1a !important; overflow: hidden; height: 100%; margin: 0; }
+    body {
+      cursor: pointer;
+    }
+
+    .fg-layout {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+    }
+
+    .fg-text-block {
+      flex: 1 1 auto;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 4vh 4vw;
+      box-sizing: border-box;
+      overflow: hidden;
+      min-height: 0;
+      transition: flex-basis 0.85s cubic-bezier(0.16,1,0.3,1), padding 0.85s, flex-grow 0.85s, flex-shrink 0.85s;
+    }
+    .fg-layout.shifted .fg-text-block {
+      flex: 0 0 26vh;
+      padding: 2.4vh 4vw 0;
+    }
+
+    .fg-image-block {
+      flex: 0 0 0;
+      width: 100%;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 2vw;
+      box-sizing: border-box;
+      overflow: hidden;
+      opacity: 0;
+      transition: flex-basis 0.85s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease 0.35s, padding 0.85s;
+    }
+    .fg-layout.shifted .fg-image-block {
+      flex: 1 1 auto;
+      opacity: 1;
+      padding: 2vh 2vw 4vh;
+    }
+    .fg-image-block img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .fg-quote {
+      font-size: clamp(20px, 2.1vw, 32px);
+      line-height: 1.7;
+      color: #94a3b8;
+      font-style: italic;
+      max-width: min(1100px, 88vw);
+      letter-spacing: 0.01em;
+      transition: font-size 0.85s, line-height 0.85s;
+    }
+    .fg-layout.shifted .fg-quote {
+      font-size: clamp(13px, 1.1vw, 17px);
+      line-height: 1.5;
+    }
+
+    .reveal {
+      display: block;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16,1,0.3,1),
+                  font-size 0.85s, margin-top 0.85s;
+      pointer-events: none;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fg-word {
+      font-size: clamp(54px, 8vw, 130px);
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      color: #41b7ff;
+      margin-top: clamp(36px, 4vh, 72px);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .fg-layout.shifted .fg-word {
+      font-size: clamp(22px, 2.8vw, 42px);
+      margin-top: clamp(8px, 1vh, 14px);
+    }
+
+    .fg-author {
+      font-size: clamp(16px, 1.4vw, 22px);
+      font-weight: 700;
+      letter-spacing: 0.32em;
+      color: rgba(255,255,255,0.55);
+      margin-top: clamp(24px, 3vh, 48px);
+      text-transform: uppercase;
+    }
+    .fg-layout.shifted .fg-author {
+      font-size: clamp(11px, 0.95vw, 14px);
+      margin-top: clamp(6px, 0.8vh, 10px);
+    }
+
+    .click-hint {
+      position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%);
+      color: rgba(65,183,255,0.45);
+      font-size: clamp(13px, 1vw, 16px);
+      letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300;
+      animation: pulse-hint 2.4s ease-in-out infinite;
+      pointer-events: none;
+      transition: opacity 0.4s, visibility 0s linear 0.4s;
+      z-index: 10;
+    }
+    @keyframes pulse-hint {
+      0%,100% { opacity: 0.5; }
+      50%      { opacity: 1; }
+    }
+    .click-hint.gone {
+      opacity: 0;
+      animation: none;
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body onclick="advance()">
+
+  <div class="fg-layout" id="layout">
+    <div class="fg-text-block">
+      <div class="fg-quote" id="fg-quote"></div>
+      <div class="reveal fg-word"   id="fg-word">La Fotografia</div>
+      <div class="reveal fg-author" id="fg-author">Charles Baudelaire</div>
+    </div>
+    <div class="fg-image-block">
+      <img src="img/fotografia/collage.png" alt="" />
+    </div>
+  </div>
+
+  <div class="click-hint" id="click-hint"></div>
+
+  <!-- Navigation -->
+  <div id="nav-dots">
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot active"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+  </div>
+  <a class="nav-arrow" id="nav-prev" href="scrittura.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="pechino-1.html">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        quote: "“Questa industria, invadendo i territori dell’arte, è divenuta della stessa la più mortale nemica.”",
+        word: 'La Fotografia',
+        author: 'Charles Baudelaire',
+        hint: 'Clicca o premi → per continuare'
+      },
+      en: {
+        quote: "“This industry, by invading the territory of art, has become art’s most mortal enemy.”",
+        word: 'Photography',
+        author: 'Charles Baudelaire',
+        hint: 'Click or press → to continue'
+      }
+    };
+
+    let step = 0;           // 0 quote / 1 +word / 2 +author / 3 image scroll
+    const N = 3;
+    const ACTIVE_PAGE = 3;
+
+    function renderTexts() {
+      const t = TXT[lang];
+      document.getElementById('fg-quote').textContent  = t.quote;
+      document.getElementById('fg-word').textContent   = t.word;
+      document.getElementById('fg-author').textContent = t.author;
+      document.getElementById('click-hint').textContent = t.hint;
+    }
+    function render() {
+      document.getElementById('fg-word').classList.toggle('visible',  step >= 1);
+      document.getElementById('fg-author').classList.toggle('visible', step >= 2);
+      document.getElementById('layout').classList.toggle('shifted',   step >= 3);
+      document.getElementById('click-hint').classList.toggle('gone', step > 0);
+    }
+    function advance() {
+      if (step < N) { step++; render(); }
+      else { window.location.href = PAGES[ACTIVE_PAGE + 1]; }
+    }
+    function retreat() {
+      if (step > 0) { step--; render(); }
+      else { window.location.href = PAGES[ACTIVE_PAGE - 1]; }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault(); advance();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault(); retreat();
+      }
+    });
+
+    document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === ACTIVE_PAGE);
+      dot.addEventListener('click', e => {
+        e.stopPropagation();
+        if (i !== ACTIVE_PAGE) window.location.href = PAGES[i];
+      });
+    });
+    ['nav-prev', 'nav-next', 'lang-toggle'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', e => e.stopPropagation());
+    });
+
+    function onLangChange() { renderTexts(); }
+
+    initLangToggle();
+    renderTexts();
+    render();
+  </script>
+</body>
+</html>

@@ -34,33 +34,51 @@ function initLangToggle() {
 }
 
 // ════════════════════════════════════════════════════
-// Navigation dots (9 pages)
+// Navigation dots (10 pages)
 // ════════════════════════════════════════════════════
 const PAGES = [
-  'index.html', 'video.html', 'scrittura.html',
+  'index.html', 'video.html', 'scrittura.html', 'fotografia.html',
   'pechino-1.html', 'pechino-2.html', 'pechino-3.html',
   'timeline.html', 'paesi.html', 'leader.html'
 ];
 
-function initNav(activePage) {
-  // Dots
-  document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+// Fills #nav-dots to match PAGES.length, sets the active dot, and
+// wires click navigation. Safe to call multiple times — extra dots
+// are appended, listeners aren't re-attached.
+function buildNavDots(activePage) {
+  const c = document.getElementById('nav-dots');
+  if (!c) return;
+  while (c.children.length < PAGES.length) {
+    const dot = document.createElement('button');
+    dot.className = 'nav-dot';
+    c.appendChild(dot);
+  }
+  c.querySelectorAll('.nav-dot').forEach((dot, i) => {
     dot.classList.toggle('active', i === activePage);
-    dot.addEventListener('click', () => {
-      if (i !== activePage) window.location.href = PAGES[i];
-    });
+    if (!dot._navWired) {
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (i !== activePage) window.location.href = PAGES[i];
+      });
+      dot._navWired = true;
+    }
   });
-  // Arrows
+}
+
+function initNav(activePage) {
+  buildNavDots(activePage);
+
   const prev = document.getElementById('nav-prev');
   const next = document.getElementById('nav-next');
   if (prev) {
     if (activePage === 0) prev.classList.add('hidden');
-    else prev.href = PAGES[activePage - 1];
+    else { prev.classList.remove('hidden'); prev.href = PAGES[activePage - 1]; }
   }
   if (next) {
     if (activePage === PAGES.length - 1) next.classList.add('hidden');
-    else next.href = PAGES[activePage + 1];
+    else { next.classList.remove('hidden'); next.href = PAGES[activePage + 1]; }
   }
+
   // Keyboard — global (slide nav only, carousels override per-page)
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
