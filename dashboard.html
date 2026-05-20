@@ -104,10 +104,22 @@
     }
 
     .dash-handle {
-      font-size: 22px; line-height: 1;
-      color: rgba(255,255,255,0.35);
-      text-align: center;
+      display: flex; flex-direction: column;
+      gap: 4px; align-items: center;
     }
+    .move-btn {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.75);
+      cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+      padding: 0;
+    }
+    .move-btn:hover:not(:disabled) { background: rgba(255,255,255,0.15); color: #fff; }
+    .move-btn:disabled { opacity: 0.18; cursor: default; }
     .dash-thumb {
       width: 200px; height: 112px;
       position: relative; overflow: hidden;
@@ -129,10 +141,21 @@
       letter-spacing: 0.1em; text-transform: uppercase;
     }
     .dash-meta-block { min-width: 0; }
-    .dash-name {
+    .dash-name-input {
       font-size: clamp(16px, 1.3vw, 19px); font-weight: 700;
       letter-spacing: -0.005em;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid transparent;
+      color: #fff;
+      width: 100%;
+      outline: none;
+      padding: 2px 0;
+      transition: border-color 0.15s;
+      font-family: inherit;
     }
+    .dash-name-input:hover { border-bottom-color: rgba(255,255,255,0.2); }
+    .dash-name-input:focus { border-bottom-color: #41b7ff; }
     .dash-file {
       font-size: 11px; color: rgba(255,255,255,0.4);
       margin-top: 4px; font-family: ui-monospace, SFMono-Regular, monospace;
@@ -188,7 +211,7 @@
       <a class="dash-back" href="index.html">← Torna alla presentazione</a>
     </header>
     <p class="dash-help">
-      Trascina per riordinare. Deseleziona la casella per nascondere una slide dalla sequenza.
+      Usa ↑ ↓ per riordinare (o trascina su desktop). Deseleziona la casella per nascondere una slide dalla sequenza.
       Premi <kbd>Salva</kbd> per applicare. Premi <kbd>O</kbd> da qualsiasi slide per tornare qui.
     </p>
 
@@ -220,21 +243,23 @@
       'leader.html':       'Leader & CEO',
       'thiel.html':        'Peter Thiel',
       'palantir.html':     'Palantir',
-      'paypal-mafia.html': 'PayPal Mafia'
+      'paypal-mafia.html': 'PayPal Mafia',
+      'pappagallo.html':   'Pappagallo Stocastico'
     };
 
     function loadConfig() {
       try {
         const raw = localStorage.getItem(SLIDES_CONFIG_KEY);
-        if (!raw) return { order: DEFAULT_PAGES.slice(), hidden: [] };
+        if (!raw) return { order: DEFAULT_PAGES.slice(), hidden: [], names: {} };
         const cfg = JSON.parse(raw);
         const known = new Set(DEFAULT_PAGES);
         const order = Array.isArray(cfg.order) ? cfg.order.filter(p => known.has(p)) : [];
         DEFAULT_PAGES.forEach(p => { if (!order.includes(p)) order.push(p); });
         const hidden = Array.isArray(cfg.hidden) ? cfg.hidden.filter(p => known.has(p)) : [];
-        return { order, hidden };
+        const names = (cfg.names && typeof cfg.names === 'object') ? cfg.names : {};
+        return { order, hidden, names };
       } catch (e) {
-        return { order: DEFAULT_PAGES.slice(), hidden: [] };
+        return { order: DEFAULT_PAGES.slice(), hidden: [], names: {} };
       }
     }
 
@@ -265,12 +290,15 @@
 
         const name = SLIDE_NAMES[page] || page;
         item.innerHTML = `
-          <div class="dash-handle" aria-hidden="true">⋮⋮</div>
+          <div class="dash-handle">
+            <button class="move-btn up" title="Sposta su">↑</button>
+            <button class="move-btn dn" title="Sposta giù">↓</button>
+          </div>
           <div class="dash-thumb">
             <iframe src="${page}" loading="lazy" scrolling="no" aria-hidden="true" tabindex="-1"></iframe>
           </div>
           <div class="dash-meta-block">
-            <div class="dash-name"></div>
+            <input class="dash-name-input" type="text" spellcheck="false" />
             <div class="dash-file"></div>
             <div class="dash-position">Posizione ${i + 1}${hidden ? ' • Nascosta' : ''}</div>
           </div>
@@ -279,7 +307,16 @@
             <span class="dash-toggle-label">Visibile</span>
           </label>
         `;
-        item.querySelector('.dash-name').textContent = name;
+        const nameInput = item.querySelector('.dash-name-input');
+        nameInput.value = state.names[page] || name;
+        nameInput.placeholder = name;
+        nameInput.addEventListener('input', () => {
+          const v = nameInput.value.trim();
+          if (v && v !== name) state.names[page] = v;
+          else delete state.names[page];
+          setDirty(true);
+        });
+        nameInput.addEventListener('keydown', e => e.stopPropagation());
         item.querySelector('.dash-file').textContent = page;
         const cb = item.querySelector('input[type=checkbox]');
         cb.checked = !hidden;
@@ -292,6 +329,26 @@
           render();
           setDirty(true);
         });
+
+        const upBtn = item.querySelector('.move-btn.up');
+        const dnBtn = item.querySelector('.move-btn.dn');
+        if (i === 0) upBtn.disabled = true;
+        if (i === state.order.length - 1) dnBtn.disabled = true;
+        upBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = state.order.indexOf(page);
+          if (idx <= 0) return;
+          [state.order[idx - 1], state.order[idx]] = [state.order[idx], state.order[idx - 1]];
+          render(); setDirty(true);
+        });
+        dnBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = state.order.indexOf(page);
+          if (idx >= state.order.length - 1) return;
+          [state.order[idx + 1], state.order[idx]] = [state.order[idx], state.order[idx + 1]];
+          render(); setDirty(true);
+        });
+
         list.appendChild(item);
       });
       setupDragDrop();
@@ -362,7 +419,7 @@
     document.getElementById('dash-reset').addEventListener('click', () => {
       if (!confirm('Reset all’ordine predefinito? Le modifiche locali andranno perse.')) return;
       localStorage.removeItem(SLIDES_CONFIG_KEY);
-      state = { order: DEFAULT_PAGES.slice(), hidden: [] };
+      state = { order: DEFAULT_PAGES.slice(), hidden: [], names: {} };
       render();
       const s = document.getElementById('dash-status');
       s.textContent = 'Reset eseguito. Default ripristinato.';
