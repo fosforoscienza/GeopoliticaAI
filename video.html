@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html, body { background: #000 !important; overflow: hidden; height: 100%; }
+    body { margin: 0; }
+
+    .video-wrap {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 0;
+    }
+    .video-wrap video {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      background: #000;
+    }
+
+    /* Play overlay (sits below nav controls so arrows stay clickable) */
+    #video-overlay {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 50;
+      background: rgba(0,0,0,0.55);
+      cursor: pointer;
+      transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+    }
+    #video-overlay.hidden {
+      opacity: 0; visibility: hidden; pointer-events: none;
+    }
+    #video-play-btn {
+      width: clamp(120px, 14vw, 200px);
+      height: clamp(120px, 14vw, 200px);
+      border-radius: 50%;
+      background: rgba(65,183,255,0.18);
+      border: 2px solid rgba(65,183,255,0.6);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s ease, background 0.2s ease;
+      box-shadow: 0 0 40px rgba(65,183,255,0.25);
+    }
+    #video-overlay:hover #video-play-btn {
+      transform: scale(1.06);
+      background: rgba(65,183,255,0.3);
+      box-shadow: 0 0 60px rgba(65,183,255,0.4);
+    }
+    #video-play-btn::before {
+      content: '';
+      width: 0; height: 0;
+      border-left: clamp(36px, 4vw, 56px) solid rgba(255,255,255,0.95);
+      border-top: clamp(24px, 2.8vw, 38px) solid transparent;
+      border-bottom: clamp(24px, 2.8vw, 38px) solid transparent;
+      margin-left: 12px;
+    }
+    #video-overlay-label {
+      position: absolute; bottom: clamp(80px, 10vh, 140px);
+      left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,0.6);
+      font-size: clamp(14px, 1.2vw, 18px);
+      font-weight: 300; letter-spacing: 0.16em; text-transform: uppercase;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-wrap">
+    <video id="intro-video" preload="metadata" controls playsinline webkit-playsinline>
+      <source src="video/intro.m4v" type="video/mp4" />
+    </video>
+  </div>
+
+  <div id="video-overlay">
+    <div id="video-play-btn"></div>
+    <div id="video-overlay-label">Clicca per riprodurre</div>
+  </div>
+
+  <!-- Navigation -->
+  <div id="nav-dots">
+    <button class="nav-dot"></button>
+    <button class="nav-dot active"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+  </div>
+  <a class="nav-arrow" id="nav-prev" href="index.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="timeline.html">&#8594;</a>
+
+  <!-- Lang toggle -->
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const video   = document.getElementById('intro-video');
+    const overlay = document.getElementById('video-overlay');
+    const label   = document.getElementById('video-overlay-label');
+
+    function startVideo() {
+      overlay.classList.add('hidden');
+      video.play().catch(() => { /* user can hit native play */ });
+    }
+    overlay.addEventListener('click', startVideo);
+
+    function onLangChange(l) {
+      document.title = l === 'it' ? "Video — Geopolitica della AI" : "Video — AI Geopolitics";
+      label.textContent = l === 'it' ? 'Clicca per riprodurre' : 'Click to play';
+    }
+
+    initLangToggle();
+    initNav(1);
+    onLangChange(lang);
+  </script>
+</body>
+</html>

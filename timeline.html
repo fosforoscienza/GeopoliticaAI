@@ -316,8 +316,9 @@
     </div>
   </div>
 
-  <!-- Navigation dots (4 pages) -->
+  <!-- Navigation dots (5 pages) -->
   <div id="nav-dots">
+    <button class="nav-dot"></button>
     <button class="nav-dot"></button>
     <button class="nav-dot active"></button>
     <button class="nav-dot"></button>
@@ -325,7 +326,7 @@
   </div>
 
   <!-- Arrows: page navigation -->
-  <a class="nav-arrow" id="nav-prev" href="index.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-prev" href="video.html">&#8592;</a>
   <a class="nav-arrow" id="nav-next" href="paesi.html">&#8594;</a>
 
   <!-- Lang toggle -->
@@ -769,7 +770,7 @@
         step++;
         renderState();
       } else {
-        window.location.href = PAGES[2]; // paesi.html
+        window.location.href = PAGES[3]; // paesi.html
       }
     }
 
@@ -781,7 +782,7 @@
         step--;
         renderState();
       } else {
-        window.location.href = PAGES[0]; // index.html
+        window.location.href = PAGES[1]; // video.html
       }
     }
 
@@ -826,9 +827,9 @@
 
     // Nav dots (from common.js PAGES array)
     document.querySelectorAll('.nav-dot').forEach((dot, i) => {
-      dot.classList.toggle('active', i === 1);
+      dot.classList.toggle('active', i === 2);
       dot.addEventListener('click', () => {
-        if (i !== 1) window.location.href = PAGES[i];
+        if (i !== 2) window.location.href = PAGES[i];
       });
     });
 

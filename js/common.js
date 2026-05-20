@@ -34,9 +34,9 @@ function initLangToggle() {
 }
 
 // ════════════════════════════════════════════════════
-// Navigation dots (4 pages: index, timeline, paesi, leader)
+// Navigation dots (5 pages: index, video, timeline, paesi, leader)
 // ════════════════════════════════════════════════════
-const PAGES = ['index.html', 'timeline.html', 'paesi.html', 'leader.html'];
+const PAGES = ['index.html', 'video.html', 'timeline.html', 'paesi.html', 'leader.html'];
 
 function initNav(activePage) {
   // Dots
