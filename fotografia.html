@@ -184,7 +184,7 @@
 
     let step = 0;           // 0 quote / 1 +word / 2 +author / 3 image scroll
     const N = 3;
-    const ACTIVE_PAGE = 3;
+    const ACTIVE_PAGE = currentPageIndex();
 
     function renderTexts() {
       const t = TXT[lang];

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Ordina Slide</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html, body { background: #040e1a !important; }
+    body {
+      color: #f0f5fb; margin: 0; min-height: 100vh;
+      padding: 36px 24px 80px; box-sizing: border-box;
+      overflow-y: auto;
+    }
+    .dash-container { max-width: 1200px; margin: 0 auto; }
+
+    .dash-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .dash-header h1 {
+      font-size: clamp(24px, 2.6vw, 36px);
+      font-weight: 800; letter-spacing: -0.02em; margin: 0;
+    }
+    .dash-back {
+      color: rgba(255,255,255,0.55); text-decoration: none;
+      font-size: 14px; font-weight: 500;
+      transition: color 0.18s;
+    }
+    .dash-back:hover { color: #41b7ff; }
+    .dash-help {
+      color: rgba(255,255,255,0.45); font-size: 13px;
+      margin-bottom: 28px;
+      line-height: 1.55;
+    }
+    kbd {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 4px; padding: 1px 6px;
+      font-family: ui-monospace, SFMono-Regular, monospace; font-size: 12px;
+      color: #f0f5fb;
+    }
+
+    .dash-actions {
+      display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;
+      position: sticky; top: -1px; z-index: 5;
+      padding: 16px 0;
+      background: linear-gradient(to bottom, #040e1a 70%, rgba(4,14,26,0.95));
+    }
+    .dash-btn {
+      padding: 10px 20px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.8);
+      font-size: 13px; font-weight: 600; letter-spacing: 0.05em;
+      cursor: pointer; transition: all 0.18s;
+      font-family: inherit;
+    }
+    .dash-btn:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.25);
+      color: #fff;
+    }
+    .dash-btn.primary {
+      background: rgba(65,183,255,0.18);
+      border-color: rgba(65,183,255,0.5);
+      color: #41b7ff;
+    }
+    .dash-btn.primary:hover {
+      background: rgba(65,183,255,0.28);
+      color: #7cd0ff;
+    }
+    .dash-btn.danger { color: #f87171; }
+    .dash-btn.danger:hover { color: #fca5a5; border-color: rgba(248,113,113,0.4); }
+
+    .dash-list { display: grid; gap: 10px; }
+    .dash-item {
+      display: grid;
+      grid-template-columns: 28px 200px 1fr auto;
+      gap: 18px; align-items: center;
+      padding: 12px 16px; border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      cursor: grab; user-select: none;
+      transition: background 0.18s, border 0.18s, opacity 0.18s, transform 0.18s;
+    }
+    .dash-item:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .dash-item.dragging {
+      opacity: 0.4; cursor: grabbing;
+      border-color: rgba(65,183,255,0.5);
+    }
+    .dash-item.drop-above {
+      box-shadow: 0 -3px 0 0 #41b7ff inset;
+    }
+    .dash-item.drop-below {
+      box-shadow: 0 3px 0 0 #41b7ff inset;
+    }
+    .dash-item.hidden-slide {
+      opacity: 0.45;
+    }
+
+    .dash-handle {
+      font-size: 22px; line-height: 1;
+      color: rgba(255,255,255,0.35);
+      text-align: center;
+    }
+    .dash-thumb {
+      width: 200px; height: 112px;
+      position: relative; overflow: hidden;
+      border-radius: 6px;
+      background: #0a1929;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .dash-thumb iframe {
+      position: absolute; top: 0; left: 0;
+      width: 1600px; height: 900px;
+      transform: scale(0.125);
+      transform-origin: top left;
+      border: none;
+      pointer-events: none;
+    }
+    .dash-thumb.empty {
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.25); font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .dash-meta-block { min-width: 0; }
+    .dash-name {
+      font-size: clamp(16px, 1.3vw, 19px); font-weight: 700;
+      letter-spacing: -0.005em;
+    }
+    .dash-file {
+      font-size: 11px; color: rgba(255,255,255,0.4);
+      margin-top: 4px; font-family: ui-monospace, SFMono-Regular, monospace;
+    }
+    .dash-position {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(65,183,255,0.7);
+      margin-top: 6px;
+    }
+
+    .dash-toggle {
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer; padding: 8px 12px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.03);
+    }
+    .dash-toggle input[type=checkbox] {
+      width: 18px; height: 18px;
+      cursor: pointer; accent-color: #41b7ff;
+    }
+    .dash-toggle-label {
+      font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.04em;
+    }
+
+    .dash-status {
+      margin-top: 28px;
+      font-size: 14px; min-height: 22px;
+      color: rgba(255,255,255,0.55);
+      transition: color 0.18s;
+    }
+    .dash-status.success { color: #4ade80; }
+    .dash-status.error   { color: #f87171; }
+    .dash-status.warning { color: #fbbf24; }
+
+    @media (max-width: 720px) {
+      .dash-item {
+        grid-template-columns: 24px 1fr;
+        gap: 12px;
+      }
+      .dash-thumb { display: none; }
+      .dash-toggle { grid-column: 2; justify-self: start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dash-container">
+    <header class="dash-header">
+      <h1>Ordina slide</h1>
+      <a class="dash-back" href="index.html">← Torna alla presentazione</a>
+    </header>
+    <p class="dash-help">
+      Trascina per riordinare. Deseleziona la casella per nascondere una slide dalla sequenza.
+      Premi <kbd>Salva</kbd> per applicare. Premi <kbd>O</kbd> da qualsiasi slide per tornare qui.
+    </p>
+
+    <div class="dash-actions">
+      <button class="dash-btn primary" id="dash-save">Salva ordine</button>
+      <button class="dash-btn" id="dash-export">Esporta JSON</button>
+      <button class="dash-btn" id="dash-import">Importa JSON</button>
+      <input type="file" id="dash-file" accept=".json" hidden />
+      <button class="dash-btn danger" id="dash-reset">Reset al default</button>
+    </div>
+
+    <div class="dash-list" id="dash-list"></div>
+
+    <div class="dash-status" id="dash-status">Pronto.</div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const SLIDE_NAMES = {
+      'index.html':        'Title page',
+      'video.html':        'Intro video',
+      'scrittura.html':    'Scrittura — Platone',
+      'fotografia.html':   'Fotografia — Baudelaire',
+      'pechino-1.html':    'Pechino 1',
+      'pechino-2.html':    'Pechino 2',
+      'pechino-3.html':    'Pechino 3',
+      'timeline.html':     'Timeline AI',
+      'paesi.html':        'Mappa paesi',
+      'leader.html':       'Leader & CEO',
+      'thiel.html':        'Peter Thiel',
+      'palantir.html':     'Palantir',
+      'paypal-mafia.html': 'PayPal Mafia'
+    };
+
+    function loadConfig() {
+      try {
+        const raw = localStorage.getItem(SLIDES_CONFIG_KEY);
+        if (!raw) return { order: DEFAULT_PAGES.slice(), hidden: [] };
+        const cfg = JSON.parse(raw);
+        const known = new Set(DEFAULT_PAGES);
+        const order = Array.isArray(cfg.order) ? cfg.order.filter(p => known.has(p)) : [];
+        DEFAULT_PAGES.forEach(p => { if (!order.includes(p)) order.push(p); });
+        const hidden = Array.isArray(cfg.hidden) ? cfg.hidden.filter(p => known.has(p)) : [];
+        return { order, hidden };
+      } catch (e) {
+        return { order: DEFAULT_PAGES.slice(), hidden: [] };
+      }
+    }
+
+    let state = loadConfig();
+    let dirty = false;
+
+    function setDirty(b) {
+      dirty = b;
+      const status = document.getElementById('dash-status');
+      if (b) {
+        status.textContent = 'Modifiche non salvate. Premi “Salva ordine” per applicarle.';
+        status.className = 'dash-status warning';
+      } else {
+        status.textContent = 'Pronto.';
+        status.className = 'dash-status';
+      }
+    }
+
+    function render() {
+      const list = document.getElementById('dash-list');
+      list.innerHTML = '';
+      state.order.forEach((page, i) => {
+        const hidden = state.hidden.includes(page);
+        const item = document.createElement('div');
+        item.className = 'dash-item' + (hidden ? ' hidden-slide' : '');
+        item.draggable = true;
+        item.dataset.page = page;
+
+        const name = SLIDE_NAMES[page] || page;
+        item.innerHTML = `
+          <div class="dash-handle" aria-hidden="true">⋮⋮</div>
+          <div class="dash-thumb">
+            <iframe src="${page}" loading="lazy" scrolling="no" aria-hidden="true" tabindex="-1"></iframe>
+          </div>
+          <div class="dash-meta-block">
+            <div class="dash-name"></div>
+            <div class="dash-file"></div>
+            <div class="dash-position">Posizione ${i + 1}${hidden ? ' • Nascosta' : ''}</div>
+          </div>
+          <label class="dash-toggle">
+            <input type="checkbox" />
+            <span class="dash-toggle-label">Visibile</span>
+          </label>
+        `;
+        item.querySelector('.dash-name').textContent = name;
+        item.querySelector('.dash-file').textContent = page;
+        const cb = item.querySelector('input[type=checkbox]');
+        cb.checked = !hidden;
+        cb.addEventListener('change', () => {
+          if (cb.checked) {
+            state.hidden = state.hidden.filter(p => p !== page);
+          } else if (!state.hidden.includes(page)) {
+            state.hidden.push(page);
+          }
+          render();
+          setDirty(true);
+        });
+        list.appendChild(item);
+      });
+      setupDragDrop();
+    }
+
+    function setupDragDrop() {
+      const list = document.getElementById('dash-list');
+      let dragged = null;
+
+      list.querySelectorAll('.dash-item').forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+          dragged = item;
+          item.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          // Required for Firefox
+          try { e.dataTransfer.setData('text/plain', item.dataset.page); } catch (_) {}
+        });
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+          list.querySelectorAll('.dash-item').forEach(el => {
+            el.classList.remove('drop-above', 'drop-below');
+          });
+          dragged = null;
+          state.order = [...list.children].map(el => el.dataset.page);
+          render();
+          setDirty(true);
+        });
+        item.addEventListener('dragover', (e) => {
+          if (!dragged || dragged === item) return;
+          e.preventDefault();
+          const rect = item.getBoundingClientRect();
+          const midY = rect.top + rect.height / 2;
+          item.classList.toggle('drop-above', e.clientY < midY);
+          item.classList.toggle('drop-below', e.clientY >= midY);
+        });
+        item.addEventListener('dragleave', () => {
+          item.classList.remove('drop-above', 'drop-below');
+        });
+        item.addEventListener('drop', (e) => {
+          if (!dragged || dragged === item) return;
+          e.preventDefault();
+          const rect = item.getBoundingClientRect();
+          const midY = rect.top + rect.height / 2;
+          if (e.clientY < midY) {
+            list.insertBefore(dragged, item);
+          } else {
+            list.insertBefore(dragged, item.nextSibling);
+          }
+        });
+      });
+    }
+
+    // === Buttons ===
+    document.getElementById('dash-save').addEventListener('click', () => {
+      try {
+        localStorage.setItem(SLIDES_CONFIG_KEY, JSON.stringify(state));
+        const s = document.getElementById('dash-status');
+        s.textContent = 'Salvato. La presentazione userà questo ordine.';
+        s.className = 'dash-status success';
+        dirty = false;
+      } catch (e) {
+        const s = document.getElementById('dash-status');
+        s.textContent = 'Errore salvataggio: ' + e.message;
+        s.className = 'dash-status error';
+      }
+    });
+
+    document.getElementById('dash-reset').addEventListener('click', () => {
+      if (!confirm('Reset all’ordine predefinito? Le modifiche locali andranno perse.')) return;
+      localStorage.removeItem(SLIDES_CONFIG_KEY);
+      state = { order: DEFAULT_PAGES.slice(), hidden: [] };
+      render();
+      const s = document.getElementById('dash-status');
+      s.textContent = 'Reset eseguito. Default ripristinato.';
+      s.className = 'dash-status success';
+      dirty = false;
+    });
+
+    document.getElementById('dash-export').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'geopolitica-slides-config.json';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      const s = document.getElementById('dash-status');
+      s.textContent = 'Configurazione esportata.';
+      s.className = 'dash-status success';
+    });
+
+    document.getElementById('dash-import').addEventListener('click', () => {
+      document.getElementById('dash-file').click();
+    });
+    document.getElementById('dash-file').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const text  = await file.text();
+        const cfg   = JSON.parse(text);
+        if (!Array.isArray(cfg.order)) throw new Error('campo "order" mancante o non valido');
+        const known = new Set(DEFAULT_PAGES);
+        const order = cfg.order.filter(p => known.has(p));
+        DEFAULT_PAGES.forEach(p => { if (!order.includes(p)) order.push(p); });
+        const hidden = Array.isArray(cfg.hidden) ? cfg.hidden.filter(p => known.has(p)) : [];
+        state = { order, hidden };
+        render();
+        setDirty(true);
+        const s = document.getElementById('dash-status');
+        s.textContent = 'Importato. Premi Salva per applicare.';
+        s.className = 'dash-status warning';
+      } catch (err) {
+        const s = document.getElementById('dash-status');
+        s.textContent = 'Importazione fallita: ' + err.message;
+        s.className = 'dash-status error';
+      } finally {
+        e.target.value = '';
+      }
+    });
+
+    // Warn before leaving with unsaved changes
+    window.addEventListener('beforeunload', (e) => {
+      if (!dirty) return;
+      e.preventDefault(); e.returnValue = '';
+    });
+
+    initLangToggle && initLangToggle();
+    render();
+  </script>
+</body>
+</html>

@@ -34,14 +34,53 @@ function initLangToggle() {
 }
 
 // ════════════════════════════════════════════════════
-// Navigation dots (13 pages)
+// Navigation dots (13 pages by default)
 // ════════════════════════════════════════════════════
-const PAGES = [
+const DEFAULT_PAGES = [
   'index.html', 'video.html', 'scrittura.html', 'fotografia.html',
   'pechino-1.html', 'pechino-2.html', 'pechino-3.html',
   'timeline.html', 'paesi.html', 'leader.html',
   'thiel.html', 'palantir.html', 'paypal-mafia.html'
 ];
+
+// Mutable runtime list — dashboard can reorder and hide entries.
+// Hidden slides are removed entirely from PAGES (skipped in navigation).
+const PAGES = DEFAULT_PAGES.slice();
+const SLIDES_CONFIG_KEY = 'geopolitica-slides-config';
+
+function loadSlidesConfig() {
+  try {
+    const raw = localStorage.getItem(SLIDES_CONFIG_KEY);
+    if (!raw) return;
+    const cfg = JSON.parse(raw);
+    if (!cfg || !Array.isArray(cfg.order)) return;
+    // Only accept entries we still know about.
+    const known = new Set(DEFAULT_PAGES);
+    const order = cfg.order.filter(p => known.has(p));
+    // Append any new defaults the saved config didn't know.
+    DEFAULT_PAGES.forEach(p => { if (!order.includes(p)) order.push(p); });
+    const hidden = new Set(Array.isArray(cfg.hidden) ? cfg.hidden : []);
+    const visible = order.filter(p => !hidden.has(p));
+    if (visible.length === 0) return; // never leave the user stuck
+    PAGES.splice(0, PAGES.length, ...visible);
+  } catch (e) { /* fall back to defaults */ }
+}
+loadSlidesConfig();
+
+function currentPageIndex() {
+  const fn = (window.location.pathname.split('/').pop() || 'index.html') || 'index.html';
+  const idx = PAGES.indexOf(fn);
+  return idx < 0 ? 0 : idx;
+}
+
+// Hidden shortcut: press "O" anywhere to open the slide-order dashboard.
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'o' && e.key !== 'O') return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const tag = (e.target && e.target.tagName) || '';
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+  window.location.href = 'dashboard.html';
+});
 
 // Fills #nav-dots to match PAGES.length, sets the active dot, and
 // wires click navigation. Safe to call multiple times — extra dots
@@ -67,6 +106,7 @@ function buildNavDots(activePage) {
 }
 
 function initNav(activePage) {
+  if (typeof activePage !== 'number') activePage = currentPageIndex();
   buildNavDots(activePage);
 
   const prev = document.getElementById('nav-prev');

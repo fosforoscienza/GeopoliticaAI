@@ -775,7 +775,8 @@
         step++;
         renderState();
       } else {
-        window.location.href = PAGES[8]; // paesi.html
+        const next = PAGES[currentPageIndex() + 1];
+        if (next) window.location.href = next;
       }
     }
 
@@ -787,7 +788,8 @@
         step--;
         renderState();
       } else {
-        window.location.href = PAGES[6]; // pechino-3.html
+        const prev = PAGES[currentPageIndex() - 1];
+        if (prev) window.location.href = prev;
       }
     }
 
@@ -831,7 +833,7 @@
     });
 
     // Nav dots (from common.js PAGES array)
-    buildNavDots(7);
+    buildNavDots(currentPageIndex());
 
     // ── Lang ──────────────────────────────────────────────
     function onLangChange() {
