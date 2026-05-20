@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Citazione — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html, body { background: #040e1a !important; overflow: hidden; height: 100%; margin: 0; }
+    body {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+
+    .quote-wrap {
+      max-width: min(1200px, 88vw);
+      padding: 0 4vw;
+      text-align: center;
+      z-index: 1;
+    }
+    .quote-text {
+      font-size: clamp(18px, 1.9vw, 28px);
+      line-height: 1.75;
+      color: #94a3b8;
+      font-style: italic;
+      letter-spacing: 0.01em;
+    }
+    .reveal {
+      display: block;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-word {
+      font-size: clamp(54px, 8vw, 130px);
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      color: #41b7ff;
+      margin-top: clamp(40px, 5vh, 80px);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .reveal-author {
+      font-size: clamp(16px, 1.4vw, 22px);
+      font-weight: 700;
+      letter-spacing: 0.32em;
+      color: rgba(255,255,255,0.55);
+      margin-top: clamp(28px, 3.4vh, 56px);
+      text-transform: uppercase;
+    }
+    .click-hint {
+      position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%);
+      color: rgba(65,183,255,0.45);
+      font-size: clamp(13px, 1vw, 16px);
+      letter-spacing: 0.16em; text-transform: uppercase; font-weight: 300;
+      animation: pulse-hint 2.4s ease-in-out infinite;
+      pointer-events: none;
+      transition: opacity 0.4s, visibility 0s linear 0.4s;
+    }
+    @keyframes pulse-hint {
+      0%,100% { opacity: 0.5; }
+      50%      { opacity: 1; }
+    }
+    .click-hint.gone {
+      opacity: 0;
+      animation: none;
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body onclick="advance()">
+
+  <div class="quote-wrap">
+    <div class="quote-text" id="quote-text"></div>
+    <div class="reveal reveal-word" id="reveal-word">Scrittura</div>
+    <div class="reveal reveal-author" id="reveal-author">Platone</div>
+  </div>
+
+  <div class="click-hint" id="click-hint"></div>
+
+  <!-- Navigation -->
+  <div id="nav-dots">
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot active"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+  </div>
+  <a class="nav-arrow" id="nav-prev" href="video.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="pechino-1.html">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        quote: "“Questa invenzione produrrà dimenticanza nelle menti di coloro che l’apprendono, per mancanza di esercizio della memoria […] procurerà saggezza, apparenza, non verità: infatti divenuti grazie a te, ascoltatori di molte nozioni senza insegnamento, crederanno di essere conoscitori di molte cose, (pur) essendo per lo più ignoranti.”",
+        word: 'Scrittura',
+        author: 'Platone',
+        hint: 'Clicca o premi → per continuare'
+      },
+      en: {
+        quote: "“This invention will produce forgetfulness in the minds of those who learn it, through lack of practice of memory […] it will give them not truth but the semblance of truth: hearers of many things without being taught, they will appear knowledgeable while being mostly ignorant.”",
+        word: 'Writing',
+        author: 'Plato',
+        hint: 'Click or press → to continue'
+      }
+    };
+
+    let step = 0;          // 0 quote only, 1 +word, 2 +author
+    const N = 2;
+    const ACTIVE_PAGE = 2;
+
+    function renderTexts() {
+      const t = TXT[lang];
+      document.getElementById('quote-text').textContent = t.quote;
+      document.getElementById('reveal-word').textContent  = t.word;
+      document.getElementById('reveal-author').textContent = t.author;
+      document.getElementById('click-hint').textContent   = t.hint;
+    }
+    function render() {
+      document.getElementById('reveal-word').classList.toggle('visible',  step >= 1);
+      document.getElementById('reveal-author').classList.toggle('visible', step >= 2);
+      document.getElementById('click-hint').classList.toggle('gone', step > 0);
+    }
+
+    function advance() {
+      if (step < N) { step++; render(); }
+      else { window.location.href = PAGES[ACTIVE_PAGE + 1]; }
+    }
+    function retreat() {
+      if (step > 0) { step--; render(); }
+      else { window.location.href = PAGES[ACTIVE_PAGE - 1]; }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault(); advance();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault(); retreat();
+      }
+    });
+
+    // Nav controls — stop body click from triggering advance()
+    document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === ACTIVE_PAGE);
+      dot.addEventListener('click', e => {
+        e.stopPropagation();
+        if (i !== ACTIVE_PAGE) window.location.href = PAGES[i];
+      });
+    });
+    ['nav-prev', 'nav-next', 'lang-toggle'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', e => e.stopPropagation());
+    });
+
+    function onLangChange() {
+      renderTexts();
+    }
+
+    initLangToggle();
+    renderTexts();
+    render();
+  </script>
+</body>
+</html>

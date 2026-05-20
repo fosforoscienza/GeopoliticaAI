@@ -34,10 +34,10 @@ function initLangToggle() {
 }
 
 // ════════════════════════════════════════════════════
-// Navigation dots (8 pages)
+// Navigation dots (9 pages)
 // ════════════════════════════════════════════════════
 const PAGES = [
-  'index.html', 'video.html',
+  'index.html', 'video.html', 'scrittura.html',
   'pechino-1.html', 'pechino-2.html', 'pechino-3.html',
   'timeline.html', 'paesi.html', 'leader.html'
 ];
