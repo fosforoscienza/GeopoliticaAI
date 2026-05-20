@@ -34,9 +34,13 @@ function initLangToggle() {
 }
 
 // ════════════════════════════════════════════════════
-// Navigation dots (5 pages: index, video, timeline, paesi, leader)
+// Navigation dots (8 pages)
 // ════════════════════════════════════════════════════
-const PAGES = ['index.html', 'video.html', 'timeline.html', 'paesi.html', 'leader.html'];
+const PAGES = [
+  'index.html', 'video.html',
+  'pechino-1.html', 'pechino-2.html', 'pechino-3.html',
+  'timeline.html', 'paesi.html', 'leader.html'
+];
 
 function initNav(activePage) {
   // Dots

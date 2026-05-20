@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html, body { background: #000 !important; overflow: hidden; height: 100%; margin: 0; }
+    .slide-img-wrap {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 0;
+    }
+    .slide-img {
+      max-height: 92vh;
+      max-width: 95vw;
+      object-fit: contain;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slide-img-wrap">
+    <img class="slide-img" src="img/pechino/2.png" alt="" />
+  </div>
+
+  <div id="nav-dots">
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot active"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+    <button class="nav-dot"></button>
+  </div>
+  <a class="nav-arrow" id="nav-prev" href="pechino-1.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="pechino-3.html">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    initLangToggle();
+    initNav(3);
+  </script>
+</body>
+</html>
