@@ -62,18 +62,22 @@
       50%      { opacity: 1; }
     }
 
-    /* Event content panel */
+    /* Event content panel — explicit centering so the box stays
+       centered as its content grows in (no rightward drift). */
     #tl-event-wrap {
       position: absolute;
+      left: 50%; top: 50%;
+      width: min(1500px, 92vw);
       text-align: center;
-      max-width: min(1500px, 92vw);
       padding: 0 4vw;
+      box-sizing: border-box;
       opacity: 0; pointer-events: none;
-      transform: translateY(28px);
+      transform: translate(-50%, -50%) translateY(28px);
       transition: opacity 0.45s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
     }
     #tl-event-wrap.visible {
-      opacity: 1; pointer-events: auto; transform: none;
+      opacity: 1; pointer-events: auto;
+      transform: translate(-50%, -50%) translateY(0);
     }
 
     #tl-step-counter {
