@@ -831,12 +831,7 @@
     });
 
     // Nav dots (from common.js PAGES array)
-    document.querySelectorAll('.nav-dot').forEach((dot, i) => {
-      dot.classList.toggle('active', i === 7);
-      dot.addEventListener('click', () => {
-        if (i !== 7) window.location.href = PAGES[i];
-      });
-    });
+    buildNavDots(7);
 
     // ── Lang ──────────────────────────────────────────────
     function onLangChange() {

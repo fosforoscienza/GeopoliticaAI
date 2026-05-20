@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayPal Mafia — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html, body { background: #040e1a !important; overflow: hidden; height: 100%; margin: 0; }
+    body {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    .info-card {
+      max-width: min(1300px, 92vw);
+      padding: 0 4vw;
+      text-align: center;
+      animation: card-in 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .info-eyebrow {
+      font-size: clamp(14px, 1.2vw, 18px);
+      font-weight: 700; letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: clamp(18px, 2vh, 28px);
+    }
+    .info-name {
+      font-size: clamp(48px, 7.5vw, 130px);
+      font-weight: 900; letter-spacing: -0.03em;
+      line-height: 0.95;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin: 0 0 clamp(24px, 3vh, 40px);
+    }
+    .info-tagline {
+      font-size: clamp(18px, 1.7vw, 28px);
+      color: #94a3b8; font-weight: 300;
+      letter-spacing: 0.02em; line-height: 1.5;
+      margin-bottom: clamp(36px, 4.5vh, 64px);
+      max-width: 900px; margin-left: auto; margin-right: auto;
+    }
+    .info-facts {
+      list-style: none; padding: 0;
+      margin: 0 auto; max-width: 920px;
+      display: grid; gap: clamp(10px, 1.3vh, 18px);
+      text-align: left;
+    }
+    .info-facts li {
+      font-size: clamp(15px, 1.35vw, 22px);
+      color: #e2e8f0; line-height: 1.5;
+      padding-left: 36px; position: relative;
+    }
+    .info-facts li::before {
+      content: ''; position: absolute;
+      left: 0; top: 0.7em;
+      width: 22px; height: 2px;
+      background: var(--accent);
+    }
+    .info-quote {
+      font-size: clamp(16px, 1.4vw, 22px);
+      font-style: italic;
+      color: rgba(255,255,255,0.6);
+      margin-top: clamp(32px, 4vh, 52px);
+      max-width: 760px;
+      margin-left: auto; margin-right: auto;
+      letter-spacing: 0.01em;
+    }
+  </style>
+</head>
+<body style="--accent: #06b6d4;">
+
+  <div class="info-card">
+    <div class="info-eyebrow" id="info-eyebrow"></div>
+    <h1 class="info-name" id="info-name"></h1>
+    <div class="info-tagline" id="info-tagline"></div>
+    <ul class="info-facts" id="info-facts"></ul>
+    <div class="info-quote" id="info-quote"></div>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="palantir.html">&#8592;</a>
+  <a class="nav-arrow hidden" id="nav-next">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        eyebrow: 'Origini della Silicon Valley moderna',
+        name: 'PayPal Mafia',
+        tagline: 'La rete dei fondatori usciti da PayPal dopo la vendita a eBay (2002)',
+        facts: [
+          'Peter Thiel, Elon Musk, Reid Hoffman, Max Levchin, Roelof Botha',
+          'David Sacks, Steve Chen, Chad Hurley, Jawed Karim, Russel Simmons',
+          'Hanno fondato: Tesla, SpaceX, LinkedIn, YouTube, Yelp, Palantir, Affirm',
+          'Sequoia Capital, Founders Fund, Greylock — capitali di rischio chiave',
+          'Stimato controllo combinato oltre $1 trilione in market cap',
+          'Finanziatori decisivi della politica tech-friendly americana del 2024'
+        ],
+        quote: '"Una delle reti più produttive nella storia del capitalismo americano."'
+      },
+      en: {
+        eyebrow: 'Origins of modern Silicon Valley',
+        name: 'PayPal Mafia',
+        tagline: 'The network of founders who left PayPal after the eBay acquisition (2002)',
+        facts: [
+          'Peter Thiel, Elon Musk, Reid Hoffman, Max Levchin, Roelof Botha',
+          'David Sacks, Steve Chen, Chad Hurley, Jawed Karim, Russel Simmons',
+          'They founded: Tesla, SpaceX, LinkedIn, YouTube, Yelp, Palantir, Affirm',
+          'Sequoia Capital, Founders Fund, Greylock — key venture firms',
+          'Estimated combined control of $1+ trillion in market capitalization',
+          'Decisive funders of the 2024 tech-friendly American politics'
+        ],
+        quote: '"One of the most productive networks in the history of American capitalism."'
+      }
+    };
+
+    function renderTexts() {
+      const t = TXT[lang];
+      document.getElementById('info-eyebrow').textContent = t.eyebrow;
+      document.getElementById('info-name').textContent    = t.name;
+      document.getElementById('info-tagline').textContent = t.tagline;
+      document.getElementById('info-quote').textContent   = t.quote;
+      const ul = document.getElementById('info-facts');
+      ul.innerHTML = '';
+      t.facts.forEach(f => {
+        const li = document.createElement('li');
+        li.textContent = f;
+        ul.appendChild(li);
+      });
+    }
+    function onLangChange() { renderTexts(); }
+
+    initLangToggle();
+    renderTexts();
+    initNav(12);
+  </script>
+</body>
+</html>

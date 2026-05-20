@@ -216,13 +216,7 @@
       }
     });
 
-    document.querySelectorAll('.nav-dot').forEach((dot, i) => {
-      dot.classList.toggle('active', i === ACTIVE_PAGE);
-      dot.addEventListener('click', e => {
-        e.stopPropagation();
-        if (i !== ACTIVE_PAGE) window.location.href = PAGES[i];
-      });
-    });
+    buildNavDots(ACTIVE_PAGE);
     ['nav-prev', 'nav-next', 'lang-toggle'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('click', e => e.stopPropagation());

@@ -34,12 +34,13 @@ function initLangToggle() {
 }
 
 // ════════════════════════════════════════════════════
-// Navigation dots (10 pages)
+// Navigation dots (13 pages)
 // ════════════════════════════════════════════════════
 const PAGES = [
   'index.html', 'video.html', 'scrittura.html', 'fotografia.html',
   'pechino-1.html', 'pechino-2.html', 'pechino-3.html',
-  'timeline.html', 'paesi.html', 'leader.html'
+  'timeline.html', 'paesi.html', 'leader.html',
+  'thiel.html', 'palantir.html', 'paypal-mafia.html'
 ];
 
 // Fills #nav-dots to match PAGES.length, sets the active dot, and
