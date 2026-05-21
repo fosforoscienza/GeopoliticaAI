@@ -157,8 +157,8 @@
     <button class="nav-dot"></button>
     <button class="nav-dot"></button>
   </div>
-  <a class="nav-arrow" id="nav-prev" href="scrittura.html">&#8592;</a>
-  <a class="nav-arrow" id="nav-next" href="pechino-1.html">&#8594;</a>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
 
   <div id="lang-toggle">
     <button class="lang-btn" data-lang="it">IT</button>
@@ -217,6 +217,7 @@
     });
 
     buildNavDots(ACTIVE_PAGE);
+    initNavArrows(ACTIVE_PAGE);
     ['nav-prev', 'nav-next', 'lang-toggle'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('click', e => e.stopPropagation());

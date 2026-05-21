@@ -331,8 +331,8 @@
   </div>
 
   <!-- Arrows: page navigation -->
-  <a class="nav-arrow" id="nav-prev" href="pechino-3.html">&#8592;</a>
-  <a class="nav-arrow" id="nav-next" href="paesi.html">&#8594;</a>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
 
   <!-- Lang toggle -->
   <div id="lang-toggle">
@@ -834,6 +834,7 @@
 
     // Nav dots (from common.js PAGES array)
     buildNavDots(currentPageIndex());
+    initNavArrows(currentPageIndex());
 
     // ── Lang ──────────────────────────────────────────────
     function onLangChange() {

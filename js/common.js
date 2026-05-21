@@ -110,6 +110,21 @@ function buildNavDots(activePage) {
   });
 }
 
+// Updates only the ← → arrow hrefs (no keydown). Use on slides with custom keyboard handlers.
+function initNavArrows(activePage) {
+  if (typeof activePage !== 'number') activePage = currentPageIndex();
+  const prev = document.getElementById('nav-prev');
+  const next = document.getElementById('nav-next');
+  if (prev) {
+    if (activePage === 0) prev.classList.add('hidden');
+    else { prev.classList.remove('hidden'); prev.href = PAGES[activePage - 1]; }
+  }
+  if (next) {
+    if (activePage === PAGES.length - 1) next.classList.add('hidden');
+    else { next.classList.remove('hidden'); next.href = PAGES[activePage + 1]; }
+  }
+}
+
 function initNav(activePage) {
   if (typeof activePage !== 'number') activePage = currentPageIndex();
   buildNavDots(activePage);
