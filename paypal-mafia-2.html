@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayPal Mafia — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html, body { background: #040e1a !important; overflow: hidden; height: 100%; margin: 0; }
+    body {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    .info-card {
+      max-width: min(1200px, 92vw);
+      padding: 0 4vw;
+      text-align: center;
+      animation: card-in 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .info-eyebrow {
+      font-size: clamp(12px, 1vw, 16px);
+      font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: clamp(14px, 1.8vh, 24px);
+    }
+    .info-name {
+      font-size: clamp(32px, 5.5vw, 80px);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 1;
+      color: #fff;
+      text-transform: uppercase;
+      margin: 0 0 clamp(6px, 0.8vh, 12px);
+    }
+    .info-name em { color: var(--accent); font-style: normal; }
+    .info-sub {
+      font-size: clamp(16px, 1.6vw, 26px);
+      color: rgba(255,255,255,0.5);
+      font-weight: 300; letter-spacing: 0.01em;
+      margin-bottom: clamp(28px, 3.5vh, 52px);
+    }
+
+    .cerniere-list {
+      list-style: none; padding: 0; margin: 0 auto;
+      max-width: 920px;
+      display: grid; gap: clamp(10px, 1.4vh, 18px);
+      text-align: left;
+    }
+    .cerniere-list li {
+      font-size: clamp(14px, 1.25vw, 20px);
+      color: #cbd5e1; line-height: 1.55;
+      display: flex; gap: 14px; align-items: baseline;
+    }
+    .cerniere-list li .num {
+      font-size: 1.15em;
+      color: var(--accent);
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .cerniere-list li strong { color: #fff; font-weight: 700; }
+    .cerniere-list li.note {
+      font-size: clamp(13px, 1.05vw, 17px);
+      color: rgba(255,255,255,0.42);
+      font-style: italic;
+      border-left: 2px solid rgba(255,255,255,0.12);
+      padding-left: 16px;
+      margin-top: clamp(4px, 0.6vh, 8px);
+      display: block;
+    }
+  </style>
+</head>
+<body style="--accent: #06b6d4;">
+
+  <div class="info-card">
+    <div class="info-eyebrow" id="eyebrow"></div>
+    <h1 class="info-name">PayPal <em>Mafia</em></h1>
+    <div class="info-sub" id="sub"></div>
+    <ul class="cerniere-list" id="list"></ul>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        eyebrow: 'Perché conta per la Geopolitica',
+        sub: 'Tre cerniere con il potere',
+        items: [
+          { num: '①', html: '<strong>Partecipazioni</strong> — <strong>Founders Fund</strong> detiene quote in Palantir (273 mld di capitalizzazione), SpaceX, Anduril, OpenAI, Stripe.' },
+          { num: '②', html: '<strong>Difesa</strong> — Dicembre 2024: consorzio Palantir, Anduril, SpaceX, OpenAI, Scale AI per sfidare i contractor tradizionali.' },
+          { num: '③', html: '<strong>Politica</strong> — Thiel finanzia JD Vance con 15 milioni USD (oggi vicepresidente). Sacks AI Czar. Kratsios (ex Thiel Capital) all\'OSTP.' },
+        ],
+        note: 'Maggio 2026: la causa Musk vs Altman rivela il network di scambi privati tra Musk, Altman, Brockman, Thiel, Hoffman, Gates, Omidyar.'
+      },
+      en: {
+        eyebrow: 'Why It Matters for Geopolitics',
+        sub: 'Three hinges of power',
+        items: [
+          { num: '①', html: '<strong>Investments</strong> — <strong>Founders Fund</strong> holds stakes in Palantir ($273B market cap), SpaceX, Anduril, OpenAI, Stripe.' },
+          { num: '②', html: '<strong>Defense</strong> — December 2024: Palantir, Anduril, SpaceX, OpenAI, Scale AI consortium challenges traditional contractors.' },
+          { num: '③', html: '<strong>Politics</strong> — Thiel funds JD Vance with $15M USD (now VP). Sacks as AI Czar. Kratsios (ex Thiel Capital) at OSTP.' },
+        ],
+        note: 'May 2026: the Musk vs Altman lawsuit reveals a private exchange network among Musk, Altman, Brockman, Thiel, Hoffman, Gates, Omidyar.'
+      }
+    };
+
+    function renderTexts() {
+      const t = TXT[lang];
+      document.getElementById('eyebrow').textContent = t.eyebrow;
+      document.getElementById('sub').textContent     = t.sub;
+      const ul = document.getElementById('list');
+      ul.innerHTML = '';
+      t.items.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="num">${item.num}</span><span>${item.html}</span>`;
+        ul.appendChild(li);
+      });
+      const note = document.createElement('li');
+      note.className = 'note';
+      note.textContent = t.note;
+      ul.appendChild(note);
+    }
+    function onLangChange() { renderTexts(); }
+
+    initLangToggle();
+    renderTexts();
+    initNav();
+  </script>
+</body>
+</html>
