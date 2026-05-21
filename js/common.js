@@ -43,6 +43,7 @@ const DEFAULT_PAGES = [
   'llm.html',
   'thiel.html', 'palantir.html', 'paypal-mafia.html',
   'epistemia.html', 'pappagallo.html',
+  'alba-transformer.html',
   'fosforo-web.html', 'fosforo-dashboard.html'
 ];
 
