@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Epistemia — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    html, body { background: #040e1a !important; overflow: hidden; height: 100%; margin: 0; }
+    body {
+      display: flex; flex-direction: column;
+      padding: clamp(14px, 2.2vh, 36px) clamp(28px, 4.5vw, 72px) 0;
+      box-sizing: border-box;
+    }
+
+    .ep-eyebrow {
+      font-size: clamp(10px, 0.8vw, 13px);
+      font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      margin-bottom: clamp(4px, 0.6vh, 10px);
+      flex-shrink: 0;
+    }
+    .ep-title {
+      font-size: clamp(26px, 3.6vw, 62px);
+      font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase;
+      color: #a78bfa; line-height: 1;
+      margin: 0 0 clamp(8px, 1.2vh, 18px);
+      flex-shrink: 0;
+    }
+
+    .ep-content {
+      flex: 1;
+      overflow: hidden;
+      padding-bottom: 52px; /* nav dots clearance */
+      box-sizing: border-box;
+    }
+    .ep-text {
+      color: #e2e8f0;
+      line-height: 1.48;
+      font-weight: 300;
+      margin: 0; padding: 0;
+    }
+    .ep-text em      { font-style: italic; color: #c4b5fd; }
+    .ep-text strong  { font-weight: 600; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <div class="ep-eyebrow" id="ep-eyebrow">Ricerca &amp; Teoria</div>
+  <h1 class="ep-title" id="ep-title">Epistemia</h1>
+
+  <div class="ep-content">
+    <p class="ep-text" id="ep-text"></p>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        eyebrow: 'Ricerca & Teoria',
+        title: 'Epistemia',
+        html: `È proprio in questo scenario che si inserisce perfettamente <em>l'epistemìa</em>.
+Conosciamo in parte il termine in ambito filosofico — <em>l'epistème</em> indicava la conoscenza
+fondata su basi certe e verificabili — ma di recente è emerso in un contesto nuovo grazie al lavoro
+del gruppo di ricerca formato da <strong>Walter Quattrociocchi</strong>, <strong>Edoardo Loru</strong>,
+<strong>Jacopo Nudo</strong> e <strong>Niccolò Di Marco</strong>, autori dello studio pubblicato
+su <strong>«PNAS»</strong> il 13 ottobre 2025. Secondo gli studiosi, viviamo oggi nell'era
+dell'<em>epistemìa</em>, un tempo in cui la conoscenza si confonde con la sua apparenza.
+I testi sembrano veri, coerenti e persino autorevoli, ma spesso non poggiano su nulla di solido.
+<strong>L'Intelligenza Artificiale</strong>, infatti, non pensa: prevede. E in questa sua capacità
+di generare risposte plausibili ci illude di sapere. Abbiamo smesso di chiederci come sappiamo
+ciò che sappiamo? Della necessità di fare chiarezza è ben consapevole
+<strong>Walter Quattrociocchi</strong>, Professore ordinario di Informatica presso
+<em>Sapienza Università di Roma</em>.`
+      },
+      en: {
+        eyebrow: 'Research & Theory',
+        title: 'Epistemia',
+        html: `It is precisely in this scenario that <em>epistemia</em> fits perfectly.
+We partially know the term from philosophy — <em>episteme</em> referred to knowledge grounded
+on certain and verifiable foundations — but it has recently emerged in a new context through
+the work of <strong>Walter Quattrociocchi</strong>, <strong>Edoardo Loru</strong>,
+<strong>Jacopo Nudo</strong> and <strong>Niccolò Di Marco</strong>, authors of the study
+published in <strong>«PNAS»</strong> on October 13, 2025. According to the scholars, we live
+today in the era of <em>epistemia</em>, a time when knowledge becomes confused with its appearance.
+Texts seem true, coherent and even authoritative, but often rest on nothing solid.
+<strong>Artificial Intelligence</strong> does not think: it predicts. And in its ability
+to generate plausible answers it deceives us into believing we know. Have we stopped asking
+ourselves how we know what we know? Well aware of the need for clarity is
+<strong>Walter Quattrociocchi</strong>, Full Professor of Computer Science at
+<em>Sapienza University of Rome</em>.`
+      }
+    };
+
+    function renderTexts() {
+      const t = TXT[lang];
+      document.getElementById('ep-eyebrow').textContent = t.eyebrow;
+      document.getElementById('ep-title').textContent   = t.title;
+      document.getElementById('ep-text').innerHTML      = t.html.replace(/\n/g, ' ');
+      fitText();
+    }
+
+    function fitText() {
+      const content = document.querySelector('.ep-content');
+      const text    = document.getElementById('ep-text');
+      const available = content.clientHeight;
+      if (!available) return;
+
+      let lo = 9, hi = 120;
+      while (hi - lo > 0.4) {
+        const mid = (lo + hi) / 2;
+        text.style.fontSize = mid + 'px';
+        if (text.scrollHeight <= available) lo = mid;
+        else hi = mid;
+      }
+      text.style.fontSize = lo + 'px';
+    }
+
+    function onLangChange() { renderTexts(); }
+
+    initLangToggle();
+    renderTexts();
+    initNav();
+
+    requestAnimationFrame(() => requestAnimationFrame(fitText));
+    window.addEventListener('resize', fitText);
+  </script>
+</body>
+</html>

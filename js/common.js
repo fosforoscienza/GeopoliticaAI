@@ -42,7 +42,7 @@ const DEFAULT_PAGES = [
   'timeline.html', 'paesi.html', 'leader.html',
   'llm.html',
   'thiel.html', 'palantir.html', 'paypal-mafia.html',
-  'pappagallo.html'
+  'epistemia.html', 'pappagallo.html'
 ];
 
 // Mutable runtime list — dashboard can reorder and hide entries.
