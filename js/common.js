@@ -44,7 +44,8 @@ const DEFAULT_PAGES = [
   'thiel.html', 'palantir.html', 'paypal-mafia.html', 'paypal-mafia-2.html',
   'epistemia.html', 'pappagallo.html',
   'alba-transformer.html',
-  'fosforo-web.html', 'fosforo-dashboard.html'
+  'fosforo-web.html', 'fosforo-dashboard.html',
+  'tom-brad.html'
 ];
 
 // Mutable runtime list — dashboard can reorder and hide entries.
