@@ -40,6 +40,7 @@ const DEFAULT_PAGES = [
   'index.html', 'video.html', 'scrittura.html', 'fotografia.html',
   'pechino-1.html', 'pechino-2.html', 'pechino-3.html',
   'timeline.html', 'paesi.html', 'leader.html',
+  'llm.html',
   'thiel.html', 'palantir.html', 'paypal-mafia.html',
   'pappagallo.html'
 ];
