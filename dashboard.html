@@ -212,11 +212,10 @@
     </header>
     <p class="dash-help">
       Usa ↑ ↓ per riordinare (o trascina su desktop). Deseleziona la casella per nascondere una slide dalla sequenza.
-      Premi <kbd>Salva</kbd> per applicare. Premi <kbd>O</kbd> da qualsiasi slide per tornare qui.
+      Le modifiche vengono salvate automaticamente. Premi <kbd>O</kbd> da qualsiasi slide per tornare qui.
     </p>
 
     <div class="dash-actions">
-      <button class="dash-btn primary" id="dash-save">Salva ordine</button>
       <button class="dash-btn" id="dash-export">Esporta JSON</button>
       <button class="dash-btn" id="dash-import">Importa JSON</button>
       <input type="file" id="dash-file" accept=".json" hidden />
@@ -252,7 +251,9 @@
       'alba-transformer.html':  "L'alba dei Transformer",
       'fosforo-web.html':       'Fosforo — Sito',
       'fosforo-dashboard.html': 'Fosforo — Dashboard',
-      'tom-brad.html':          'Tom & Brad'
+      'tom-brad.html':          'Tom & Brad',
+      'tre-fattori.html':       'Tre Fattori',
+      'confronto-ai.html':      'Confronto AI'
     };
 
     function loadConfig() {
@@ -272,18 +273,27 @@
     }
 
     let state = loadConfig();
-    let dirty = false;
+    let saveTimer = null;
 
-    function setDirty(b) {
-      dirty = b;
+    function autoSave() {
       const status = document.getElementById('dash-status');
-      if (b) {
-        status.textContent = 'Modifiche non salvate. Premi “Salva ordine” per applicarle.';
-        status.className = 'dash-status warning';
-      } else {
-        status.textContent = 'Pronto.';
-        status.className = 'dash-status';
+      try {
+        localStorage.setItem(SLIDES_CONFIG_KEY, JSON.stringify(state));
+        status.textContent = 'Salvato automaticamente.';
+        status.className = 'dash-status success';
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(() => {
+          status.textContent = 'Pronto.';
+          status.className = 'dash-status';
+        }, 1500);
+      } catch (e) {
+        status.textContent = 'Errore salvataggio: ' + e.message;
+        status.className = 'dash-status error';
       }
+    }
+
+    function setDirty() {
+      autoSave();
     }
 
     function render() {
@@ -410,20 +420,6 @@
     }
 
     // === Buttons ===
-    document.getElementById('dash-save').addEventListener('click', () => {
-      try {
-        localStorage.setItem(SLIDES_CONFIG_KEY, JSON.stringify(state));
-        const s = document.getElementById('dash-status');
-        s.textContent = 'Salvato. La presentazione userà questo ordine.';
-        s.className = 'dash-status success';
-        dirty = false;
-      } catch (e) {
-        const s = document.getElementById('dash-status');
-        s.textContent = 'Errore salvataggio: ' + e.message;
-        s.className = 'dash-status error';
-      }
-    });
-
     document.getElementById('dash-reset').addEventListener('click', () => {
       if (!confirm('Reset all’ordine predefinito? Le modifiche locali andranno perse.')) return;
       localStorage.removeItem(SLIDES_CONFIG_KEY);
@@ -432,7 +428,6 @@
       const s = document.getElementById('dash-status');
       s.textContent = 'Reset eseguito. Default ripristinato.';
       s.className = 'dash-status success';
-      dirty = false;
     });
 
     document.getElementById('dash-export').addEventListener('click', () => {
@@ -461,12 +456,10 @@
         const order = cfg.order.filter(p => known.has(p));
         DEFAULT_PAGES.forEach(p => { if (!order.includes(p)) order.push(p); });
         const hidden = Array.isArray(cfg.hidden) ? cfg.hidden.filter(p => known.has(p)) : [];
-        state = { order, hidden };
+        const names = (cfg.names && typeof cfg.names === 'object') ? cfg.names : {};
+        state = { order, hidden, names };
         render();
-        setDirty(true);
-        const s = document.getElementById('dash-status');
-        s.textContent = 'Importato. Premi Salva per applicare.';
-        s.className = 'dash-status warning';
+        autoSave();
       } catch (err) {
         const s = document.getElementById('dash-status');
         s.textContent = 'Importazione fallita: ' + err.message;
@@ -474,12 +467,6 @@
       } finally {
         e.target.value = '';
       }
-    });
-
-    // Warn before leaving with unsaved changes
-    window.addEventListener('beforeunload', (e) => {
-      if (!dirty) return;
-      e.preventDefault(); e.returnValue = '';
     });
 
     initLangToggle && initLangToggle();
