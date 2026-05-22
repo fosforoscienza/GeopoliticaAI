@@ -142,7 +142,9 @@ function initNav(activePage) {
 
   // Keyboard — global (slide nav only, carousels override per-page)
   // Supports presenter remotes via PageUp/PageDown, Space, Backspace,
-  // plus the usual ArrowLeft/ArrowRight.
+  // ArrowUp/ArrowDown, plus the usual ArrowLeft/ArrowRight.
+  // Matches on both e.key and e.code to be robust across keyboard layouts
+  // and different presenter brands (Logitech, Kensington, Targus, etc.).
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open'));
@@ -154,14 +156,27 @@ function initNav(activePage) {
     const tag = (e.target && e.target.tagName) || '';
     if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
 
-    const PREV_KEYS = ['ArrowLeft', 'PageUp', 'Backspace'];
-    const NEXT_KEYS = ['ArrowRight', 'PageDown', ' ', 'Spacebar'];
+    const k = e.key;
+    const c = e.code;
 
-    if (PREV_KEYS.includes(e.key) && activePage > 0) {
+    const isPrev =
+      k === 'ArrowLeft'  || c === 'ArrowLeft'  ||
+      k === 'ArrowUp'    || c === 'ArrowUp'    ||
+      k === 'PageUp'     || c === 'PageUp'     ||
+      k === 'Backspace'  || c === 'Backspace';
+
+    const isNext =
+      k === 'ArrowRight' || c === 'ArrowRight' ||
+      k === 'ArrowDown'  || c === 'ArrowDown'  ||
+      k === 'PageDown'   || c === 'PageDown'   ||
+      k === ' '          || k === 'Spacebar'   || c === 'Space' ||
+      k === 'Enter'      || c === 'Enter';
+
+    if (isPrev && activePage > 0) {
       e.preventDefault();
       window.location.href = PAGES[activePage - 1];
     }
-    if (NEXT_KEYS.includes(e.key) && activePage < PAGES.length - 1) {
+    if (isNext && activePage < PAGES.length - 1) {
       e.preventDefault();
       window.location.href = PAGES[activePage + 1];
     }

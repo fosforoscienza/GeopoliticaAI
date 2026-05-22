@@ -153,11 +153,20 @@
     }
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
-        e.preventDefault(); advance();
-      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        e.preventDefault(); retreat();
-      }
+      const k = e.key, c = e.code;
+      const isNext =
+        k === 'ArrowRight' || c === 'ArrowRight' ||
+        k === 'ArrowDown'  || c === 'ArrowDown'  ||
+        k === 'PageDown'   || c === 'PageDown'   ||
+        k === ' ' || k === 'Spacebar' || c === 'Space' ||
+        k === 'Enter' || c === 'Enter';
+      const isPrev =
+        k === 'ArrowLeft' || c === 'ArrowLeft' ||
+        k === 'ArrowUp'   || c === 'ArrowUp'   ||
+        k === 'PageUp'    || c === 'PageUp'    ||
+        k === 'Backspace' || c === 'Backspace';
+      if (isNext)      { e.preventDefault(); advance(); }
+      else if (isPrev) { e.preventDefault(); retreat(); }
     });
 
     // Nav controls — stop body click from triggering advance()
