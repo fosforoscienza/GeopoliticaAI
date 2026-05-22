@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tre Fattori — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    html, body { background: #000 !important; overflow: hidden; height: 100%; margin: 0; }
+
+    .slide-wrap {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: url('img/pilastri.png') center / cover no-repeat;
+      z-index: 0;
+    }
+
+    .content-overlay {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: center;
+      padding: clamp(40px, 6vw, 80px);
+      z-index: 10;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .tf-title {
+      font-size: clamp(48px, 6vw, 84px);
+      font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase;
+      background: linear-gradient(90deg, #41b7ff, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin: 0 0 20px 0;
+    }
+
+    .tf-subtitle {
+      font-size: clamp(24px, 3vw, 42px);
+      font-weight: 300; color: #f0f5fb;
+      margin-bottom: clamp(30px, 4vh, 50px);
+    }
+
+    .tf-list {
+      list-style: none; padding: 0; margin: 0;
+      font-size: clamp(16px, 2vw, 28px);
+      line-height: 1.8;
+      color: #f0f5fb;
+      max-width: 900px;
+    }
+
+    .tf-list li {
+      margin-bottom: clamp(16px, 2vh, 28px);
+    }
+
+    .tf-list li strong {
+      color: #41b7ff;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slide-wrap"></div>
+
+  <div class="content-overlay">
+    <h1 class="tf-title">Tre Fattori</h1>
+    <div class="tf-subtitle">Perché qui, perché ora</div>
+
+    <ul class="tf-list">
+      <li>1. Nuova capacità di <strong>hardware</strong>. Schede GPU.</li>
+      <li>2. <strong>Reti Neurali</strong> e miglioramento dei algoritmi</li>
+      <li>3. <strong>Dati</strong>, enormi quantità di dati.</li>
+    </ul>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    function onLangChange(l) {
+      // Translations can be added here if needed
+    }
+
+    initLangToggle();
+    initNav();
+    onLangChange(lang);
+  </script>
+</body>
+</html>
