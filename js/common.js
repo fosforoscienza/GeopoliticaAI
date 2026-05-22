@@ -45,7 +45,7 @@ const DEFAULT_PAGES = [
   'epistemia.html', 'pappagallo.html',
   'alba-transformer.html',
   'fosforo-web.html', 'fosforo-dashboard.html',
-  'tom-brad.html', 'ricerca.html', 'tre-fattori.html'
+  'tom-brad.html', 'tre-fattori.html'
 ];
 
 // Mutable runtime list — dashboard can reorder and hide entries.
