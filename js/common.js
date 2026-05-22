@@ -141,14 +141,30 @@ function initNav(activePage) {
   }
 
   // Keyboard — global (slide nav only, carousels override per-page)
+  // Supports presenter remotes via PageUp/PageDown, Space, Backspace,
+  // plus the usual ArrowLeft/ArrowRight.
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open'));
       return;
     }
     if (document.querySelector('.modal-backdrop.open')) return; // modal absorbs arrows
-    if (e.key === 'ArrowLeft'  && activePage > 0) window.location.href = PAGES[activePage - 1];
-    if (e.key === 'ArrowRight' && activePage < PAGES.length - 1) window.location.href = PAGES[activePage + 1];
+
+    // Ignore navigation keys when typing into a field
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+
+    const PREV_KEYS = ['ArrowLeft', 'PageUp', 'Backspace'];
+    const NEXT_KEYS = ['ArrowRight', 'PageDown', ' ', 'Spacebar'];
+
+    if (PREV_KEYS.includes(e.key) && activePage > 0) {
+      e.preventDefault();
+      window.location.href = PAGES[activePage - 1];
+    }
+    if (NEXT_KEYS.includes(e.key) && activePage < PAGES.length - 1) {
+      e.preventDefault();
+      window.location.href = PAGES[activePage + 1];
+    }
   });
 }
 
