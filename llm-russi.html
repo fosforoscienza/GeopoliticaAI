@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LLM Russi — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    html, body { background: #040e1a !important; overflow: hidden; height: 100%; margin: 0; }
+    body {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: clamp(20px, 3vh, 40px) clamp(24px, 4vw, 64px) 80px;
+      box-sizing: border-box;
+    }
+
+    .llm-eyebrow {
+      font-size: clamp(12px, 1vw, 16px);
+      font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+      color: rgba(255,255,255,0.32);
+      margin-bottom: clamp(8px, 1.2vh, 16px);
+      align-self: flex-start;
+    }
+    .llm-heading {
+      font-size: clamp(36px, 4.5vw, 68px);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 0.95;
+      color: #fff; text-transform: uppercase;
+      margin: 0 0 clamp(28px, 4vh, 60px);
+      align-self: flex-start;
+    }
+    .llm-heading em { color: #ffd84d; font-style: normal; }
+
+    .llm-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(16px, 1.8vw, 28px);
+      width: 100%;
+      max-width: 1500px;
+      align-items: stretch;
+    }
+
+    .llm-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      border-top: 5px solid var(--brand);
+      padding: clamp(28px, 3.4vh, 44px) clamp(18px, 1.6vw, 28px);
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      animation: card-in 0.5s calc(var(--i,0) * 90ms) cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes card-in {
+      from { opacity:0; transform:translateY(18px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .llm-badge {
+      width: clamp(100px, 9vw, 150px);
+      height: clamp(100px, 9vw, 150px);
+      border-radius: 22px;
+      background: var(--badge-bg, var(--brand));
+      display: flex; align-items: center; justify-content: center;
+      font-size: clamp(48px, 5vw, 78px);
+      font-weight: 900; letter-spacing: -0.02em;
+      color: var(--badge-fg, #fff);
+      margin-bottom: clamp(18px, 2vh, 28px); flex-shrink: 0;
+    }
+    .llm-badge svg { width: 62%; height: 62%; display: block; overflow: visible; }
+
+    .llm-company {
+      font-size: clamp(22px, 2.4vw, 36px);
+      font-weight: 800; line-height: 1.15; color: #fff;
+      margin-bottom: 8px;
+    }
+    .llm-model {
+      font-size: clamp(15px, 1.4vw, 22px);
+      font-weight: 500; opacity: 0.88;
+      color: var(--brand); letter-spacing: 0.01em; line-height: 1.35;
+    }
+    .llm-flag-tag {
+      display: inline-block;
+      margin-top: clamp(12px, 1.4vh, 20px);
+      font-size: clamp(13px, 1.1vw, 17px);
+      font-weight: 700; letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.42);
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="llm-eyebrow" id="llm-eyebrow">Geopolitica dell'AI</div>
+  <h1 class="llm-heading" id="llm-heading">LLM <em>Russi</em></h1>
+
+  <div class="llm-grid" id="llm-grid"></div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    /* Yandex "Я" simple mark */
+    const SVG_YANDEX = `<svg viewBox="0 0 32 32" fill="white">
+      <text x="50%" y="58%" text-anchor="middle" dominant-baseline="middle"
+            font-family="Arial, sans-serif" font-weight="900" font-size="26">Я</text>
+    </svg>`;
+
+    /* Sber GigaChat — green G */
+    const SVG_GIGA = `<svg viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="3" stroke-linecap="round">
+      <circle cx="16" cy="16" r="11"/>
+      <path d="M22 12 A8 8 0 1 0 22 20 L16 20 L16 16"/>
+    </svg>`;
+
+    const MODELS = [
+      { icon: SVG_GIGA,   brand: '#21A038', company: 'Sberbank',   model: 'GigaChat Ultra\nReasoning',  badgeBg: '#0D6B22', flag: '🇷🇺' },
+      { icon: SVG_YANDEX, brand: '#FC3F1D', company: 'Yandex',     model: 'YandexGPT · Alice',          badgeBg: '#FC3F1D', flag: '🇷🇺' },
+      { text: 'T',        brand: '#FFDD2D', company: 'T-Bank',     model: 'T-Pro 2.0 · T-Lite',         badgeBg: '#FFDD2D', badgeFg: '#000', flag: '🇷🇺' },
+      { text: 'M',        brand: '#E60000', company: 'MTS AI',     model: 'MTS LLM',                    badgeBg: '#E60000', flag: '🇷🇺' },
+    ];
+
+    function renderModels() {
+      const grid = document.getElementById('llm-grid');
+      grid.innerHTML = '';
+      MODELS.forEach((m, i) => {
+        const card = document.createElement('div');
+        card.className = 'llm-card';
+        const bg = m.badgeBg || m.brand;
+        card.style.cssText = `--brand:${m.brand};--badge-bg:${bg};--badge-fg:${m.badgeFg||'#fff'};--i:${i}`;
+        const badgeInner = m.icon ? m.icon : `<span>${m.text}</span>`;
+        card.innerHTML = `
+          <div class="llm-badge">${badgeInner}</div>
+          <div class="llm-company">${m.company}</div>
+          <div class="llm-model">${m.model.replace(/\n/g,'<br>')}</div>
+          <div class="llm-flag-tag">${m.flag}</div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function onLangChange(l) {
+      document.getElementById('llm-eyebrow').textContent = l === 'it' ? "Geopolitica dell'AI" : 'AI Geopolitics';
+      document.getElementById('llm-heading').innerHTML   = l === 'it'
+        ? 'LLM <em>Russi</em>'
+        : 'Russian <em>LLMs</em>';
+    }
+
+    initLangToggle();
+    renderModels();
+    onLangChange(lang);
+    initNav();
+  </script>
+</body>
+</html>
