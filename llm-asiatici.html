@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LLM Asiatici — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    html, body { background: #040e1a !important; overflow: hidden; height: 100%; margin: 0; }
+    body {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: clamp(20px, 3vh, 40px) clamp(24px, 4vw, 64px) 80px;
+      box-sizing: border-box;
+    }
+
+    .llm-eyebrow {
+      font-size: clamp(12px, 1vw, 16px);
+      font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+      color: rgba(255,255,255,0.32);
+      margin-bottom: clamp(8px, 1.2vh, 16px);
+      align-self: flex-start;
+    }
+    .llm-heading {
+      font-size: clamp(36px, 4.5vw, 68px);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 0.95;
+      color: #fff; text-transform: uppercase;
+      margin: 0 0 clamp(28px, 4vh, 60px);
+      align-self: flex-start;
+    }
+    .llm-heading em { color: #ff4d4d; font-style: normal; }
+
+    .llm-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(20px, 2.4vw, 40px);
+      width: 100%;
+      max-width: 1500px;
+      align-items: stretch;
+    }
+
+    .llm-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      border-top: 5px solid var(--brand);
+      padding: clamp(32px, 4vh, 52px) clamp(24px, 2.2vw, 36px);
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      animation: card-in 0.5s calc(var(--i,0) * 90ms) cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes card-in {
+      from { opacity:0; transform:translateY(18px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .llm-badge {
+      width: clamp(120px, 11vw, 180px);
+      height: clamp(120px, 11vw, 180px);
+      border-radius: 24px;
+      background: var(--badge-bg, var(--brand));
+      display: flex; align-items: center; justify-content: center;
+      font-size: clamp(56px, 6vw, 90px);
+      font-weight: 900; letter-spacing: -0.02em;
+      color: var(--badge-fg, #fff);
+      margin-bottom: clamp(20px, 2.4vh, 32px); flex-shrink: 0;
+    }
+    .llm-badge svg { width: 62%; height: 62%; display: block; overflow: visible; }
+
+    .llm-company {
+      font-size: clamp(28px, 3vw, 44px);
+      font-weight: 800; line-height: 1.1; color: #fff;
+      margin-bottom: 10px;
+    }
+    .llm-model {
+      font-size: clamp(18px, 1.6vw, 26px);
+      font-weight: 500; opacity: 0.88;
+      color: var(--brand); letter-spacing: 0.01em; line-height: 1.35;
+    }
+    .llm-flag-tag {
+      display: inline-block;
+      margin-top: clamp(14px, 1.6vh, 22px);
+      font-size: clamp(14px, 1.2vw, 18px);
+      font-weight: 700; letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.42);
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="llm-eyebrow" id="llm-eyebrow">Geopolitica dell'AI</div>
+  <h1 class="llm-heading" id="llm-heading">LLM <em>Asiatici</em></h1>
+
+  <div class="llm-grid" id="llm-grid"></div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const SVG_DEEPSEEK = `<svg viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="2">
+      <ellipse cx="16" cy="14" rx="10" ry="10"/>
+      <circle cx="12" cy="12" r="2.5" fill="white" stroke="none"/>
+      <path d="M16 24 C16 24 20 28 24 26" stroke-linecap="round"/>
+    </svg>`;
+
+    const MODELS = [
+      { icon: SVG_DEEPSEEK, brand: '#4D6BFE', company: 'DeepSeek', model: 'DeepSeek-R1 · V3', badgeBg: '#4D6BFE', flag: '🇨🇳' },
+      { text: '百',         brand: '#2932E1', company: 'Baidu',    model: 'ERNIE 4.0 Turbo',  flag: '🇨🇳' },
+      { text: 'Q',          brand: '#FF6A00', company: 'Alibaba',  model: 'Qwen 2.5 Max',     flag: '🇨🇳' },
+    ];
+
+    function renderModels() {
+      const grid = document.getElementById('llm-grid');
+      grid.innerHTML = '';
+      MODELS.forEach((m, i) => {
+        const card = document.createElement('div');
+        card.className = 'llm-card';
+        const bg = m.badgeBg || m.brand;
+        card.style.cssText = `--brand:${m.brand};--badge-bg:${bg};--badge-fg:${m.badgeFg||'#fff'};--i:${i}`;
+        const badgeInner = m.icon ? m.icon : `<span>${m.text}</span>`;
+        card.innerHTML = `
+          <div class="llm-badge">${badgeInner}</div>
+          <div class="llm-company">${m.company}</div>
+          <div class="llm-model">${m.model.replace(/\n/g,'<br>')}</div>
+          <div class="llm-flag-tag">${m.flag}</div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function onLangChange(l) {
+      document.getElementById('llm-eyebrow').textContent = l === 'it' ? "Geopolitica dell'AI" : 'AI Geopolitics';
+      document.getElementById('llm-heading').innerHTML   = l === 'it'
+        ? 'LLM <em>Asiatici</em>'
+        : 'Asian <em>LLMs</em>';
+    }
+
+    initLangToggle();
+    renderModels();
+    onLangChange(lang);
+    initNav();
+  </script>
+</body>
+</html>
