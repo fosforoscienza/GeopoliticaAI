@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Confronto AI — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    html, body { background: #040e1a !important; overflow: hidden; height: 100%; margin: 0; }
+    body {
+      display: flex; flex-direction: column;
+      padding: clamp(28px, 3vh, 48px) clamp(40px, 5vw, 80px) 0;
+      box-sizing: border-box;
+    }
+
+    .conf-title {
+      font-size: clamp(32px, 4vw, 56px);
+      font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase;
+      color: #41b7ff; line-height: 1;
+      margin: 0 0 clamp(28px, 3.5vh, 48px) 0;
+    }
+
+    .comparison-wrap {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 80px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(16px, 2.5vw, 32px);
+    }
+
+    .ai-card {
+      background: rgba(65, 183, 255, 0.08);
+      border: 1px solid rgba(65, 183, 255, 0.2);
+      border-radius: 12px;
+      padding: clamp(20px, 3vw, 32px);
+      display: flex; flex-direction: column;
+      transition: all 0.2s;
+    }
+    .ai-card:hover {
+      background: rgba(65, 183, 255, 0.15);
+      border-color: rgba(65, 183, 255, 0.4);
+    }
+
+    .card-name {
+      font-size: clamp(18px, 2.4vw, 28px);
+      font-weight: 900; text-transform: uppercase;
+      color: #fff; margin: 0 0 clamp(20px, 2.5vh, 30px) 0;
+    }
+
+    .card-name.openai { color: #10a37f; }
+    .card-name.anthropic { color: #c4a37f; }
+    .card-name.gemini { color: #ea4335; }
+
+    .stat-group {
+      margin-bottom: clamp(16px, 2vh, 24px);
+    }
+    .stat-label {
+      font-size: clamp(11px, 1vw, 13px);
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase; letter-spacing: 0.15em;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .stat-value {
+      font-size: clamp(20px, 2.5vw, 32px);
+      font-weight: 700; color: #e2e8f0;
+      line-height: 1.2;
+    }
+
+    .stat-note {
+      font-size: clamp(10px, 0.9vw, 12px);
+      color: rgba(255,255,255,0.4);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 1200px) {
+      .comparison-wrap {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="conf-title">AI: Confronto Fatturato & Utenti</h1>
+
+  <div class="comparison-wrap">
+
+    <!-- ChatGPT -->
+    <div class="ai-card">
+      <div class="card-name openai">ChatGPT</div>
+
+      <div class="stat-group">
+        <div class="stat-label">Fatturato (ARR)</div>
+        <div class="stat-value">$25B</div>
+        <div class="stat-note">Febbraio 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">Utenti Attivi Settimanali</div>
+        <div class="stat-value">900M+</div>
+        <div class="stat-note">2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">Abbonati Paganti</div>
+        <div class="stat-value">50M</div>
+        <div class="stat-note">Plus, Team, Pro, Enterprise</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">Proiezione 2026-27</div>
+        <div class="stat-value">1B+ utenti</div>
+        <div class="stat-note">Target entro 2027</div>
+      </div>
+    </div>
+
+    <!-- Anthropic -->
+    <div class="ai-card">
+      <div class="card-name anthropic">Anthropic</div>
+
+      <div class="stat-group">
+        <div class="stat-label">Fatturato (ARR)</div>
+        <div class="stat-value">$43B</div>
+        <div class="stat-note">Aprile 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">Monthly Active Users</div>
+        <div class="stat-value">30M</div>
+        <div class="stat-note">Consumatori, Ottobre 2025</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">Business Customers</div>
+        <div class="stat-value">300K+</div>
+        <div class="stat-note">80% dei ricavi</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">Valutazione</div>
+        <div class="stat-value">$380B</div>
+        <div class="stat-note">Serie G, Febbraio 2026</div>
+      </div>
+    </div>
+
+    <!-- Google Gemini -->
+    <div class="ai-card">
+      <div class="card-name gemini">Google Gemini</div>
+
+      <div class="stat-group">
+        <div class="stat-label">Market Share</div>
+        <div class="stat-value">22%</div>
+        <div class="stat-note">Inizio 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">API Requests</div>
+        <div class="stat-value">85B/mese</div>
+        <div class="stat-note">Gennaio 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">Active API Users</div>
+        <div class="stat-value">2.4M</div>
+        <div class="stat-note">Developers</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">Studenti</div>
+        <div class="stat-value">14.5M</div>
+        <div class="stat-note">Google for Education</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    initLangToggle();
+    initNav();
+  </script>
+</body>
+</html>
