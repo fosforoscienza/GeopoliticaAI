@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Le novità nella Ricerca — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    html, body { background: #000 !important; overflow: hidden; height: 100%; margin: 0; }
+
+    .video-wrap {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 0;
+    }
+    .video-wrap video {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      background: #000;
+    }
+
+    #video-overlay {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 50;
+      background: rgba(0,0,0,0.6);
+      cursor: pointer;
+      transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+    }
+    #video-overlay.hidden {
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+    }
+
+    .overlay-title {
+      font-size: clamp(22px, 3.5vw, 56px);
+      font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase;
+      color: #fff; line-height: 1;
+      margin-bottom: clamp(24px, 3vh, 40px);
+      text-align: center;
+    }
+    .overlay-title em { color: #f59e0b; font-style: normal; }
+
+    #video-play-btn {
+      width: clamp(100px, 12vw, 180px);
+      height: clamp(100px, 12vw, 180px);
+      border-radius: 50%;
+      background: rgba(245,158,11,0.15);
+      border: 2px solid rgba(245,158,11,0.55);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 40px rgba(245,158,11,0.2);
+    }
+    #video-overlay:hover #video-play-btn {
+      transform: scale(1.06);
+      background: rgba(245,158,11,0.28);
+      box-shadow: 0 0 60px rgba(245,158,11,0.4);
+    }
+    #video-play-btn::before {
+      content: '';
+      width: 0; height: 0;
+      border-left: clamp(30px, 3.5vw, 52px) solid rgba(255,255,255,0.95);
+      border-top: clamp(20px, 2.4vw, 36px) solid transparent;
+      border-bottom: clamp(20px, 2.4vw, 36px) solid transparent;
+      margin-left: 10px;
+    }
+
+    #overlay-label {
+      margin-top: clamp(20px, 2.5vh, 36px);
+      color: rgba(255,255,255,0.5);
+      font-size: clamp(12px, 1vw, 16px);
+      font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-wrap">
+    <video id="main-video" preload="metadata" controls playsinline webkit-playsinline>
+      <source src="video/ricerca.mp4" type="video/mp4"/>
+    </video>
+  </div>
+
+  <div id="video-overlay">
+    <div class="overlay-title">Le novità nella <em>Ricerca</em></div>
+    <div id="video-play-btn"></div>
+    <div id="overlay-label">Clicca per riprodurre</div>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const video   = document.getElementById('main-video');
+    const overlay = document.getElementById('video-overlay');
+    const label   = document.getElementById('overlay-label');
+
+    function startVideo() {
+      overlay.classList.add('hidden');
+      video.play().catch(() => {});
+    }
+    overlay.addEventListener('click', startVideo);
+
+    video.addEventListener('ended', () => {
+      overlay.classList.remove('hidden');
+    });
+
+    function onLangChange(l) {
+      label.textContent = l === 'it' ? 'Clicca per riprodurre' : 'Click to play';
+    }
+
+    initLangToggle();
+    initNav();
+    onLangChange(lang);
+  </script>
+</body>
+</html>
