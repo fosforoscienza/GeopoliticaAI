@@ -41,7 +41,7 @@ const DEFAULT_PAGES = [
   'pechino-1.html', 'pechino-2.html', 'pechino-3.html',
   'timeline.html', 'paesi.html', 'leader.html',
   'llm-occidentali.html', 'llm-asiatici.html', 'llm-russi.html',
-  'thiel.html', 'palantir.html', 'paypal-mafia.html', 'paypal-mafia-2.html', 'paypal-mafia-3.html',
+  'thiel.html', 'palantir-intro.html', 'palantir.html', 'paypal-mafia.html', 'paypal-mafia-2.html', 'paypal-mafia-3.html',
   'epistemia.html', 'pappagallo.html',
   'alba-transformer.html',
   'fosforo-web.html', 'fosforo-dashboard.html',

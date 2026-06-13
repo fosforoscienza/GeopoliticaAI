@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Che cos'è un Palantír — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --accent: #8b5cf6; --accent-soft: #a78bfa; }
+    html, body { background: #03070f !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; }
+
+    .stage {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      background: #03070f; overflow: hidden;
+    }
+
+    /* ---------- HERO (entrambi i fondatori) ---------- */
+    .hero {
+      position: relative;
+      flex: 0 0 46vh;
+      overflow: hidden;
+    }
+    .hero-img {
+      position: absolute; inset: 0;
+      background: url('img/palantir.png') no-repeat center 38%;
+      background-size: cover;
+      transform: scale(1.05);
+      transform-origin: center 45%;
+      animation: kenburns 28s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @keyframes kenburns {
+      from { transform: scale(1.05); }
+      to   { transform: scale(1.12); }
+    }
+    .hero-fade {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(3,7,15,0.55) 0%, rgba(3,7,15,0) 22%, rgba(3,7,15,0) 55%, rgba(3,7,15,0.85) 86%, #03070f 100%),
+        radial-gradient(60% 70% at 50% 60%, rgba(139,92,246,0.16), transparent 70%);
+    }
+    .hero-vignette {
+      position: absolute; inset: 0;
+      box-shadow: inset 0 0 200px 50px rgba(0,0,0,0.6);
+      pointer-events: none;
+    }
+    .hero-title {
+      position: absolute; left: 0; right: 0; bottom: clamp(14px, 3vh, 34px);
+      text-align: center; z-index: 2;
+      animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .eyebrow {
+      font-size: clamp(11px, 0.9vw, 15px);
+      font-weight: 700; letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--accent-soft);
+      margin-bottom: clamp(8px, 1.4vh, 16px);
+    }
+    .name {
+      font-size: clamp(52px, 7vw, 116px);
+      font-weight: 900; letter-spacing: -0.03em;
+      line-height: 0.9; margin: 0;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 30%, #c4b5fd 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      text-shadow: 0 0 60px rgba(139,92,246,0.4);
+    }
+    .subtitle {
+      font-size: clamp(15px, 1.5vw, 24px);
+      color: #cbd5e1; font-weight: 300; font-style: italic;
+      margin-top: clamp(8px, 1.4vh, 16px);
+      letter-spacing: 0.01em;
+    }
+
+    /* ---------- EXPLAIN (full width, in basso) ---------- */
+    .explain {
+      flex: 1 1 auto;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: clamp(14px, 2.5vh, 30px) clamp(36px, 6vw, 110px) clamp(40px, 5vh, 56px);
+      max-width: 1500px; width: 100%;
+      margin: 0 auto; box-sizing: border-box;
+      animation: rise 1s 0.15s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .lead {
+      font-size: clamp(15px, 1.5vw, 24px);
+      line-height: 1.55; color: #e2e8f0; font-weight: 300;
+      max-width: 1080px; margin: 0 auto clamp(16px, 2.6vh, 32px);
+      text-align: center;
+    }
+    .lead b { color: #ffffff; font-weight: 600; }
+    .lead .accent { color: var(--accent-soft); font-weight: 600; font-style: italic; }
+
+    .cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(20px, 3vw, 56px);
+      max-width: 1180px; margin: 0 auto; width: 100%;
+    }
+    .col { position: relative; padding-top: 18px; }
+    .col::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 44px; height: 3px; border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+    .col h3 {
+      font-size: clamp(14px, 1.15vw, 19px);
+      font-weight: 800; letter-spacing: 0.03em;
+      color: #ffffff; margin: 0 0 8px;
+      display: flex; align-items: baseline; gap: 10px;
+    }
+    .col h3 .num {
+      font-size: 0.8em; font-weight: 800;
+      color: var(--accent); letter-spacing: 0.1em;
+    }
+    .col p {
+      font-size: clamp(13px, 1.02vw, 17px);
+      line-height: 1.5; color: #94a3b8; margin: 0;
+    }
+    .col p b { color: #cbd5e1; font-weight: 600; }
+
+    .closing {
+      max-width: 1080px; margin: clamp(18px, 2.8vh, 34px) auto 0;
+      text-align: center;
+      font-size: clamp(15px, 1.45vw, 23px);
+      font-style: italic; line-height: 1.5;
+      color: rgba(255,255,255,0.82);
+    }
+    .closing b { color: var(--accent-soft); font-style: normal; font-weight: 600; }
+
+    /* ---------- Portrait ---------- */
+    @media (max-aspect-ratio: 1/1) {
+      .hero { flex-basis: 38vh; }
+      .cols { grid-template-columns: 1fr; gap: clamp(14px, 2.4vh, 22px); max-width: 640px; }
+      .explain { padding: clamp(14px,2.5vh,24px) 7vw clamp(80px,12vh,120px); justify-content: flex-start; overflow-y: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stage">
+    <div class="hero">
+      <div class="hero-img"></div>
+      <div class="hero-fade"></div>
+      <div class="hero-vignette"></div>
+      <div class="hero-title">
+        <div class="eyebrow" id="eyebrow"></div>
+        <h1 class="name" id="name"></h1>
+        <div class="subtitle" id="subtitle"></div>
+      </div>
+    </div>
+
+    <div class="explain">
+      <p class="lead" id="lead"></p>
+      <div class="cols">
+        <div class="col"><h3><span class="num">01</span><span id="h1"></span></h3><p id="p1"></p></div>
+        <div class="col"><h3><span class="num">02</span><span id="h2"></span></h3><p id="p2"></p></div>
+        <div class="col"><h3><span class="num">03</span><span id="h3"></span></h3><p id="p3"></p></div>
+      </div>
+      <p class="closing" id="closing"></p>
+    </div>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="thiel.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="palantir.html">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        eyebrow: 'J.R.R. Tolkien · Le pietre veggenti',
+        name: 'Palantír',
+        subtitle: 'Le «pietre che vedono lontano» del Signore degli Anelli',
+        lead: 'Nel mondo di Tolkien i <b>palantíri</b> (singolare <i>palantír</i>, in quenya <span class="accent">«colui che vede da lontano»</span>) sono sfere di cristallo indistruttibili: chi ne possiede una può vedere luoghi remoti e comunicare con chi tiene un\'altra pietra.',
+        h1: 'Origine', p1: 'Sette pietre forgiate nell\'Ovest e portate nella Terra di Mezzo, custodite nelle torri di <b>Gondor e Arnor</b>. Strumenti di potere riservati ai re di Númenor.',
+        h2: 'Il potere', p2: 'Consentono di vedere eventi distanti nello <b>spazio e nel tempo</b>. Ma rivelano solo ciò che l\'osservatore viene guidato a vedere: la conoscenza non è mai neutra.',
+        h3: 'Il pericolo', p3: 'Sauron corruppe le pietre. <b>Saruman e Denethor</b>, credendo di dominarle, ne furono invece dominati, manipolati e condotti alla rovina.',
+        closing: 'Da qui il nome dell\'azienda: <b>uno strumento per vedere e connettere oceani di dati</b> — potentissimo, e proprio per questo ambiguo.'
+      },
+      en: {
+        eyebrow: 'J.R.R. Tolkien · The seeing-stones',
+        name: 'Palantír',
+        subtitle: 'The “stones that see afar” of The Lord of the Rings',
+        lead: 'In Tolkien\'s world the <b>palantíri</b> (singular <i>palantír</i>, Quenya for <span class="accent">“one that sees from afar”</span>) are indestructible crystal spheres: whoever holds one can see distant places and speak with whoever holds another stone.',
+        h1: 'Origin', p1: 'Seven stones forged in the West and brought to Middle-earth, kept in the towers of <b>Gondor and Arnor</b>. Instruments of power reserved for the kings of Númenor.',
+        h2: 'The power', p2: 'They reveal events distant in <b>space and time</b>. Yet they show only what the viewer is led to see: knowledge is never neutral.',
+        h3: 'The danger', p3: 'Sauron corrupted the stones. <b>Saruman and Denethor</b>, believing they commanded them, were instead commanded, deceived and driven to ruin.',
+        closing: 'Hence the company\'s name: <b>a tool to see and connect oceans of data</b> — immensely powerful, and for that very reason ambiguous.'
+      }
+    };
+
+    function set(id, html){ document.getElementById(id).innerHTML = html; }
+    function renderTexts() {
+      const t = TXT[lang];
+      ['eyebrow','name','subtitle','lead','h1','p1','h2','p2','h3','p3','closing']
+        .forEach(k => set(k, t[k]));
+    }
+    function onLangChange() { renderTexts(); }
+
+    initLangToggle();
+    renderTexts();
+    initNav();
+  </script>
+</body>
+</html>
