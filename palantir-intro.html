@@ -12,160 +12,179 @@
 
     .stage {
       position: fixed; inset: 0;
-      display: flex; flex-direction: column;
-      background: #03070f; overflow: hidden;
-    }
-
-    /* ---------- HERO (entrambi i fondatori) ---------- */
-    .hero {
-      position: relative;
-      flex: 0 0 46vh;
+      background:
+        radial-gradient(70% 60% at 50% 62%, rgba(139,92,246,0.12), transparent 70%),
+        #03070f;
       overflow: hidden;
     }
-    .hero-img {
+
+    /* ---------- Foto: interamente visibile (contain) e centrata ---------- */
+    .photo {
       position: absolute; inset: 0;
-      background: url('img/palantir.png') no-repeat center 38%;
-      background-size: cover;
-      transform: scale(1.05);
-      transform-origin: center 45%;
-      animation: kenburns 28s ease-in-out infinite alternate;
-      will-change: transform;
+      background: url('img/palantir.png') no-repeat center center;
+      background-size: contain;
+      animation: photo-in 1.1s cubic-bezier(0.16,1,0.3,1) both;
     }
-    @keyframes kenburns {
-      from { transform: scale(1.05); }
-      to   { transform: scale(1.12); }
+    @keyframes photo-in {
+      from { opacity: 0; transform: scale(1.02); }
+      to   { opacity: 1; transform: scale(1); }
     }
-    .hero-fade {
-      position: absolute; inset: 0;
-      background:
-        linear-gradient(to bottom, rgba(3,7,15,0.55) 0%, rgba(3,7,15,0) 22%, rgba(3,7,15,0) 55%, rgba(3,7,15,0.85) 86%, #03070f 100%),
-        radial-gradient(60% 70% at 50% 60%, rgba(139,92,246,0.16), transparent 70%);
+    .photo-glow {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(22% 30% at 50% 60%, rgba(139,92,246,0.22), transparent 60%);
+      mix-blend-mode: screen;
+      animation: pulse 6s ease-in-out infinite;
     }
-    .hero-vignette {
-      position: absolute; inset: 0;
-      box-shadow: inset 0 0 200px 50px rgba(0,0,0,0.6);
-      pointer-events: none;
+    @keyframes pulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+
+    /* ---------- Modale scrollabile (sopra la sfera) ---------- */
+    .modal {
+      position: absolute;
+      top: clamp(16px, 3vh, 34px);
+      left: 50%; transform: translateX(-50%);
+      width: min(720px, 84vw);
+      max-height: min(54vh, 460px);
+      overflow-y: auto;
+      z-index: 5;
+      padding: clamp(20px, 2.6vh, 30px) clamp(22px, 2.4vw, 38px) clamp(26px, 3vh, 38px);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(10,14,26,0.82), rgba(7,10,20,0.88));
+      border: 1px solid rgba(139,92,246,0.32);
+      box-shadow:
+        0 30px 80px -20px rgba(0,0,0,0.8),
+        0 0 0 1px rgba(255,255,255,0.03) inset,
+        0 0 70px -10px rgba(139,92,246,0.35);
+      -webkit-backdrop-filter: blur(16px) saturate(1.1);
+              backdrop-filter: blur(16px) saturate(1.1);
+      animation: modal-in 0.9s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(139,92,246,0.6) transparent;
     }
-    .hero-title {
-      position: absolute; left: 0; right: 0; bottom: clamp(14px, 3vh, 34px);
-      text-align: center; z-index: 2;
-      animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) both;
+    @keyframes modal-in {
+      from { opacity: 0; transform: translate(-50%, 18px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
     }
+    .modal::-webkit-scrollbar { width: 9px; }
+    .modal::-webkit-scrollbar-track { background: transparent; }
+    .modal::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--accent), #6d28d9);
+      border-radius: 99px; border: 2px solid rgba(7,10,20,0.6);
+    }
+
+    .modal-head { text-align: center; margin-bottom: clamp(14px, 2vh, 22px); }
     .eyebrow {
-      font-size: clamp(11px, 0.9vw, 15px);
-      font-weight: 700; letter-spacing: 0.34em;
-      text-transform: uppercase;
-      color: var(--accent-soft);
-      margin-bottom: clamp(8px, 1.4vh, 16px);
+      font-size: clamp(10px, 0.85vw, 14px);
+      font-weight: 700; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--accent-soft);
+      margin-bottom: 10px;
     }
     .name {
-      font-size: clamp(52px, 7vw, 116px);
-      font-weight: 900; letter-spacing: -0.03em;
-      line-height: 0.9; margin: 0;
-      text-transform: uppercase;
+      font-size: clamp(40px, 5vw, 76px);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 0.92;
+      margin: 0; text-transform: uppercase;
       background: linear-gradient(180deg, #ffffff 30%, #c4b5fd 100%);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
-      text-shadow: 0 0 60px rgba(139,92,246,0.4);
     }
     .subtitle {
-      font-size: clamp(15px, 1.5vw, 24px);
+      font-size: clamp(13px, 1.2vw, 18px);
       color: #cbd5e1; font-weight: 300; font-style: italic;
-      margin-top: clamp(8px, 1.4vh, 16px);
-      letter-spacing: 0.01em;
+      margin-top: 10px;
     }
 
-    /* ---------- EXPLAIN (full width, in basso) ---------- */
-    .explain {
-      flex: 1 1 auto;
-      display: flex; flex-direction: column;
-      justify-content: center;
-      padding: clamp(14px, 2.5vh, 30px) clamp(36px, 6vw, 110px) clamp(40px, 5vh, 56px);
-      max-width: 1500px; width: 100%;
-      margin: 0 auto; box-sizing: border-box;
-      animation: rise 1s 0.15s cubic-bezier(0.16,1,0.3,1) both;
-    }
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .divider {
+      height: 1px; margin: clamp(14px,2vh,20px) auto;
+      max-width: 120px;
+      background: linear-gradient(90deg, transparent, rgba(139,92,246,0.6), transparent);
     }
 
     .lead {
-      font-size: clamp(15px, 1.5vw, 24px);
+      font-size: clamp(14px, 1.25vw, 19px);
       line-height: 1.55; color: #e2e8f0; font-weight: 300;
-      max-width: 1080px; margin: 0 auto clamp(16px, 2.6vh, 32px);
-      text-align: center;
+      text-align: center; margin: 0 0 clamp(16px, 2.2vh, 24px);
     }
-    .lead b { color: #ffffff; font-weight: 600; }
+    .lead b { color: #fff; font-weight: 600; }
     .lead .accent { color: var(--accent-soft); font-weight: 600; font-style: italic; }
 
-    .cols {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: clamp(20px, 3vw, 56px);
-      max-width: 1180px; margin: 0 auto; width: 100%;
+    .block {
+      position: relative;
+      padding: clamp(13px,1.7vh,16px) 0 clamp(13px,1.7vh,16px) 56px;
+      border-top: 1px solid rgba(255,255,255,0.07);
     }
-    .col { position: relative; padding-top: 18px; }
-    .col::before {
-      content: ''; position: absolute; top: 0; left: 0;
-      width: 44px; height: 3px; border-radius: 3px;
-      background: linear-gradient(90deg, var(--accent), transparent);
+    .block .num {
+      position: absolute; left: 0; top: clamp(13px,1.7vh,16px);
+      font-size: clamp(22px, 2.4vw, 34px); font-weight: 900;
+      line-height: 1; color: transparent;
+      -webkit-text-stroke: 1.5px rgba(139,92,246,0.7);
+      letter-spacing: -0.02em;
     }
-    .col h3 {
-      font-size: clamp(14px, 1.15vw, 19px);
-      font-weight: 800; letter-spacing: 0.03em;
-      color: #ffffff; margin: 0 0 8px;
-      display: flex; align-items: baseline; gap: 10px;
+    .block h3 {
+      font-size: clamp(15px, 1.3vw, 21px); font-weight: 800;
+      color: #fff; margin: 0 0 6px; letter-spacing: 0.01em;
     }
-    .col h3 .num {
-      font-size: 0.8em; font-weight: 800;
-      color: var(--accent); letter-spacing: 0.1em;
+    .block p {
+      font-size: clamp(13px, 1.08vw, 17px); line-height: 1.5;
+      color: #94a3b8; margin: 0;
     }
-    .col p {
-      font-size: clamp(13px, 1.02vw, 17px);
-      line-height: 1.5; color: #94a3b8; margin: 0;
-    }
-    .col p b { color: #cbd5e1; font-weight: 600; }
+    .block p b { color: #cbd5e1; font-weight: 600; }
 
     .closing {
-      max-width: 1080px; margin: clamp(18px, 2.8vh, 34px) auto 0;
+      margin: clamp(16px,2.2vh,22px) 0 0;
+      padding-top: clamp(14px,2vh,18px);
+      border-top: 1px solid rgba(139,92,246,0.25);
       text-align: center;
-      font-size: clamp(15px, 1.45vw, 23px);
-      font-style: italic; line-height: 1.5;
-      color: rgba(255,255,255,0.82);
+      font-size: clamp(14px, 1.2vw, 19px);
+      font-style: italic; line-height: 1.5; color: rgba(255,255,255,0.85);
     }
     .closing b { color: var(--accent-soft); font-style: normal; font-weight: 600; }
 
-    /* ---------- Portrait ---------- */
+    /* hint di scorrimento */
+    .scroll-hint {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(clamp(16px,3vh,34px) + min(54vh,460px) - 4px);
+      z-index: 6; pointer-events: none;
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      color: var(--accent-soft); font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase; font-weight: 700;
+      opacity: 0.9; transition: opacity 0.4s;
+      animation: bob 1.8s ease-in-out infinite;
+    }
+    .scroll-hint svg { width: 18px; height: 18px; }
+    .scroll-hint.hidden { opacity: 0; }
+    @keyframes bob { 0%,100%{transform:translate(-50%,0)} 50%{transform:translate(-50%,5px)} }
+
     @media (max-aspect-ratio: 1/1) {
-      .hero { flex-basis: 38vh; }
-      .cols { grid-template-columns: 1fr; gap: clamp(14px, 2.4vh, 22px); max-width: 640px; }
-      .explain { padding: clamp(14px,2.5vh,24px) 7vw clamp(80px,12vh,120px); justify-content: flex-start; overflow-y: auto; }
+      .photo { background-size: contain; background-position: center 30%; }
+      .modal { width: 88vw; max-height: 60vh; top: 12px; }
+      .scroll-hint { top: calc(12px + 60vh - 4px); }
     }
   </style>
 </head>
 <body>
 
   <div class="stage">
-    <div class="hero">
-      <div class="hero-img"></div>
-      <div class="hero-fade"></div>
-      <div class="hero-vignette"></div>
-      <div class="hero-title">
+    <div class="photo"></div>
+    <div class="photo-glow"></div>
+
+    <div class="modal" id="modal">
+      <div class="modal-head">
         <div class="eyebrow" id="eyebrow"></div>
         <h1 class="name" id="name"></h1>
         <div class="subtitle" id="subtitle"></div>
       </div>
+      <div class="divider"></div>
+      <p class="lead" id="lead"></p>
+
+      <div class="block"><span class="num">01</span><h3 id="h1"></h3><p id="p1"></p></div>
+      <div class="block"><span class="num">02</span><h3 id="h2"></h3><p id="p2"></p></div>
+      <div class="block"><span class="num">03</span><h3 id="h3"></h3><p id="p3"></p></div>
+
+      <p class="closing" id="closing"></p>
     </div>
 
-    <div class="explain">
-      <p class="lead" id="lead"></p>
-      <div class="cols">
-        <div class="col"><h3><span class="num">01</span><span id="h1"></span></h3><p id="p1"></p></div>
-        <div class="col"><h3><span class="num">02</span><span id="h2"></span></h3><p id="p2"></p></div>
-        <div class="col"><h3><span class="num">03</span><span id="h3"></span></h3><p id="p3"></p></div>
-      </div>
-      <p class="closing" id="closing"></p>
+    <div class="scroll-hint" id="scroll-hint">
+      <span>Scorri</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
     </div>
   </div>
 
@@ -214,6 +233,18 @@
     initLangToggle();
     renderTexts();
     initNav();
+
+    // Nasconde l'hint di scorrimento una volta raggiunto il fondo
+    const modal = document.getElementById('modal');
+    const hint = document.getElementById('scroll-hint');
+    function updateHint() {
+      const atBottom = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 8;
+      const noScroll = modal.scrollHeight <= modal.clientHeight + 4;
+      hint.classList.toggle('hidden', atBottom || noScroll);
+    }
+    modal.addEventListener('scroll', updateHint);
+    window.addEventListener('resize', updateHint);
+    updateHint();
   </script>
 </body>
 </html>
