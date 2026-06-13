@@ -60,14 +60,14 @@
     },
     {
       "name": "Elon Musk",
-      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Elon_Musk_-_54820081119_%28cropped%29.jpg/400px-Elon_Musk_-_54820081119_%28cropped%29.jpg",
+      "imageUrl": "img/geopolitica/elon-aziende.png",
       "it": {
-        "role": "CEO di xAI & Tesla",
-        "desc": "Co-fondatore di OpenAI (poi uscito in polemica), Musk ha creato xAI nel 2023 con il modello Grok. È convinto che l'AI rappresenti la maggiore minaccia esistenziale per l'umanità — eppure continua a svilupparla. Il suo controllo su X (Twitter) lo rende il più potente amplificatore di narrativa AI al mondo."
+        "role": "CEO di Tesla, SpaceX e xAI",
+        "desc": "Quotazione record. Il 12 giugno 2026 SpaceX ha debuttato a Wall Street nella più grande IPO della storia: il titolo ha aperto a 150 dollari (+11% sul prezzo di collocamento di 135), portando la valutazione dell'azienda a circa 1.960 miliardi di dollari. Possedendo circa il 40% delle azioni, Musk è diventato il primo trilionario al mondo — più ricco, da solo, dei quattro miliardari che lo seguono messi insieme. A completare l'impero: Tesla capitalizza circa 1.500 miliardi e xAI, fusa in SpaceX a febbraio, era stata valutata 250 miliardi."
       },
       "en": {
-        "role": "CEO of xAI & Tesla",
-        "desc": "Co-founder of OpenAI (later departed in controversy), Musk created xAI in 2023 with the Grok model. He believes AI represents the greatest existential threat to humanity — yet continues to develop it. His control of X (Twitter) makes him the world's most powerful AI narrative amplifier."
+        "role": "CEO of Tesla, SpaceX & xAI",
+        "desc": "Record listing. On June 12, 2026 SpaceX debuted on Wall Street in the largest IPO in history: shares opened at $150 (+11% over the $135 offering price), valuing the company at around $1.96 trillion. Owning roughly 40% of the stock, Musk became the world's first trillionaire — alone worth more than the next four richest billionaires combined. Completing the empire: Tesla is capitalised at about $1.5 trillion and xAI, merged into SpaceX in February, had been valued at $250 billion."
       }
     }
   ]
