@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Che cos'è un Palantír — Geopolitica della AI</title>
+  <title>Palantír — Geopolitica della AI</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     :root { --accent: #8b5cf6; --accent-soft: #a78bfa; }
@@ -13,150 +13,71 @@
     .stage {
       position: fixed; inset: 0;
       background:
-        radial-gradient(70% 60% at 50% 62%, rgba(139,92,246,0.12), transparent 70%),
+        radial-gradient(70% 60% at 50% 60%, rgba(139,92,246,0.12), transparent 70%),
         #03070f;
       overflow: hidden;
     }
 
-    /* ---------- Foto: interamente visibile (contain) e centrata ---------- */
+    /* ---------- Foto interamente visibile (contain) ---------- */
     .photo {
       position: absolute; inset: 0;
       background: url('img/palantir.png') no-repeat center center;
       background-size: contain;
-      animation: photo-in 1.1s cubic-bezier(0.16,1,0.3,1) both;
+      animation: photo-in 1.2s cubic-bezier(0.16,1,0.3,1) both;
     }
     @keyframes photo-in {
-      from { opacity: 0; transform: scale(1.02); }
+      from { opacity: 0; transform: scale(1.03); }
       to   { opacity: 1; transform: scale(1); }
     }
     .photo-glow {
       position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(22% 30% at 50% 60%, rgba(139,92,246,0.22), transparent 60%);
+      background: radial-gradient(20% 28% at 50% 58%, rgba(139,92,246,0.24), transparent 60%);
       mix-blend-mode: screen;
       animation: pulse 6s ease-in-out infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+    @keyframes pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
 
-    /* ---------- Modale scrollabile (sopra la sfera) ---------- */
-    .modal {
-      position: absolute;
-      top: clamp(16px, 3vh, 34px);
-      left: 50%; transform: translateX(-50%);
-      width: min(720px, 84vw);
-      max-height: min(54vh, 460px);
-      overflow-y: auto;
-      z-index: 5;
-      padding: clamp(20px, 2.6vh, 30px) clamp(22px, 2.4vw, 38px) clamp(26px, 3vh, 38px);
-      border-radius: 20px;
-      background: linear-gradient(180deg, rgba(10,14,26,0.82), rgba(7,10,20,0.88));
-      border: 1px solid rgba(139,92,246,0.32);
-      box-shadow:
-        0 30px 80px -20px rgba(0,0,0,0.8),
-        0 0 0 1px rgba(255,255,255,0.03) inset,
-        0 0 70px -10px rgba(139,92,246,0.35);
-      -webkit-backdrop-filter: blur(16px) saturate(1.1);
-              backdrop-filter: blur(16px) saturate(1.1);
-      animation: modal-in 0.9s 0.2s cubic-bezier(0.16,1,0.3,1) both;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(139,92,246,0.6) transparent;
-    }
-    @keyframes modal-in {
-      from { opacity: 0; transform: translate(-50%, 18px); }
-      to   { opacity: 1; transform: translate(-50%, 0); }
-    }
-    .modal::-webkit-scrollbar { width: 9px; }
-    .modal::-webkit-scrollbar-track { background: transparent; }
-    .modal::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, var(--accent), #6d28d9);
-      border-radius: 99px; border: 2px solid rgba(7,10,20,0.6);
+    /* sfumatura inferiore per far respirare il titolo */
+    .fade-bottom {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to top, #03070f 0%, rgba(3,7,15,0.92) 12%, rgba(3,7,15,0.45) 26%, rgba(3,7,15,0) 42%);
     }
 
-    .modal-head { text-align: center; margin-bottom: clamp(14px, 2vh, 22px); }
+    /* ---------- Titolo in basso ---------- */
+    .title-bar {
+      position: absolute; left: 0; right: 0; bottom: clamp(36px, 7vh, 74px);
+      text-align: center; z-index: 3;
+      animation: rise 1s 0.25s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     .eyebrow {
-      font-size: clamp(10px, 0.85vw, 14px);
-      font-weight: 700; letter-spacing: 0.3em;
+      font-size: clamp(12px, 1vw, 16px);
+      font-weight: 700; letter-spacing: 0.34em;
       text-transform: uppercase; color: var(--accent-soft);
-      margin-bottom: 10px;
+      margin-bottom: clamp(10px, 1.6vh, 18px);
     }
     .name {
-      font-size: clamp(40px, 5vw, 76px);
-      font-weight: 900; letter-spacing: -0.03em; line-height: 0.92;
+      font-size: clamp(58px, 8vw, 132px);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 0.9;
       margin: 0; text-transform: uppercase;
-      background: linear-gradient(180deg, #ffffff 30%, #c4b5fd 100%);
+      background: linear-gradient(180deg, #ffffff 28%, #c4b5fd 100%);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
+      text-shadow: 0 0 70px rgba(139,92,246,0.45);
     }
     .subtitle {
-      font-size: clamp(13px, 1.2vw, 18px);
+      font-size: clamp(15px, 1.6vw, 26px);
       color: #cbd5e1; font-weight: 300; font-style: italic;
-      margin-top: 10px;
+      margin-top: clamp(10px, 1.6vh, 18px);
+      letter-spacing: 0.01em;
     }
-
-    .divider {
-      height: 1px; margin: clamp(14px,2vh,20px) auto;
-      max-width: 120px;
-      background: linear-gradient(90deg, transparent, rgba(139,92,246,0.6), transparent);
-    }
-
-    .lead {
-      font-size: clamp(14px, 1.25vw, 19px);
-      line-height: 1.55; color: #e2e8f0; font-weight: 300;
-      text-align: center; margin: 0 0 clamp(16px, 2.2vh, 24px);
-    }
-    .lead b { color: #fff; font-weight: 600; }
-    .lead .accent { color: var(--accent-soft); font-weight: 600; font-style: italic; }
-
-    .block {
-      position: relative;
-      padding: clamp(13px,1.7vh,16px) 0 clamp(13px,1.7vh,16px) 56px;
-      border-top: 1px solid rgba(255,255,255,0.07);
-    }
-    .block .num {
-      position: absolute; left: 0; top: clamp(13px,1.7vh,16px);
-      font-size: clamp(22px, 2.4vw, 34px); font-weight: 900;
-      line-height: 1; color: transparent;
-      -webkit-text-stroke: 1.5px rgba(139,92,246,0.7);
-      letter-spacing: -0.02em;
-    }
-    .block h3 {
-      font-size: clamp(15px, 1.3vw, 21px); font-weight: 800;
-      color: #fff; margin: 0 0 6px; letter-spacing: 0.01em;
-    }
-    .block p {
-      font-size: clamp(13px, 1.08vw, 17px); line-height: 1.5;
-      color: #94a3b8; margin: 0;
-    }
-    .block p b { color: #cbd5e1; font-weight: 600; }
-
-    .closing {
-      margin: clamp(16px,2.2vh,22px) 0 0;
-      padding-top: clamp(14px,2vh,18px);
-      border-top: 1px solid rgba(139,92,246,0.25);
-      text-align: center;
-      font-size: clamp(14px, 1.2vw, 19px);
-      font-style: italic; line-height: 1.5; color: rgba(255,255,255,0.85);
-    }
-    .closing b { color: var(--accent-soft); font-style: normal; font-weight: 600; }
-
-    /* hint di scorrimento */
-    .scroll-hint {
-      position: absolute; left: 50%; transform: translateX(-50%);
-      top: calc(clamp(16px,3vh,34px) + min(54vh,460px) - 4px);
-      z-index: 6; pointer-events: none;
-      display: flex; flex-direction: column; align-items: center; gap: 2px;
-      color: var(--accent-soft); font-size: 11px; letter-spacing: 0.18em;
-      text-transform: uppercase; font-weight: 700;
-      opacity: 0.9; transition: opacity 0.4s;
-      animation: bob 1.8s ease-in-out infinite;
-    }
-    .scroll-hint svg { width: 18px; height: 18px; }
-    .scroll-hint.hidden { opacity: 0; }
-    @keyframes bob { 0%,100%{transform:translate(-50%,0)} 50%{transform:translate(-50%,5px)} }
 
     @media (max-aspect-ratio: 1/1) {
-      .photo { background-size: contain; background-position: center 30%; }
-      .modal { width: 88vw; max-height: 60vh; top: 12px; }
-      .scroll-hint { top: calc(12px + 60vh - 4px); }
+      .photo { background-position: center 38%; }
+      .title-bar { bottom: clamp(40px, 9vh, 90px); }
     }
   </style>
 </head>
@@ -165,32 +86,18 @@
   <div class="stage">
     <div class="photo"></div>
     <div class="photo-glow"></div>
+    <div class="fade-bottom"></div>
 
-    <div class="modal" id="modal">
-      <div class="modal-head">
-        <div class="eyebrow" id="eyebrow"></div>
-        <h1 class="name" id="name"></h1>
-        <div class="subtitle" id="subtitle"></div>
-      </div>
-      <div class="divider"></div>
-      <p class="lead" id="lead"></p>
-
-      <div class="block"><span class="num">01</span><h3 id="h1"></h3><p id="p1"></p></div>
-      <div class="block"><span class="num">02</span><h3 id="h2"></h3><p id="p2"></p></div>
-      <div class="block"><span class="num">03</span><h3 id="h3"></h3><p id="p3"></p></div>
-
-      <p class="closing" id="closing"></p>
-    </div>
-
-    <div class="scroll-hint" id="scroll-hint">
-      <span>Scorri</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    <div class="title-bar">
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 class="name" id="name"></h1>
+      <div class="subtitle" id="subtitle"></div>
     </div>
   </div>
 
   <div id="nav-dots"></div>
   <a class="nav-arrow" id="nav-prev" href="thiel.html">&#8592;</a>
-  <a class="nav-arrow" id="nav-next" href="palantir.html">&#8594;</a>
+  <a class="nav-arrow" id="nav-next" href="palantir-intro-2.html">&#8594;</a>
 
   <div id="lang-toggle">
     <button class="lang-btn" data-lang="it">IT</button>
@@ -203,48 +110,25 @@
       it: {
         eyebrow: 'J.R.R. Tolkien · Le pietre veggenti',
         name: 'Palantír',
-        subtitle: 'Le «pietre che vedono lontano» del Signore degli Anelli',
-        lead: 'Nel mondo di Tolkien i <b>palantíri</b> (singolare <i>palantír</i>, in quenya <span class="accent">«colui che vede da lontano»</span>) sono sfere di cristallo indistruttibili: chi ne possiede una può vedere luoghi remoti e comunicare con chi tiene un\'altra pietra.',
-        h1: 'Origine', p1: 'Sette pietre forgiate nell\'Ovest e portate nella Terra di Mezzo, custodite nelle torri di <b>Gondor e Arnor</b>. Strumenti di potere riservati ai re di Númenor.',
-        h2: 'Il potere', p2: 'Consentono di vedere eventi distanti nello <b>spazio e nel tempo</b>. Ma rivelano solo ciò che l\'osservatore viene guidato a vedere: la conoscenza non è mai neutra.',
-        h3: 'Il pericolo', p3: 'Sauron corruppe le pietre. <b>Saruman e Denethor</b>, credendo di dominarle, ne furono invece dominati, manipolati e condotti alla rovina.',
-        closing: 'Da qui il nome dell\'azienda: <b>uno strumento per vedere e connettere oceani di dati</b> — potentissimo, e proprio per questo ambiguo.'
+        subtitle: 'Le «pietre che vedono lontano» del Signore degli Anelli'
       },
       en: {
         eyebrow: 'J.R.R. Tolkien · The seeing-stones',
         name: 'Palantír',
-        subtitle: 'The “stones that see afar” of The Lord of the Rings',
-        lead: 'In Tolkien\'s world the <b>palantíri</b> (singular <i>palantír</i>, Quenya for <span class="accent">“one that sees from afar”</span>) are indestructible crystal spheres: whoever holds one can see distant places and speak with whoever holds another stone.',
-        h1: 'Origin', p1: 'Seven stones forged in the West and brought to Middle-earth, kept in the towers of <b>Gondor and Arnor</b>. Instruments of power reserved for the kings of Númenor.',
-        h2: 'The power', p2: 'They reveal events distant in <b>space and time</b>. Yet they show only what the viewer is led to see: knowledge is never neutral.',
-        h3: 'The danger', p3: 'Sauron corrupted the stones. <b>Saruman and Denethor</b>, believing they commanded them, were instead commanded, deceived and driven to ruin.',
-        closing: 'Hence the company\'s name: <b>a tool to see and connect oceans of data</b> — immensely powerful, and for that very reason ambiguous.'
+        subtitle: 'The “stones that see afar” of The Lord of the Rings'
       }
     };
-
-    function set(id, html){ document.getElementById(id).innerHTML = html; }
     function renderTexts() {
       const t = TXT[lang];
-      ['eyebrow','name','subtitle','lead','h1','p1','h2','p2','h3','p3','closing']
-        .forEach(k => set(k, t[k]));
+      document.getElementById('eyebrow').textContent  = t.eyebrow;
+      document.getElementById('name').textContent     = t.name;
+      document.getElementById('subtitle').textContent = t.subtitle;
     }
     function onLangChange() { renderTexts(); }
 
     initLangToggle();
     renderTexts();
     initNav();
-
-    // Nasconde l'hint di scorrimento una volta raggiunto il fondo
-    const modal = document.getElementById('modal');
-    const hint = document.getElementById('scroll-hint');
-    function updateHint() {
-      const atBottom = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 8;
-      const noScroll = modal.scrollHeight <= modal.clientHeight + 4;
-      hint.classList.toggle('hidden', atBottom || noScroll);
-    }
-    modal.addEventListener('scroll', updateHint);
-    window.addEventListener('resize', updateHint);
-    updateHint();
   </script>
 </body>
 </html>
