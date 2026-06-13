@@ -62,8 +62,19 @@ function loadSlidesConfig() {
     // Only accept entries we still know about.
     const known = new Set(DEFAULT_PAGES);
     const order = cfg.order.filter(p => known.has(p));
-    // Append any new defaults the saved config didn't know.
-    DEFAULT_PAGES.forEach(p => { if (!order.includes(p)) order.push(p); });
+    // Insert any new default slides at their natural DEFAULT_PAGES position
+    // (right after their nearest preceding neighbour that's still in the saved
+    // order) instead of appending to the end — so newly added slides appear
+    // where intended even when the user has a custom saved order.
+    DEFAULT_PAGES.forEach((p, i) => {
+      if (order.includes(p)) return;
+      let insertAt = order.length;
+      for (let j = i - 1; j >= 0; j--) {
+        const idx = order.indexOf(DEFAULT_PAGES[j]);
+        if (idx !== -1) { insertAt = idx + 1; break; }
+      }
+      order.splice(insertAt, 0, p);
+    });
     const hidden = new Set(Array.isArray(cfg.hidden) ? cfg.hidden : []);
     const visible = order.filter(p => !hidden.has(p));
     if (visible.length === 0) return; // never leave the user stuck
