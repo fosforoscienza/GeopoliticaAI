@@ -39,7 +39,7 @@ function initLangToggle() {
 const DEFAULT_PAGES = [
   'index.html', 'video.html', 'scrittura.html', 'fotografia.html',
   'pechino-1.html', 'pechino-2.html', 'pechino-3.html',
-  'timeline.html', 'paesi.html', 'leader.html',
+  'timeline.html', 'napa-valley.html', 'musk-page.html', 'musk-altman.html', 'paesi.html', 'leader.html',
   'llm-occidentali.html', 'llm-asiatici.html', 'llm-russi.html',
   'thiel.html', 'palantir-intro.html', 'palantir-intro-2.html', 'palantir.html', 'paypal-mafia.html', 'paypal-mafia-2.html', 'paypal-mafia-3.html',
   'epistemia.html', 'pappagallo.html',
