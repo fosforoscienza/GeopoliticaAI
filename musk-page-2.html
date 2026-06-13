@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Musk e Page — Due visioni dell'AI — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --page: #41b7ff; --musk: #f59e0b; }
+    html, body { background: #000 !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; }
+
+    .stage {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(45% 70% at 22% 30%, rgba(65,183,255,0.12), transparent 60%),
+        radial-gradient(45% 70% at 78% 30%, rgba(245,158,11,0.12), transparent 60%),
+        #000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: clamp(24px, 4.5vh, 54px) clamp(34px, 6vw, 100px);
+      box-sizing: border-box;
+    }
+
+    .head { text-align: center; margin-bottom: clamp(18px, 3vh, 38px);
+      animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes rise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .eyebrow {
+      font-size: clamp(11px, 0.95vw, 15px);
+      font-weight: 700; letter-spacing: 0.32em; text-transform: uppercase;
+      color: #94a3b8; margin-bottom: clamp(10px, 1.6vh, 18px);
+    }
+    .title {
+      font-size: clamp(34px, 4.6vw, 78px);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 0.95; margin: 0;
+      color: #fff;
+    }
+    .title .b { color: var(--page); }
+    .title .o { color: var(--musk); }
+
+    /* due visioni a contrasto */
+    .contrast {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(26px, 4vw, 72px);
+      max-width: 1180px; width: 100%;
+      margin-bottom: clamp(18px, 2.8vh, 34px);
+    }
+    .vision { position: relative; padding-top: 16px;
+      animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+    .vision.page { animation-delay: .12s; }
+    .vision.musk { animation-delay: .24s; }
+    .vision::before { content:''; position:absolute; top:0; left:0; width:60px; height:3px; border-radius:3px; }
+    .vision.page::before { background: linear-gradient(90deg, var(--page), transparent); }
+    .vision.musk::before { background: linear-gradient(90deg, var(--musk), transparent); }
+    .vision h3 {
+      display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+      margin: 0 0 clamp(8px,1.2vh,12px); font-weight: 800;
+      font-size: clamp(19px, 1.8vw, 30px); color: #fff; letter-spacing: -0.01em;
+    }
+    .vision h3 .stance {
+      font-size: clamp(11px, 1vw, 15px); font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase;
+    }
+    .vision.page h3 .stance { color: var(--page); }
+    .vision.musk h3 .stance { color: var(--musk); }
+    .vision p {
+      font-size: clamp(13px, 1.05vw, 17px); line-height: 1.6;
+      color: #b6c2d0; margin: 0;
+    }
+    .vision p b { color: #fff; font-weight: 600; }
+
+    /* scontro: lo "specista" */
+    .clash {
+      max-width: 1100px; width: 100%; text-align: center;
+      padding: clamp(16px, 2.4vh, 26px) 0 0;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      font-size: clamp(13px, 1.1vw, 18px); line-height: 1.6; color: #b6c2d0;
+      animation: rise 0.9s .36s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .clash b { color: #fff; font-weight: 600; }
+    .clash .spec { color: var(--musk); font-weight: 800; font-style: italic; white-space: nowrap; }
+
+    /* frattura finale */
+    .fracture {
+      max-width: 1100px; text-align: center;
+      margin-top: clamp(14px, 2.2vh, 26px);
+      font-size: clamp(16px, 1.5vw, 26px); line-height: 1.45; font-weight: 300;
+      color: #fff;
+      animation: rise 1s .5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .fracture .pagew { color: var(--page); font-weight: 600; }
+    .fracture .muskw { color: var(--musk); font-weight: 600; }
+
+    @media (max-aspect-ratio: 1/1) {
+      .stage { justify-content: flex-start; overflow-y: auto; padding-top: clamp(34px,6vh,60px); padding-bottom: clamp(90px,13vh,120px); }
+      .contrast { grid-template-columns: 1fr; gap: clamp(18px,2.6vh,26px); max-width: 620px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stage">
+    <div class="head">
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 class="title" id="title"></h1>
+    </div>
+
+    <div class="contrast">
+      <div class="vision page">
+        <h3><span>Larry Page</span><span class="stance" id="page-stance"></span></h3>
+        <p id="page-text"></p>
+      </div>
+      <div class="vision musk">
+        <h3><span>Elon Musk</span><span class="stance" id="musk-stance"></span></h3>
+        <p id="musk-text"></p>
+      </div>
+    </div>
+
+    <p class="clash" id="clash"></p>
+    <p class="fracture" id="fracture"></p>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="musk-page.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="musk-altman.html">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        eyebrow: 'Walter Isaacson · La biografia di Musk',
+        title: '<span class="b">Evoluzione</span> o <span class="o">sopravvivenza</span>?',
+        pageStance: 'Post-umano · ottimista',
+        pageText: 'Page aveva una visione più «post-umana» e ottimista dell\'AI. Secondo il racconto riportato nella biografia di Musk di Walter Isaacson, Page vedeva l\'intelligenza artificiale come una possibile <b>nuova fase dell\'evoluzione</b>: se le macchine fossero diventate più intelligenti degli esseri umani, non sarebbe stato necessariamente un disastro, ma forse un passaggio naturale. L\'intelligenza non doveva essere difesa solo perché biologica o umana.',
+        muskStance: 'Pro-umano · allarmato',
+        muskText: 'Musk invece era «pro-umano» e molto più allarmato. Temeva che un\'AI superintelligente potesse diventare <b>incontrollabile e rappresentare un rischio esistenziale</b> per l\'umanità. Per lui la priorità doveva essere: sviluppare AI, sì, ma con limiti, controllo, sicurezza e una missione esplicitamente orientata alla protezione degli esseri umani.',
+        clash: 'Il punto simbolico dello scontro fu l\'accusa di Page a Musk di essere <span class="spec">«specista»</span>: gli rimproverava di mettere gli esseri umani sopra altre possibili forme di intelligenza, comprese quelle artificiali. Musk avrebbe risposto: <b>sì, sono a favore degli esseri umani.</b>',
+        fracture: 'Da qui nasce la frattura: <span class="pagew">Page</span> pensava in termini di evoluzione dell\'intelligenza; <span class="muskw">Musk</span> in termini di sopravvivenza dell\'umanità.'
+      },
+      en: {
+        eyebrow: 'Walter Isaacson · The biography of Musk',
+        title: '<span class="b">Evolution</span> or <span class="o">survival</span>?',
+        pageStance: 'Post-human · optimist',
+        pageText: 'Page held a more «post-human» and optimistic view of AI. According to the account in Walter Isaacson\'s biography of Musk, Page saw artificial intelligence as a possible <b>new stage of evolution</b>: if machines became more intelligent than humans, it wouldn\'t necessarily be a disaster, but perhaps a natural transition. Intelligence did not deserve protection merely because it was biological or human.',
+        muskStance: 'Pro-human · alarmed',
+        muskText: 'Musk, by contrast, was «pro-human» and far more alarmed. He feared a superintelligent AI could become <b>uncontrollable and pose an existential risk</b> to humanity. For him the priority had to be: develop AI, yes, but with limits, control, safety and a mission explicitly aimed at protecting human beings.',
+        clash: 'The symbolic flashpoint was Page\'s accusation that Musk was <span class="spec">«speciesist»</span>: he reproached him for placing human beings above other possible forms of intelligence, including artificial ones. Musk reportedly replied: <b>yes, I am pro-human.</b>',
+        fracture: 'Hence the rift: <span class="pagew">Page</span> thought in terms of the evolution of intelligence; <span class="muskw">Musk</span> in terms of the survival of humanity.'
+      }
+    };
+    function set(id, html){ document.getElementById(id).innerHTML = html; }
+    function renderTexts() {
+      const t = TXT[lang];
+      set('eyebrow', t.eyebrow);
+      set('title', t.title);
+      set('page-stance', t.pageStance);
+      set('page-text', t.pageText);
+      set('musk-stance', t.muskStance);
+      set('musk-text', t.muskText);
+      set('clash', t.clash);
+      set('fracture', t.fracture);
+    }
+    function onLangChange() { renderTexts(); }
+
+    initLangToggle();
+    renderTexts();
+    initNav();
+  </script>
+</body>
+</html>
