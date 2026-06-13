@@ -6,80 +6,212 @@
   <title>Palantir — Geopolitica della AI</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    html, body { background: #040e1a !important; overflow: hidden; height: 100%; margin: 0; }
-    body {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+    :root { --accent: #8b5cf6; --accent-soft: #a78bfa; }
+    html, body { background: #03070f !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; }
+
+    /* ---------- Stage ---------- */
+    .stage {
+      position: fixed; inset: 0;
+      overflow: hidden;
+      background: #03070f;
     }
 
-    .info-card {
-      max-width: min(1300px, 92vw);
-      padding: 0 4vw;
-      text-align: center;
-      animation: card-in 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    /* ---------- Hero image (full-bleed, bleeds right) ---------- */
+    .hero {
+      position: absolute; inset: 0;
+      background: url('img/palantir.png') no-repeat center right;
+      background-size: cover;
+      transform: scale(1.06);
+      transform-origin: 70% 55%;
+      animation: kenburns 26s ease-in-out infinite alternate;
+      will-change: transform;
     }
-    @keyframes card-in {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes kenburns {
+      from { transform: scale(1.06) translate(0, 0); }
+      to   { transform: scale(1.12) translate(-1.2%, -1.4%); }
     }
-    .info-eyebrow {
-      font-size: clamp(14px, 1.2vw, 18px);
-      font-weight: 700; letter-spacing: 0.3em;
+
+    /* ---------- Cinematic scrims ---------- */
+    .scrim-left {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        100deg,
+        #03070f 0%,
+        rgba(3,7,15,0.97) 24%,
+        rgba(3,7,15,0.82) 38%,
+        rgba(3,7,15,0.35) 52%,
+        rgba(3,7,15,0.05) 66%,
+        rgba(3,7,15,0) 78%
+      );
+    }
+    .scrim-bottom {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(3,7,15,0.85) 0%, rgba(3,7,15,0) 32%);
+    }
+    .vignette {
+      position: absolute; inset: 0;
+      box-shadow: inset 0 0 240px 60px rgba(0,0,0,0.7);
+      pointer-events: none;
+    }
+    /* glow nucleo sfera */
+    .glow {
+      position: absolute;
+      top: 56%; left: 60%;
+      width: 42vw; height: 42vw;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(139,92,246,0.22) 0%, rgba(139,92,246,0.07) 40%, rgba(139,92,246,0) 70%);
+      pointer-events: none;
+      animation: pulse 6s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 0.7; }
+      50%     { opacity: 1; }
+    }
+
+    /* ---------- Content ---------- */
+    .content {
+      position: absolute;
+      top: 50%; left: clamp(40px, 6vw, 110px);
+      transform: translateY(-50%);
+      max-width: min(620px, 52vw);
+      z-index: 3;
+      animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(calc(-50% + 26px)); }
+      to   { opacity: 1; transform: translateY(-50%); }
+    }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-size: clamp(12px, 0.95vw, 16px);
+      font-weight: 700; letter-spacing: 0.36em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: clamp(18px, 2vh, 28px);
+      color: var(--accent-soft);
+      margin-bottom: clamp(16px, 2.2vh, 26px);
     }
-    .info-name {
-      font-size: clamp(56px, 9vw, 160px);
-      font-weight: 900; letter-spacing: -0.03em;
-      line-height: 0.95;
-      color: var(--accent);
+    .eyebrow::before {
+      content: ''; width: 34px; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .name {
+      font-size: clamp(64px, 8.4vw, 142px);
+      font-weight: 900; letter-spacing: -0.04em;
+      line-height: 0.9;
+      margin: 0 0 clamp(18px, 2.4vh, 30px);
       text-transform: uppercase;
-      margin: 0 0 clamp(24px, 3vh, 40px);
+      background: linear-gradient(180deg, #ffffff 30%, #c4b5fd 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      text-shadow: 0 0 60px rgba(139,92,246,0.35);
     }
-    .info-tagline {
-      font-size: clamp(18px, 1.7vw, 28px);
-      color: #94a3b8; font-weight: 300;
-      letter-spacing: 0.02em; line-height: 1.5;
-      margin-bottom: clamp(36px, 4.5vh, 64px);
-      max-width: 900px; margin-left: auto; margin-right: auto;
+
+    .ticker {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 6px 14px;
+      border: 1px solid rgba(139,92,246,0.45);
+      border-radius: 999px;
+      background: rgba(139,92,246,0.08);
+      font-size: clamp(12px, 0.95vw, 15px);
+      font-weight: 700; letter-spacing: 0.12em;
+      color: #ddd6fe;
+      margin-bottom: clamp(18px, 2.4vh, 28px);
+      vertical-align: middle;
     }
-    .info-facts {
-      list-style: none; padding: 0;
-      margin: 0 auto; max-width: 920px;
-      display: grid; gap: clamp(10px, 1.3vh, 18px);
-      text-align: left;
+    .ticker .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 10px #4ade80;
+      animation: pulse 2.2s ease-in-out infinite;
     }
-    .info-facts li {
-      font-size: clamp(15px, 1.35vw, 22px);
-      color: #e2e8f0; line-height: 1.5;
-      padding-left: 36px; position: relative;
+
+    .tagline {
+      font-size: clamp(16px, 1.45vw, 23px);
+      color: #cbd5e1; font-weight: 300;
+      line-height: 1.5; letter-spacing: 0.01em;
+      margin: 0 0 clamp(24px, 3.2vh, 40px);
+      max-width: 540px;
     }
-    .info-facts li::before {
+    .tagline b { color: #f1f5f9; font-weight: 600; }
+
+    .facts {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; gap: clamp(9px, 1.25vh, 15px);
+      max-width: 560px;
+    }
+    .facts li {
+      font-size: clamp(14px, 1.12vw, 18px);
+      color: #e2e8f0; line-height: 1.45;
+      padding-left: 30px; position: relative;
+      opacity: 0; transform: translateX(-12px);
+      animation: factin 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    .facts li::before {
       content: ''; position: absolute;
-      left: 0; top: 0.7em;
-      width: 22px; height: 2px;
+      left: 0; top: 0.55em;
+      width: 16px; height: 16px;
       background: var(--accent);
+      -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2.4 6.9L21.6 9l-5.4 4.7L18 21 12 17l-6 4 1.8-7.3L2.4 9l7.2-.1z'/></svg>") center/contain no-repeat;
+              mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2.4 6.9L21.6 9l-5.4 4.7L18 21 12 17l-6 4 1.8-7.3L2.4 9l7.2-.1z'/></svg>") center/contain no-repeat;
+      opacity: 0.9;
     }
-    .info-quote {
-      font-size: clamp(20px, 2vw, 32px);
+    .facts li:nth-child(1) { animation-delay: 0.45s; }
+    .facts li:nth-child(2) { animation-delay: 0.55s; }
+    .facts li:nth-child(3) { animation-delay: 0.65s; }
+    .facts li:nth-child(4) { animation-delay: 0.75s; }
+    .facts li:nth-child(5) { animation-delay: 0.85s; }
+    .facts li:nth-child(6) { animation-delay: 0.95s; }
+    @keyframes factin {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .quote {
+      margin: clamp(24px, 3.2vh, 40px) 0 0;
+      padding-left: 20px;
+      border-left: 3px solid var(--accent);
+      font-size: clamp(16px, 1.5vw, 24px);
       font-style: italic;
-      color: rgba(255,255,255,0.6);
-      margin-top: clamp(32px, 4vh, 52px);
-      max-width: 720px;
-      margin-left: auto; margin-right: auto;
-      letter-spacing: 0.01em;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.4;
+      max-width: 520px;
+    }
+    .quote .who { display: block; font-style: normal; font-size: 0.72em; color: var(--accent-soft); margin-top: 8px; letter-spacing: 0.08em; }
+
+    /* ---------- Responsive: stack (portrait) ---------- */
+    @media (max-aspect-ratio: 1/1) {
+      .hero { background-position: center 28%; }
+      .scrim-left {
+        background: linear-gradient(to top, #03070f 0%, rgba(3,7,15,0.96) 30%, rgba(3,7,15,0.6) 50%, rgba(3,7,15,0.2) 70%, rgba(3,7,15,0) 88%);
+      }
+      .content {
+        top: auto; bottom: clamp(70px, 11vh, 120px);
+        left: 50%; transform: none; translate: -50% 0;
+        width: min(620px, 88vw); max-width: 88vw;
+        text-align: left;
+      }
+      @keyframes rise { from { opacity:0; transform: translateY(26px);} to {opacity:1; transform: translateY(0);} }
     }
   </style>
 </head>
-<body style="--accent: #8b5cf6;">
+<body>
 
-  <div class="info-card">
-    <div class="info-eyebrow" id="info-eyebrow"></div>
-    <h1 class="info-name" id="info-name"></h1>
-    <div class="info-tagline" id="info-tagline"></div>
-    <ul class="info-facts" id="info-facts"></ul>
-    <div class="info-quote" id="info-quote"></div>
+  <div class="stage">
+    <div class="hero"></div>
+    <div class="glow"></div>
+    <div class="scrim-left"></div>
+    <div class="scrim-bottom"></div>
+    <div class="vignette"></div>
+
+    <div class="content">
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 class="name" id="name"></h1>
+      <div class="ticker"><span class="dot"></span><span id="ticker"></span></div>
+      <p class="tagline" id="tagline"></p>
+      <ul class="facts" id="facts"></ul>
+      <blockquote class="quote" id="quote"></blockquote>
+    </div>
   </div>
 
   <div id="nav-dots"></div>
@@ -97,40 +229,43 @@
       it: {
         eyebrow: 'AI e sorveglianza',
         name: 'Palantir',
-        tagline: 'Big data e AI per governi e difesa • Fondata 2003',
+        ticker: 'NYSE: PLTR',
+        tagline: '<b>Big data e AI</b> per governi e difesa — fondata nel 2003 da Peter Thiel e Alex Karp.',
         facts: [
-          'Fondata da Peter Thiel e Alex Karp — IPO sulla NYSE nel 2020 (PLTR)',
           'Clienti: CIA, NSA, FBI, Pentagono, NHS britannico, ICE',
           'Prodotti: Gotham (gov), Foundry (corporate), AIP (AI Platform)',
-          'Capitalizzazione di mercato oltre $100 miliardi (2024)',
-          'Contratti pluriennali per Maven Smart System — AI per intelligence militare',
-          'Nome ispirato ai palantíri del "Signore degli Anelli" — pietre di visione'
+          'IPO sulla NYSE nel 2020 — capitalizzazione oltre $100 miliardi',
+          'Maven Smart System: AI per l’intelligence militare USA',
+          'Nome dai palantíri del "Signore degli Anelli" — pietre di visione'
         ],
-        quote: '"Il software sta divorando la difesa." — Alex Karp'
+        quote: '"Il software sta divorando la difesa."',
+        who: 'Alex Karp, CEO'
       },
       en: {
         eyebrow: 'AI & surveillance',
         name: 'Palantir',
-        tagline: 'Big data and AI for governments and defense • Founded 2003',
+        ticker: 'NYSE: PLTR',
+        tagline: '<b>Big data and AI</b> for governments and defense — founded in 2003 by Peter Thiel and Alex Karp.',
         facts: [
-          'Founded by Peter Thiel and Alex Karp — NYSE IPO in 2020 (PLTR)',
           'Clients: CIA, NSA, FBI, Pentagon, UK NHS, ICE',
           'Products: Gotham (gov), Foundry (corporate), AIP (AI Platform)',
-          'Market cap above $100B (2024)',
-          'Multi-year contracts for Maven Smart System — AI for military intelligence',
+          'NYSE IPO in 2020 — market cap above $100B',
+          'Maven Smart System: AI for U.S. military intelligence',
           'Named after the palantíri seeing-stones in "The Lord of the Rings"'
         ],
-        quote: '"Software is eating defense." — Alex Karp'
+        quote: '"Software is eating defense."',
+        who: 'Alex Karp, CEO'
       }
     };
 
     function renderTexts() {
       const t = TXT[lang];
-      document.getElementById('info-eyebrow').textContent = t.eyebrow;
-      document.getElementById('info-name').textContent    = t.name;
-      document.getElementById('info-tagline').textContent = t.tagline;
-      document.getElementById('info-quote').textContent   = t.quote;
-      const ul = document.getElementById('info-facts');
+      document.getElementById('eyebrow').textContent = t.eyebrow;
+      document.getElementById('name').textContent    = t.name;
+      document.getElementById('ticker').textContent  = t.ticker;
+      document.getElementById('tagline').innerHTML   = t.tagline;
+      document.getElementById('quote').innerHTML     = t.quote + '<span class="who">— ' + t.who + '</span>';
+      const ul = document.getElementById('facts');
       ul.innerHTML = '';
       t.facts.forEach(f => {
         const li = document.createElement('li');
