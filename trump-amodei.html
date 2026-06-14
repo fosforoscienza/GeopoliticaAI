@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trump contro Amodei — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --accent: #cc785c; --accent-soft: #e8a48c; }
+    html, body { background: #000 !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; }
+
+    .stage {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(70% 60% at 50% 45%, rgba(204,120,92,0.10), transparent 70%),
+        #000;
+      overflow: hidden;
+    }
+
+    /* Foto interamente visibile */
+    .photo {
+      position: absolute; inset: 0;
+      background: url('img/geopolitica/trump-amodei.png') no-repeat center center;
+      background-size: contain;
+      animation: photo-in 1.2s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes photo-in {
+      from { opacity: 0; transform: scale(1.03); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .fade-bottom {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.92) 12%, rgba(0,0,0,0.45) 26%, rgba(0,0,0,0) 44%);
+    }
+
+    .title-bar {
+      position: absolute; left: 0; right: 0; bottom: clamp(34px, 6.5vh, 70px);
+      text-align: center; z-index: 3; padding: 0 6vw;
+      animation: rise 1s 0.25s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes rise { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    .eyebrow {
+      font-size: clamp(11px, 1vw, 16px); font-weight: 700;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--accent-soft); margin-bottom: clamp(10px, 1.6vh, 18px);
+    }
+    .name {
+      font-size: clamp(46px, 6.6vw, 116px);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 0.9;
+      margin: 0; text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 28%, #e8a48c 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      text-shadow: 0 0 70px rgba(204,120,92,0.45);
+    }
+    .name .vs { -webkit-text-fill-color: var(--accent-soft); color: var(--accent-soft); font-weight: 800; }
+    .subtitle {
+      font-size: clamp(15px, 1.6vw, 26px);
+      color: #cbd5e1; font-weight: 300; font-style: italic;
+      margin-top: clamp(10px, 1.6vh, 18px); letter-spacing: 0.01em;
+    }
+
+    @media (max-aspect-ratio: 1/1) {
+      .photo { background-position: center 40%; }
+      .title-bar { bottom: clamp(40px, 9vh, 90px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stage">
+    <div class="photo"></div>
+    <div class="fade-bottom"></div>
+    <div class="title-bar">
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 class="name" id="name"></h1>
+      <div class="subtitle" id="subtitle"></div>
+    </div>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="leader.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="anthropic-usa-1.html">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        eyebrow: 'Febbraio 2026 · AI e sicurezza nazionale',
+        name: 'Trump <span class="vs">contro</span> Amodei',
+        subtitle: 'Il governo USA contro Anthropic: lo scontro tra potere politico e laboratori dell\'AI'
+      },
+      en: {
+        eyebrow: 'February 2026 · AI & national security',
+        name: 'Trump <span class="vs">vs</span> Amodei',
+        subtitle: 'The U.S. government against Anthropic: political power versus the AI labs'
+      }
+    };
+    function renderTexts() {
+      const t = TXT[lang];
+      document.getElementById('eyebrow').textContent  = t.eyebrow;
+      document.getElementById('name').innerHTML       = t.name;
+      document.getElementById('subtitle').textContent = t.subtitle;
+    }
+    function onLangChange() { renderTexts(); }
+    initLangToggle();
+    renderTexts();
+    initNav();
+  </script>
+</body>
+</html>
