@@ -28,7 +28,7 @@
   /* ── Left: editorial title ── */
   #op-index .copy {
     position: relative; z-index: 2;
-    flex: 1 1 0; min-width: 0; max-width: 760px;
+    flex: 1 1 0; min-width: 0; max-width: 900px;
   }
 
   #op-index .eyebrow {
@@ -40,9 +40,9 @@
   #op-index .eyebrow::before { content:''; width: clamp(28px,3vw,48px); height: 2px; background: linear-gradient(90deg, #41b7ff, transparent); }
 
   #op-index .title {
-    font-size: clamp(64px, 9.5vw, 168px);
+    font-size: clamp(52px, 7vw, 128px);
     font-weight: 900; letter-spacing: -0.04em; line-height: 0.86;
-    margin: 0; text-transform: uppercase;
+    margin: 0; text-transform: uppercase; overflow-wrap: break-word;
     background: linear-gradient(165deg, #ffffff 30%, #7cc4ff 75%, #4f8ef7 100%);
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent; color: transparent;
@@ -97,7 +97,7 @@
     <div class="eyebrow" data-reveal
          data-it="Geopolitica dell'Intelligenza Artificiale"
          data-en="The Geopolitics of Artificial Intelligence">Geopolitica dell'Intelligenza Artificiale</div>
-    <h1 class="title" data-reveal>THE&nbsp;AI&nbsp;ERA</h1>
+    <h1 class="title" data-reveal>THE AI ERA</h1>
     <div class="rule" data-reveal></div>
     <p class="tagline" data-reveal
        data-it="Chi controlla l'intelligenza artificiale <b>controlla il futuro.</b>"

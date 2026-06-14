@@ -34,7 +34,7 @@
     /* ── Left: editorial title ── */
     .copy {
       position: relative; z-index: 2;
-      flex: 1 1 0; min-width: 0; max-width: 760px;
+      flex: 1 1 0; min-width: 0; max-width: 900px;
       animation: rise 1s cubic-bezier(0.16,1,0.3,1) both;
     }
     @keyframes rise { from{opacity:0;transform:translateY(26px)} to{opacity:1;transform:translateY(0)} }
@@ -48,9 +48,9 @@
     .eyebrow::before { content:''; width: clamp(28px,3vw,48px); height: 2px; background: linear-gradient(90deg, var(--accent), transparent); }
 
     .title {
-      font-size: clamp(64px, 9.5vw, 168px);
+      font-size: clamp(52px, 7vw, 128px);
       font-weight: 900; letter-spacing: -0.04em; line-height: 0.86;
-      margin: 0; text-transform: uppercase;
+      margin: 0; text-transform: uppercase; overflow-wrap: break-word;
       background: linear-gradient(165deg, #ffffff 30%, #7cc4ff 75%, #4f8ef7 100%);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
@@ -121,7 +121,7 @@
 
     <div class="copy">
       <div class="eyebrow" id="eyebrow"></div>
-      <h1 class="title">THE&nbsp;AI&nbsp;ERA</h1>
+      <h1 class="title">THE AI ERA</h1>
       <div class="rule"></div>
       <p class="tagline" id="tagline"></p>
       <a class="start" id="start" href="video.html"><span id="start-txt"></span><span class="arr">&#8594;</span></a>
