@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anthropic contro il Pentagono — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --accent: #cc785c; --accent-soft: #e8a48c; --red: #ef4444; }
+    html, body { background: #000 !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; }
+
+    .stage {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(60% 75% at 50% 4%, rgba(204,120,92,0.16), transparent 60%),
+        #000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: clamp(26px, 4.5vh, 56px) clamp(36px, 6vw, 100px);
+      box-sizing: border-box;
+    }
+
+    .head { text-align: center; max-width: 1040px;
+      animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes rise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-size: clamp(11px, 0.95vw, 15px); font-weight: 700;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--accent-soft); margin-bottom: clamp(12px, 1.8vh, 20px);
+    }
+    .eyebrow .num {
+      color: #fff; background: var(--accent); border-radius: 5px;
+      padding: 2px 8px; letter-spacing: 0.1em;
+    }
+    .title {
+      font-size: clamp(34px, 4.6vw, 76px); font-weight: 900;
+      letter-spacing: -0.03em; line-height: 0.96; margin: 0; color: #fff;
+    }
+    .title .hl { color: var(--accent-soft); }
+    .lead {
+      font-size: clamp(15px, 1.4vw, 22px); line-height: 1.55;
+      color: #cbd5e1; font-weight: 300; margin: clamp(16px,2.4vh,28px) auto 0;
+      max-width: 920px;
+    }
+    .lead b { color: #fff; font-weight: 600; }
+    .lead .q { color: var(--accent-soft); font-style: italic; }
+
+    /* linee rosse */
+    .redlines {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(18px, 2.5vw, 36px);
+      max-width: 1040px; width: 100%; margin: clamp(22px,3.4vh,40px) 0 0;
+    }
+    .rl {
+      position: relative; padding: clamp(16px,2.4vh,24px) clamp(18px,1.8vw,26px) clamp(16px,2.4vh,24px) clamp(54px,4.5vw,66px);
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.28); border-radius: 14px;
+      animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .rl:nth-child(1){animation-delay:.15s} .rl:nth-child(2){animation-delay:.27s}
+    .rl::before {
+      content: '✕'; position: absolute; left: clamp(16px,1.6vw,22px); top: 50%;
+      transform: translateY(-50%);
+      width: clamp(28px,2.6vw,36px); height: clamp(28px,2.6vw,36px);
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; background: rgba(239,68,68,0.18);
+      border: 1px solid var(--red); color: var(--red);
+      font-size: clamp(14px,1.3vw,18px); font-weight: 900;
+    }
+    .rl .k { font-size: clamp(11px,0.9vw,14px); font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red); margin-bottom: 5px; }
+    .rl .t { font-size: clamp(15px,1.3vw,21px); font-weight: 700; color: #fff; line-height: 1.3; }
+
+    /* rappresaglia */
+    .fallout {
+      max-width: 1040px; width: 100%; margin-top: clamp(20px,3vh,34px);
+      padding-top: clamp(16px,2.4vh,24px); border-top: 1px solid rgba(255,255,255,0.12);
+      font-size: clamp(14px,1.2vw,19px); line-height: 1.6; color: #b6c2d0; text-align: center;
+      animation: rise 0.9s .4s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .fallout b { color: #fff; font-weight: 600; }
+    .fallout .risk { color: var(--accent-soft); font-weight: 700; font-style: italic; }
+
+    @media (max-aspect-ratio: 1/1) {
+      .stage { justify-content: flex-start; overflow-y: auto; padding-top: clamp(36px,6vh,60px); padding-bottom: clamp(90px,13vh,120px); }
+      .redlines { grid-template-columns: 1fr; max-width: 640px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stage">
+    <div class="head">
+      <div class="eyebrow"><span class="num" id="num"></span><span id="eyebrow"></span></div>
+      <h1 class="title" id="title"></h1>
+      <p class="lead" id="lead"></p>
+    </div>
+
+    <div class="redlines">
+      <div class="rl"><div class="k" id="k1"></div><div class="t" id="rl1"></div></div>
+      <div class="rl"><div class="k" id="k2"></div><div class="t" id="rl2"></div></div>
+    </div>
+
+    <p class="fallout" id="fallout"></p>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="leader.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="anthropic-usa-2.html">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        num: '1 / 3', eyebrow: '27 Febbraio 2026 · Lo scontro',
+        title: 'Anthropic dice <span class="hl">no</span> al Pentagono',
+        lead: 'Il <b>Dipartimento della Difesa</b> chiede ad Anthropic di allentare i limiti d\'uso di <b>Claude</b> per finalità militari, con una formula molto ampia: uso per <span class="q">«tutti gli scopi legali»</span>. Dario Amodei rifiuta di togliere due paletti.',
+        k1: 'Linea rossa', rl1: 'No alla sorveglianza domestica di massa',
+        k2: 'Linea rossa', rl2: 'No ad armi completamente autonome senza supervisione umana',
+        fallout: 'La rappresaglia: <b>Trump</b> ordina alle agenzie federali di smettere di usare prodotti Anthropic, e il segretario alla Difesa <b>Pete Hegseth</b> indica Anthropic come possibile <span class="risk">«supply-chain risk»</span> — rischio per la catena di fornitura nazionale.'
+      },
+      en: {
+        num: '1 / 3', eyebrow: 'February 27, 2026 · The clash',
+        title: 'Anthropic says <span class="hl">no</span> to the Pentagon',
+        lead: 'The <b>Department of Defense</b> asks Anthropic to loosen the usage limits on <b>Claude</b> for military purposes, with a very broad formula: use for <span class="q">«all lawful purposes»</span>. Dario Amodei refuses to drop two red lines.',
+        k1: 'Red line', rl1: 'No domestic mass surveillance',
+        k2: 'Red line', rl2: 'No fully autonomous weapons without human oversight',
+        fallout: 'The retaliation: <b>Trump</b> orders federal agencies to stop using Anthropic products, and Defense Secretary <b>Pete Hegseth</b> flags Anthropic as a possible <span class="risk">«supply-chain risk»</span> — a threat to the national supply chain.'
+      }
+    };
+    function set(id, html){ document.getElementById(id).innerHTML = html; }
+    function renderTexts() {
+      const t = TXT[lang];
+      ['num','eyebrow','title','lead','k1','rl1','k2','rl2','fallout'].forEach(k => set(k, t[k]));
+    }
+    function onLangChange() { renderTexts(); }
+    initLangToggle();
+    renderTexts();
+    initNav();
+  </script>
+</body>
+</html>

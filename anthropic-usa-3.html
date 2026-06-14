@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>«No» contro «Sì» — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --anthropic: #cc785c; --openai: #10a37f; }
+    html, body { background: #000 !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; }
+
+    .stage {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(45% 70% at 22% 24%, rgba(204,120,92,0.13), transparent 60%),
+        radial-gradient(45% 70% at 78% 24%, rgba(16,163,127,0.13), transparent 60%),
+        #000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: clamp(24px, 4vh, 50px) clamp(34px, 6vw, 100px);
+      box-sizing: border-box;
+    }
+
+    .head { text-align: center; margin-bottom: clamp(16px, 2.6vh, 32px);
+      animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes rise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .eyebrow {
+      font-size: clamp(11px, 0.95vw, 15px); font-weight: 700;
+      letter-spacing: 0.3em; text-transform: uppercase; color: #94a3b8;
+      margin-bottom: clamp(10px, 1.6vh, 16px);
+    }
+    .title { font-size: clamp(32px, 4.4vw, 72px); font-weight: 900; letter-spacing: -0.03em; line-height: 0.95; margin: 0; color: #fff; }
+    .title .no { color: var(--anthropic); } .title .si { color: var(--openai); }
+
+    .contrast {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(20px, 3vw, 48px);
+      max-width: 1140px; width: 100%; margin-bottom: clamp(16px,2.6vh,30px);
+    }
+    .side { position: relative; padding: clamp(18px,2.4vh,26px) clamp(20px,2vw,30px);
+      border-radius: 16px; border: 1px solid; background: rgba(255,255,255,0.02);
+      animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+    .side.a { border-color: rgba(204,120,92,0.4); }
+    .side.o { border-color: rgba(16,163,127,0.4); animation-delay:.14s; }
+    .side .co { font-size: clamp(11px,0.95vw,14px); font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
+    .side.a .co { color: var(--anthropic); } .side.o .co { color: var(--openai); }
+    .side .verdict {
+      font-size: clamp(40px, 4.6vw, 72px); font-weight: 900; line-height: 0.9;
+      margin: clamp(6px,1vh,10px) 0 clamp(10px,1.5vh,16px); letter-spacing: -0.03em;
+    }
+    .side.a .verdict { color: var(--anthropic); } .side.o .verdict { color: var(--openai); }
+    .side p { font-size: clamp(14px,1.15vw,18px); line-height: 1.5; color: #b6c2d0; margin: 0; }
+    .side p b { color: #fff; font-weight: 600; }
+
+    .redlines {
+      max-width: 1140px; width: 100%;
+      padding-top: clamp(14px,2.2vh,22px); border-top: 1px solid rgba(255,255,255,0.12);
+      animation: rise 0.9s .35s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .redlines .cap { text-align: center; font-size: clamp(12px,1vw,16px); font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--openai); margin-bottom: clamp(12px,1.8vh,18px); }
+    .redlines .grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(14px,2vw,28px); }
+    .redlines .cell { display: flex; align-items: flex-start; gap: 12px;
+      font-size: clamp(13px,1.05vw,17px); line-height: 1.4; color: #cbd5e1; }
+    .redlines .cell .n { flex-shrink: 0; width: 26px; height: 26px; border-radius: 7px;
+      background: rgba(16,163,127,0.16); border: 1px solid rgba(16,163,127,0.5);
+      color: var(--openai); font-weight: 800; font-size: 13px;
+      display: flex; align-items: center; justify-content: center; }
+    .redlines .cell b { color: #fff; font-weight: 600; }
+
+    @media (max-aspect-ratio: 1/1) {
+      .stage { justify-content: flex-start; overflow-y: auto; padding-top: clamp(30px,5vh,54px); padding-bottom: clamp(90px,13vh,120px); }
+      .contrast, .redlines .grid { grid-template-columns: 1fr; }
+      .contrast { max-width: 600px; } .redlines { max-width: 600px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stage">
+    <div class="head">
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 class="title" id="title"></h1>
+    </div>
+
+    <div class="contrast">
+      <div class="side a">
+        <div class="co">Anthropic</div>
+        <div class="verdict" id="v-a"></div>
+        <p id="p-a"></p>
+      </div>
+      <div class="side o">
+        <div class="co">OpenAI</div>
+        <div class="verdict" id="v-o"></div>
+        <p id="p-o"></p>
+      </div>
+    </div>
+
+    <div class="redlines">
+      <div class="cap" id="cap"></div>
+      <div class="grid">
+        <div class="cell"><span class="n">1</span><span id="r1"></span></div>
+        <div class="cell"><span class="n">2</span><span id="r2"></span></div>
+        <div class="cell"><span class="n">3</span><span id="r3"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="anthropic-usa-2.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="llm-occidentali.html">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        eyebrow: 'Il punto politico · 3 / 3',
+        title: '<span class="no">«No»</span> contro <span class="si">«Sì»</span>',
+        vA: '«No»', pA: 'Anthropic rifiuta una richiesta percepita come <b>troppo ampia</b>, a costo della rappresaglia federale.',
+        vO: '«Sì»', pO: 'OpenAI accetta, sostenendo però di aver ottenuto <b>garanzie e guardrail contrattuali</b>.',
+        cap: 'Le tre linee rosse dell\'accordo OpenAI',
+        r1: 'No <b>mass surveillance</b> interna',
+        r2: 'No uso della tecnologia per <b>dirigere armi autonome</b>',
+        r3: 'No <b>decisioni automatizzate ad alto impatto</b> tipo «social credit»'
+      },
+      en: {
+        eyebrow: 'The political point · 3 / 3',
+        title: '<span class="no">«No»</span> versus <span class="si">«Yes»</span>',
+        vA: '«No»', pA: 'Anthropic refuses a request seen as <b>too broad</b>, even at the cost of federal retaliation.',
+        vO: '«Yes»', pO: 'OpenAI accepts, but claims it secured <b>contractual guarantees and guardrails</b>.',
+        cap: 'The three red lines in OpenAI\'s deal',
+        r1: 'No internal <b>mass surveillance</b>',
+        r2: 'No using the technology to <b>direct autonomous weapons</b>',
+        r3: 'No <b>high-impact automated decisions</b> such as «social credit»'
+      }
+    };
+    function set(id, html){ document.getElementById(id).innerHTML = html; }
+    function renderTexts() {
+      const t = TXT[lang];
+      set('eyebrow', t.eyebrow); set('title', t.title);
+      set('v-a', t.vA); set('p-a', t.pA); set('v-o', t.vO); set('p-o', t.pO);
+      set('cap', t.cap); set('r1', t.r1); set('r2', t.r2); set('r3', t.r3);
+    }
+    function onLangChange() { renderTexts(); }
+    initLangToggle();
+    renderTexts();
+    initNav();
+  </script>
+</body>
+</html>
