@@ -443,48 +443,78 @@
       setupDnD(list, 'dash-item', 'y');
     }
 
+    // Renumber position badges/labels in place (no iframe reload).
+    function renumber() {
+      document.querySelectorAll('#dash-grid .dash-card').forEach((c, i) => {
+        const pos = c.querySelector('.card-pos');
+        if (pos) pos.textContent = i + 1;
+      });
+      document.querySelectorAll('#dash-list .dash-item').forEach((it, i) => {
+        const pos = it.querySelector('.dash-position');
+        if (pos) pos.textContent = 'Posizione ' + (i + 1) + (isHidden(it.dataset.page) ? ' • Nascosta' : '');
+      });
+    }
+
     // ═══════════ Shared drag & drop (pointer-based, live sort) ═══════════
-    // Native HTML5 drag is unreliable with the <iframe> thumbnails, so we use
-    // pointer events and reorder the DOM live as the pointer moves.
+    // Native HTML5 drag is unreliable with the <iframe> thumbnails. We use
+    // pointer events plus a full-screen transparent overlay that intercepts
+    // every pointer event during the drag — so the iframes can never swallow
+    // them. The drop target is found purely from element geometry (no
+    // elementFromPoint, which is unreliable over iframes). DOM is reordered
+    // live; on release we just renumber + save (no heavy re-render).
     // axis 'x' → reorder by horizontal position (grid); 'y' → vertical (list)
     function setupDnD(container, itemClass, axis) {
       container.querySelectorAll('.' + itemClass).forEach(item => {
         item.addEventListener('pointerdown', (e) => {
           if (e.button !== 0) return;                       // left button / primary touch only
           if (e.target.closest('button, input, a, label, select, textarea')) return; // let controls work
+          e.preventDefault();
 
           const startX = e.clientX, startY = e.clientY;
           let started = false;
+          let overlay = null;
+
+          const begin = () => {
+            started = true;
+            item.classList.add('dragging');
+            document.body.style.userSelect = 'none';
+            overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;cursor:grabbing;background:transparent;';
+            document.body.appendChild(overlay);
+          };
 
           const onMove = (ev) => {
             if (!started) {
               if (Math.abs(ev.clientX - startX) < 5 && Math.abs(ev.clientY - startY) < 5) return;
-              started = true;
-              item.classList.add('dragging');
-              item.style.pointerEvents = 'none';            // so elementFromPoint sees the card underneath
-              document.body.style.userSelect = 'none';
+              begin();
             }
-            ev.preventDefault();
-            const el = document.elementFromPoint(ev.clientX, ev.clientY);
-            const over = el && el.closest('.' + itemClass);
-            if (!over || over === item || over.parentElement !== container) return;
-            const rect = over.getBoundingClientRect();
-            const mid = axis === 'x' ? rect.left + rect.width / 2 : rect.top + rect.height / 2;
+            // Find the sibling the pointer is over, by geometry only.
+            const sibs = [...container.querySelectorAll('.' + itemClass)];
+            let target = null;
+            for (const el of sibs) {
+              if (el === item) continue;
+              const r = el.getBoundingClientRect();
+              if (ev.clientX >= r.left && ev.clientX <= r.right &&
+                  ev.clientY >= r.top  && ev.clientY <= r.bottom) { target = el; break; }
+            }
+            if (!target) return;
+            const r = target.getBoundingClientRect();
+            const mid = axis === 'x' ? r.left + r.width / 2 : r.top + r.height / 2;
             const pos = axis === 'x' ? ev.clientX : ev.clientY;
-            if (pos < mid) container.insertBefore(item, over);
-            else           container.insertBefore(item, over.nextSibling);
+            if (pos < mid) container.insertBefore(item, target);
+            else           container.insertBefore(item, target.nextSibling);
           };
 
           const onUp = () => {
             document.removeEventListener('pointermove', onMove);
             document.removeEventListener('pointerup', onUp);
             document.removeEventListener('pointercancel', onUp);
+            if (overlay) overlay.remove();
+            document.body.style.userSelect = '';
             if (!started) return;
             item.classList.remove('dragging');
-            item.style.pointerEvents = '';
-            document.body.style.userSelect = '';
             state.order = [...container.children].map(el => el.dataset.page);
-            render();
+            renumber();
             setDirty();
           };
 
