@@ -26,12 +26,12 @@
       animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
     @keyframes rise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
     .eyebrow {
-      font-size: clamp(11px, 0.95vw, 15px);
+      font-size: clamp(14px, 1.2vw, 19px);
       font-weight: 700; letter-spacing: 0.32em; text-transform: uppercase;
       color: #94a3b8; margin-bottom: clamp(10px, 1.6vh, 18px);
     }
     .title {
-      font-size: clamp(34px, 4.6vw, 78px);
+      font-size: clamp(43px, 5.8vw, 98px);
       font-weight: 900; letter-spacing: -0.03em; line-height: 0.95; margin: 0;
       color: #fff;
     }
@@ -42,7 +42,7 @@
     .contrast {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: clamp(26px, 4vw, 72px);
-      max-width: 1180px; width: 100%;
+      max-width: 1392px; width: 100%;
       margin-bottom: clamp(18px, 2.8vh, 34px);
     }
     .vision { position: relative; padding-top: 16px;
@@ -55,26 +55,26 @@
     .vision h3 {
       display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
       margin: 0 0 clamp(8px,1.2vh,12px); font-weight: 800;
-      font-size: clamp(19px, 1.8vw, 30px); color: #fff; letter-spacing: -0.01em;
+      font-size: clamp(24px, 2.27vw, 38px); color: #fff; letter-spacing: -0.01em;
     }
     .vision h3 .stance {
-      font-size: clamp(11px, 1vw, 15px); font-weight: 700;
+      font-size: clamp(14px, 1.26vw, 19px); font-weight: 700;
       letter-spacing: 0.16em; text-transform: uppercase;
     }
     .vision.page h3 .stance { color: var(--page); }
     .vision.musk h3 .stance { color: var(--musk); }
     .vision p {
-      font-size: clamp(13px, 1.05vw, 17px); line-height: 1.6;
+      font-size: clamp(16px, 1.32vw, 21px); line-height: 1.6;
       color: #b6c2d0; margin: 0;
     }
     .vision p b { color: #fff; font-weight: 600; }
 
     /* scontro: lo "specista" */
     .clash {
-      max-width: 1100px; width: 100%; text-align: center;
+      max-width: 1298px; width: 100%; text-align: center;
       padding: clamp(16px, 2.4vh, 26px) 0 0;
       border-top: 1px solid rgba(255,255,255,0.12);
-      font-size: clamp(13px, 1.1vw, 18px); line-height: 1.6; color: #b6c2d0;
+      font-size: clamp(16px, 1.39vw, 23px); line-height: 1.6; color: #b6c2d0;
       animation: rise 0.9s .36s cubic-bezier(0.16,1,0.3,1) both;
     }
     .clash b { color: #fff; font-weight: 600; }
@@ -82,9 +82,9 @@
 
     /* frattura finale */
     .fracture {
-      max-width: 1100px; text-align: center;
+      max-width: 1298px; text-align: center;
       margin-top: clamp(14px, 2.2vh, 26px);
-      font-size: clamp(16px, 1.5vw, 26px); line-height: 1.45; font-weight: 300;
+      font-size: clamp(20px, 1.89vw, 33px); line-height: 1.45; font-weight: 300;
       color: #fff;
       animation: rise 1s .5s cubic-bezier(0.16,1,0.3,1) both;
     }
@@ -93,7 +93,7 @@
 
     @media (max-aspect-ratio: 1/1) {
       .stage { justify-content: flex-start; overflow-y: auto; padding-top: clamp(34px,6vh,60px); padding-bottom: clamp(90px,13vh,120px); }
-      .contrast { grid-template-columns: 1fr; gap: clamp(18px,2.6vh,26px); max-width: 620px; }
+      .contrast { grid-template-columns: 1fr; gap: clamp(18px,2.6vh,26px); max-width: 732px; }
     }
   </style>
 </head>

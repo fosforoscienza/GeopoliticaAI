@@ -30,13 +30,13 @@
     @keyframes rise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
     .eyebrow {
-      font-size: clamp(11px, 0.95vw, 15px);
+      font-size: clamp(14px, 1.2vw, 19px);
       font-weight: 700; letter-spacing: 0.34em;
       text-transform: uppercase; color: var(--accent-soft);
       margin-bottom: clamp(12px, 1.8vh, 20px);
     }
     .name {
-      font-size: clamp(48px, 6.6vw, 110px);
+      font-size: clamp(60px, 8.32vw, 139px);
       font-weight: 900; letter-spacing: -0.03em; line-height: 0.9;
       margin: 0; text-transform: uppercase;
       background: linear-gradient(180deg, #ffffff 28%, #c4b5fd 100%);
@@ -45,9 +45,9 @@
       text-shadow: 0 0 80px rgba(139,92,246,0.4);
     }
     .lead {
-      font-size: clamp(15px, 1.45vw, 23px);
+      font-size: clamp(19px, 1.83vw, 29px);
       line-height: 1.55; color: #e2e8f0; font-weight: 300;
-      max-width: 980px; margin: clamp(16px,2.4vh,26px) auto 0;
+      max-width: 1156px; margin: clamp(16px,2.4vh,26px) auto 0;
     }
     .lead b { color: #fff; font-weight: 600; }
     .lead .accent { color: var(--accent-soft); font-weight: 600; font-style: italic; }
@@ -56,7 +56,7 @@
     .cols {
       display: grid; grid-template-columns: repeat(3, 1fr);
       gap: clamp(22px, 3.2vw, 64px);
-      max-width: 1200px; width: 100%;
+      max-width: 1416px; width: 100%;
       margin-bottom: clamp(22px, 3.4vh, 44px);
     }
     .col {
@@ -68,13 +68,13 @@
     .col:nth-child(3){ animation-delay: .41s }
     .col .num {
       position: absolute; top: 0; left: 0;
-      font-size: clamp(30px, 3.4vw, 52px); font-weight: 900;
+      font-size: clamp(38px, 4.28vw, 66px); font-weight: 900;
       line-height: 1; color: transparent;
       -webkit-text-stroke: 1.6px rgba(139,92,246,0.75);
       letter-spacing: -0.02em;
     }
     .col h3 {
-      font-size: clamp(17px, 1.5vw, 26px); font-weight: 800;
+      font-size: clamp(21px, 1.89vw, 33px); font-weight: 800;
       color: #fff; margin: 0 0 clamp(8px,1.2vh,12px); letter-spacing: 0.01em;
     }
     .col h3::after {
@@ -83,15 +83,15 @@
       background: linear-gradient(90deg, var(--accent), transparent);
     }
     .col p {
-      font-size: clamp(13px, 1.1vw, 18px); line-height: 1.55;
+      font-size: clamp(16px, 1.39vw, 23px); line-height: 1.55;
       color: #94a3b8; margin: 0;
     }
     .col p b { color: #cbd5e1; font-weight: 600; }
 
     /* ---------- Chiusura ---------- */
     .closing {
-      max-width: 1000px; text-align: center;
-      font-size: clamp(16px, 1.55vw, 26px);
+      max-width: 1180px; text-align: center;
+      font-size: clamp(20px, 1.95vw, 33px);
       font-style: italic; line-height: 1.5; color: rgba(255,255,255,0.86);
       padding-top: clamp(20px, 3vh, 34px);
       border-top: 1px solid rgba(139,92,246,0.28);
@@ -101,7 +101,7 @@
 
     @media (max-aspect-ratio: 1/1) {
       .stage { justify-content: flex-start; overflow-y: auto; padding-top: clamp(40px,7vh,70px); padding-bottom: clamp(90px,13vh,120px); }
-      .cols { grid-template-columns: 1fr; gap: clamp(18px,2.6vh,28px); max-width: 620px; }
+      .cols { grid-template-columns: 1fr; gap: clamp(18px,2.6vh,28px); max-width: 732px; }
       .col { padding-top: clamp(34px,5vh,48px); }
     }
   </style>
