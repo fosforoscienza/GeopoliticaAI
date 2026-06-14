@@ -1,0 +1,102 @@
+<style>
+  #op-anthropic-usa-4 {
+    position: relative;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(60% 75% at 50% 4%, rgba(204,120,92,0.16), transparent 60%),
+      #000;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: clamp(24px, 4vh, 52px) clamp(36px, 6vw, 100px);
+    box-sizing: border-box;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  #op-anthropic-usa-4 .head { text-align: center; max-width: 1040px; }
+  #op-anthropic-usa-4 .eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: clamp(11px, 0.95vw, 15px); font-weight: 700;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: #e8a48c; margin-bottom: clamp(12px, 1.8vh, 20px);
+  }
+  #op-anthropic-usa-4 .eyebrow .num { color: #fff; background: #cc785c; border-radius: 5px; padding: 2px 8px; letter-spacing: 0.1em; }
+  #op-anthropic-usa-4 .title {
+    font-size: clamp(32px, 4.4vw, 72px); font-weight: 900;
+    letter-spacing: -0.03em; line-height: 0.98; margin: 0; color: #fff;
+  }
+  #op-anthropic-usa-4 .title .hl { color: #e8a48c; }
+  #op-anthropic-usa-4 .lead {
+    font-size: clamp(15px, 1.35vw, 21px); line-height: 1.55;
+    color: #cbd5e1; font-weight: 300; margin: clamp(14px,2.2vh,24px) auto 0;
+    max-width: 940px;
+  }
+  #op-anthropic-usa-4 .lead b { color: #fff; font-weight: 600; }
+
+  /* modelli bloccati */
+  #op-anthropic-usa-4 .models {
+    display: flex; justify-content: center; gap: clamp(16px,2.5vw,36px);
+    flex-wrap: wrap; margin: clamp(20px,3vh,34px) 0 0;
+  }
+  #op-anthropic-usa-4 .model {
+    position: relative; display: flex; align-items: center; gap: 14px;
+    padding: clamp(14px,1.9vh,20px) clamp(20px,2vw,30px);
+    background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.32);
+    border-radius: 14px;
+  }
+  #op-anthropic-usa-4 .model .lock {
+    width: clamp(34px,2.8vw,42px); height: clamp(34px,2.8vw,42px); flex-shrink: 0;
+    border-radius: 50%; background: rgba(239,68,68,0.16); border: 1px solid #ef4444;
+    display: flex; align-items: center; justify-content: center;
+    color: #ef4444; font-size: clamp(16px,1.5vw,20px);
+  }
+  #op-anthropic-usa-4 .model .mt { text-align: left; }
+  #op-anthropic-usa-4 .model .k { font-size: clamp(10px,0.8vw,12px); font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #ef4444; }
+  #op-anthropic-usa-4 .model .n { font-size: clamp(18px,1.6vw,26px); font-weight: 800; color: #fff; line-height: 1.1; }
+
+  /* motivazione + replica */
+  #op-anthropic-usa-4 .cols {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(20px,3vw,48px); max-width: 1080px; width: 100%;
+    margin-top: clamp(20px,3vh,36px);
+    padding-top: clamp(16px,2.4vh,24px); border-top: 1px solid rgba(255,255,255,0.12);
+  }
+  #op-anthropic-usa-4 .col { text-align: left; }
+  #op-anthropic-usa-4 .col h3 { font-size: clamp(13px,1.1vw,17px); font-weight: 800; letter-spacing: 0.04em; margin: 0 0 8px; }
+  #op-anthropic-usa-4 .col.gov h3 { color: #e8a48c; }
+  #op-anthropic-usa-4 .col.ant h3 { color: #fff; }
+  #op-anthropic-usa-4 .col p { font-size: clamp(13px,1.08vw,17px); line-height: 1.55; color: #b6c2d0; margin: 0; }
+  #op-anthropic-usa-4 .col p b { color: #fff; font-weight: 600; }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-anthropic-usa-4 { justify-content: flex-start; overflow-y: auto; padding-top: clamp(30px,5vh,54px); padding-bottom: clamp(90px,13vh,120px); }
+    #op-anthropic-usa-4 .cols { grid-template-columns: 1fr; max-width: 600px; }
+  }
+</style>
+
+<section class="op-sec" id="op-anthropic-usa-4" data-accent="#cc785c">
+  <div class="head">
+    <div class="eyebrow" data-reveal>
+      <span class="num" data-it="Epilogo" data-en="Epilogue">Epilogo</span>
+      <span data-it="Export control · Sicurezza nazionale" data-en="Export control · National security">Export control · Sicurezza nazionale</span>
+    </div>
+    <h1 class="title" data-reveal data-it="Claude <span class=&quot;hl&quot;>vietato</span> agli stranieri" data-en="Claude <span class=&quot;hl&quot;>banned</span> for foreigners">Claude <span class="hl">vietato</span> agli stranieri</h1>
+    <p class="lead" data-reveal data-it="Il governo americano ordina ad Anthropic di <b>bloccare l'accesso ai suoi modelli più avanzati a tutti gli utenti stranieri</b> — inclusi i dipendenti non statunitensi dell'azienda." data-en="The U.S. government orders Anthropic to <b>block access to its most advanced models for all foreign users</b> — including the company's non-U.S. employees.">Il governo americano ordina ad Anthropic di <b>bloccare l'accesso ai suoi modelli più avanzati a tutti gli utenti stranieri</b> — inclusi i dipendenti non statunitensi dell'azienda.</p>
+  </div>
+
+  <div class="models" data-reveal>
+    <div class="model"><div class="lock">🔒</div><div class="mt"><div class="k" data-it="Accesso bloccato" data-en="Access blocked">Accesso bloccato</div><div class="n">Claude Fable 5</div></div></div>
+    <div class="model"><div class="lock">🔒</div><div class="mt"><div class="k" data-it="Accesso bloccato" data-en="Access blocked">Accesso bloccato</div><div class="n">Claude Mythos 5</div></div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col gov" data-reveal>
+      <h3 data-it="La motivazione del governo" data-en="The government's rationale">La motivazione del governo</h3>
+      <p data-it="<b>Sicurezza nazionale</b> e controllo dell'export tecnologico, dopo timori legati a possibili <b>vulnerabilità e jailbreak</b> dei modelli." data-en="<b>National security</b> and technology export control, after concerns over possible <b>vulnerabilities and jailbreaks</b> of the models."><b>Sicurezza nazionale</b> e controllo dell'export tecnologico, dopo timori legati a possibili <b>vulnerabilità e jailbreak</b> dei modelli.</p>
+    </div>
+    <div class="col ant" data-reveal>
+      <h3 data-it="La replica di Anthropic" data-en="Anthropic's response">La replica di Anthropic</h3>
+      <p data-it="Ha <b>obbedito</b>, ma contesta la misura: il governo non avrebbe fornito <b>prove tecniche sufficientemente dettagliate</b>, e i rischi indicati non sarebbero specifici solo dei suoi modelli." data-en="It <b>complied</b>, but contests the measure: the government allegedly provided <b>no sufficiently detailed technical evidence</b>, and the cited risks were not specific to its models alone.">Ha <b>obbedito</b>, ma contesta la misura: il governo non avrebbe fornito <b>prove tecniche sufficientemente dettagliate</b>, e i rischi indicati non sarebbero specifici solo dei suoi modelli.</p>
+    </div>
+  </div>
+</section>

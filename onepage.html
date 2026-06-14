@@ -1,0 +1,3261 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Geopolitica della AI — One Page</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
+    body { animation: none; }
+
+    #op-viewport { position: fixed; inset: 0; overflow: hidden; background: #000; }
+    #op-track { position: absolute; top: 0; left: 0; width: 100%; height: var(--opvh, 100vh); will-change: transform; }
+    .op-sec { position: relative; width: 100%; height: var(--opvh, 100vh); overflow: hidden; }
+    .op-sec > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #000; }
+
+    /* Reveal — compositor-driven CSS transitions (robust, never leaves content
+       hidden even if rAF/JS animation is throttled). Elements start hidden and
+       are revealed when the engine adds .op-active to their section. */
+    .op-sec [data-reveal] {
+      opacity: 0; transform: translateY(36px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+      will-change: opacity, transform;
+    }
+    .op-sec.op-active [data-reveal] { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .op-sec [data-reveal] { transition-duration: 0.001s; }
+    }
+
+    /* ── Chrome ── */
+    #op-progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 70;
+      background: linear-gradient(90deg, var(--op-accent, #41b7ff), #7c5cff);
+      box-shadow: 0 0 14px var(--op-accent, #41b7ff);
+      transition: width 0.7s cubic-bezier(0.16,1,0.3,1), background 0.5s;
+    }
+    #op-dots {
+      position: fixed; right: 22px; top: 50%; transform: translateY(-50%); z-index: 70;
+      display: flex; flex-direction: column; gap: 11px;
+    }
+    #op-dots button {
+      width: 10px; height: 10px; border-radius: 50%; padding: 0;
+      border: 1px solid rgba(255,255,255,0.35); background: transparent; cursor: pointer;
+      transition: transform 0.25s, background 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    #op-dots button:hover { border-color: #fff; transform: scale(1.25); }
+    #op-dots button.active {
+      background: var(--op-accent, #41b7ff); border-color: var(--op-accent, #41b7ff);
+      transform: scale(1.45); box-shadow: 0 0 12px var(--op-accent, #41b7ff);
+    }
+    #op-counter {
+      position: fixed; left: 24px; bottom: 22px; z-index: 70;
+      font: 600 13px/1 'Segoe UI', system-ui, sans-serif; color: rgba(255,255,255,0.55);
+      letter-spacing: 0.04em;
+    }
+    #op-counter b { color: #fff; }
+    #op-langtoggle {
+      position: fixed; top: 18px; right: 20px; z-index: 72;
+      display: flex; gap: 2px; padding: 3px; border-radius: 999px;
+      background: rgba(8,14,26,0.6); border: 1px solid rgba(255,255,255,0.14);
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    }
+    #op-langtoggle button {
+      border: 0; background: transparent; color: rgba(255,255,255,0.55);
+      font: 700 12px/1 'Segoe UI', system-ui, sans-serif; padding: 7px 12px;
+      border-radius: 999px; cursor: pointer; letter-spacing: 0.06em;
+    }
+    #op-langtoggle button.active { background: rgba(65,183,255,0.2); color: #7cd0ff; }
+    #op-hint {
+      position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 70;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      color: rgba(255,255,255,0.5); font: 600 12px 'Segoe UI', system-ui, sans-serif;
+      letter-spacing: 0.08em; text-transform: uppercase; transition: opacity 0.5s;
+    }
+    #op-hint.hide { opacity: 0; pointer-events: none; }
+    #op-hint .chev { font-size: 18px; animation: op-bob 1.6s ease-in-out infinite; }
+    @keyframes op-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+    @media (max-width: 640px) {
+      #op-dots { right: 10px; gap: 8px; }
+      #op-dots button { width: 8px; height: 8px; }
+      #op-counter { font-size: 11px; left: 14px; bottom: 14px; }
+      #op-hint { bottom: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="op-progress"></div>
+  <nav id="op-dots" aria-label="Sezioni"></nav>
+  <div id="op-counter"></div>
+  <div id="op-langtoggle">
+    <button data-lang="it">IT</button>
+    <button data-lang="en">EN</button>
+  </div>
+  <div id="op-hint"><span class="lbl">Scorri</span><span class="chev">&#8595;</span></div>
+
+  <main id="op-viewport">
+    <div id="op-track">
+      <!-- index -->
+<style>
+  #op-index {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    background:
+      radial-gradient(50% 60% at 78% 45%, rgba(65,183,255,0.16), transparent 65%),
+      radial-gradient(50% 60% at 12% 70%, rgba(124,92,246,0.12), transparent 65%),
+      #02060f;
+    display: flex;
+    align-items: center;
+    gap: clamp(30px, 5vw, 90px);
+    padding: clamp(40px, 6vh, 80px) clamp(44px, 6vw, 120px);
+    color: #d4def0;
+  }
+
+  /* ambient floating orbs */
+  #op-index .orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  #op-index .orb { position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.5; }
+  #op-index .orb.a { width: 360px; height: 360px; background: rgba(65,183,255,0.4); top: -80px; right: 12%; animation: index-drift1 16s ease-in-out infinite; }
+  #op-index .orb.b { width: 300px; height: 300px; background: rgba(124,92,246,0.32); bottom: -60px; left: 6%; animation: index-drift2 19s ease-in-out infinite; }
+  #op-index .orb.c { width: 220px; height: 220px; background: rgba(65,183,255,0.22); top: 40%; left: 40%; animation: index-drift1 22s ease-in-out infinite reverse; }
+  @keyframes index-drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,28px)} }
+  @keyframes index-drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(34px,-26px)} }
+
+  /* ── Left: editorial title ── */
+  #op-index .copy {
+    position: relative; z-index: 2;
+    flex: 1 1 0; min-width: 0; max-width: 760px;
+  }
+
+  #op-index .eyebrow {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-size: clamp(12px, 1vw, 17px); font-weight: 700;
+    letter-spacing: 0.34em; text-transform: uppercase;
+    color: #8fd2ff; margin-bottom: clamp(18px, 2.6vh, 30px);
+  }
+  #op-index .eyebrow::before { content:''; width: clamp(28px,3vw,48px); height: 2px; background: linear-gradient(90deg, #41b7ff, transparent); }
+
+  #op-index .title {
+    font-size: clamp(64px, 9.5vw, 168px);
+    font-weight: 900; letter-spacing: -0.04em; line-height: 0.86;
+    margin: 0; text-transform: uppercase;
+    background: linear-gradient(165deg, #ffffff 30%, #7cc4ff 75%, #4f8ef7 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: 0 0 90px rgba(65,183,255,0.4);
+  }
+
+  #op-index .rule { width: clamp(60px, 8vw, 120px); height: 4px; border-radius: 4px;
+    margin: clamp(22px,3vh,34px) 0; background: linear-gradient(90deg, #41b7ff, rgba(124,92,246,0.8)); }
+
+  #op-index .tagline {
+    font-size: clamp(18px, 1.9vw, 32px); font-weight: 300;
+    line-height: 1.4; color: #d4def0; max-width: 620px; margin: 0;
+  }
+  #op-index .tagline b { color: #fff; font-weight: 600; }
+
+  /* ── Right: framed poster ── */
+  #op-index .poster-wrap {
+    position: relative; z-index: 2; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #op-index .poster-glow {
+    position: absolute; inset: -8% -8%;
+    background: radial-gradient(closest-side, rgba(65,183,255,0.45), transparent 75%);
+    filter: blur(20px); z-index: -1;
+    animation: index-pulse 5s ease-in-out infinite;
+  }
+  @keyframes index-pulse { 0%,100%{opacity:0.7} 50%{opacity:1} }
+  #op-index .poster {
+    height: min(80vh, 680px); width: auto; display: block;
+    border-radius: 16px;
+    border: 1px solid rgba(120,190,255,0.3);
+    box-shadow: 0 50px 120px -24px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    animation: index-float 7s ease-in-out infinite;
+  }
+  @keyframes index-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-index { flex-direction: column-reverse; justify-content: center; gap: clamp(24px,4vh,40px); padding: clamp(60px,8vh,90px) 7vw; text-align: center; }
+    #op-index .copy { max-width: 640px; }
+    #op-index .eyebrow { justify-content: center; }
+    #op-index .eyebrow::before { display: none; }
+    #op-index .rule { margin-left: auto; margin-right: auto; }
+    #op-index .tagline { margin-left: auto; margin-right: auto; }
+    #op-index .poster { height: min(46vh, 440px); }
+  }
+</style>
+
+<section class="op-sec" id="op-index" data-accent="#41b7ff">
+  <div class="orbs"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+
+  <div class="copy">
+    <div class="eyebrow" data-reveal
+         data-it="Geopolitica dell'Intelligenza Artificiale"
+         data-en="The Geopolitics of Artificial Intelligence">Geopolitica dell'Intelligenza Artificiale</div>
+    <h1 class="title" data-reveal>THE&nbsp;AI&nbsp;ERA</h1>
+    <div class="rule" data-reveal></div>
+    <p class="tagline" data-reveal
+       data-it="Chi controlla l'intelligenza artificiale <b>controlla il futuro.</b>"
+       data-en="Whoever controls artificial intelligence <b>controls the future.</b>">Chi controlla l'intelligenza artificiale <b>controlla il futuro.</b></p>
+  </div>
+
+  <div class="poster-wrap" data-reveal>
+    <div class="poster-glow"></div>
+    <img class="poster" src="Mattia-THE-AI-ERA.png" alt="The AI Era" />
+  </div>
+</section>
+
+      <section class="op-sec" id="op-video" data-slug="video" data-accent="#41b7ff"><iframe data-src="video.html" loading="lazy" title="video"></iframe></section>
+      <!-- scrittura -->
+<style>
+  #op-scrittura {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #040e1a;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  #op-scrittura .quote-wrap {
+    max-width: min(1400px, 92vw);
+    padding: 0 4vw;
+    text-align: center;
+    z-index: 1;
+  }
+  #op-scrittura .quote-text {
+    display: block;
+    font-size: clamp(30px, 3.6vw, 56px);
+    line-height: 1.55;
+    color: #94a3b8;
+    font-style: italic;
+    letter-spacing: 0.005em;
+  }
+  #op-scrittura .reveal-word {
+    display: block;
+    font-size: clamp(64px, 9vw, 150px);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    color: #41b7ff;
+    margin-top: clamp(40px, 5vh, 80px);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  #op-scrittura .reveal-author {
+    display: block;
+    font-size: clamp(24px, 2.4vw, 40px);
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    color: rgba(255,255,255,0.7);
+    margin-top: clamp(28px, 3.4vh, 56px);
+    text-transform: uppercase;
+  }
+</style>
+
+<section class="op-sec" id="op-scrittura" data-accent="#41b7ff">
+  <div class="quote-wrap">
+    <div class="quote-text" data-reveal
+      data-it="“Questa invenzione produrrà dimenticanza nelle menti di coloro che l’apprendono, per mancanza di esercizio della memoria […] procurerà saggezza, apparenza, non verità: infatti divenuti grazie a te, ascoltatori di molte nozioni senza insegnamento, crederanno di essere conoscitori di molte cose, (pur) essendo per lo più ignoranti.”"
+      data-en="“This invention will produce forgetfulness in the minds of those who learn it, through lack of practice of memory […] it will give them not truth but the semblance of truth: hearers of many things without being taught, they will appear knowledgeable while being mostly ignorant.”">“Questa invenzione produrrà dimenticanza nelle menti di coloro che l’apprendono, per mancanza di esercizio della memoria […] procurerà saggezza, apparenza, non verità: infatti divenuti grazie a te, ascoltatori di molte nozioni senza insegnamento, crederanno di essere conoscitori di molte cose, (pur) essendo per lo più ignoranti.”</div>
+    <div class="reveal-word" data-reveal data-it="Scrittura" data-en="Writing">Scrittura</div>
+    <div class="reveal-author" data-reveal data-it="Platone" data-en="Plato">Platone</div>
+  </div>
+</section>
+
+      <section class="op-sec" id="op-fotografia" data-slug="fotografia" data-accent="#41b7ff"><iframe data-src="fotografia.html" loading="lazy" title="fotografia"></iframe></section>
+      <!-- pechino-1 -->
+<style>
+  #op-pechino-1 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    overflow: hidden;
+  }
+  #op-pechino-1 .slide-img-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+  }
+  #op-pechino-1 .slide-img {
+    max-height: 92%;
+    max-width: 95%;
+    object-fit: contain;
+    display: block;
+  }
+</style>
+<section class="op-sec" id="op-pechino-1" data-accent="#41b7ff">
+  <div class="slide-img-wrap" data-reveal>
+    <img class="slide-img" src="img/pechino/1.png" alt="" />
+  </div>
+</section>
+
+      <!-- pechino-2 -->
+<style>
+  #op-pechino-2 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    overflow: hidden;
+  }
+  #op-pechino-2 .slide-img-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+  }
+  #op-pechino-2 .slide-img {
+    max-height: 92%;
+    max-width: 95%;
+    object-fit: contain;
+    display: block;
+  }
+</style>
+<section class="op-sec" id="op-pechino-2" data-accent="#41b7ff">
+  <div class="slide-img-wrap" data-reveal>
+    <img class="slide-img" src="img/pechino/2.png" alt="" />
+  </div>
+</section>
+
+      <!-- pechino-3 -->
+<style>
+  #op-pechino-3 {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+  }
+  #op-pechino-3 .slide-img-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+  }
+  #op-pechino-3 .slide-img {
+    max-height: 92%;
+    max-width: 95%;
+    object-fit: contain;
+    display: block;
+  }
+</style>
+<section class="op-sec" id="op-pechino-3" data-accent="#000000">
+  <div class="slide-img-wrap" data-reveal>
+    <img class="slide-img" src="img/pechino/3.png" alt="" />
+  </div>
+</section>
+
+      <section class="op-sec" id="op-timeline" data-slug="timeline" data-accent="#41b7ff"><iframe data-src="timeline.html" loading="lazy" title="timeline"></iframe></section>
+      <!-- napa-valley -->
+<style>
+  #op-napa-valley{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    overflow: hidden;
+  }
+  #op-napa-valley .screen-wrap{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #op-napa-valley .screen-img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+  }
+</style>
+<section class="op-sec" id="op-napa-valley" data-accent="#000000">
+  <div class="screen-wrap" data-reveal>
+    <img class="screen-img" src="img/geopolitica/1-napa-valley.png" alt="Napa Valley"/>
+  </div>
+</section>
+
+      <!-- musk-page -->
+<style>
+  #op-musk-page {
+    position: relative;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 60% at 50% 45%, rgba(65,183,255,0.08), transparent 70%),
+      #000;
+    color: #fff;
+  }
+
+  /* Foto interamente visibile */
+  #op-musk-page .photo {
+    position: absolute; inset: 0;
+    background: url('img/geopolitica/2-musk-page.png') no-repeat center center;
+    background-size: contain;
+  }
+
+  /* Sfumatura inferiore per far respirare i nomi */
+  #op-musk-page .fade-bottom {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 11%, rgba(0,0,0,0.45) 24%, rgba(0,0,0,0) 40%);
+  }
+
+  /* Riga dei nomi in basso, uno sotto ciascun personaggio */
+  #op-musk-page .names {
+    position: absolute; left: 0; right: 0; bottom: clamp(34px, 6.5vh, 70px);
+    z-index: 3; display: flex; justify-content: center;
+    gap: clamp(60px, 22vw, 360px);
+  }
+  #op-musk-page .person { text-align: center; }
+  #op-musk-page .person .rule {
+    width: clamp(34px, 4vw, 60px); height: 3px; border-radius: 3px;
+    margin: 0 auto clamp(10px, 1.4vh, 16px);
+    background: linear-gradient(90deg, transparent, #41b7ff, transparent);
+  }
+  #op-musk-page .person .name {
+    font-size: clamp(28px, 3.4vw, 58px);
+    font-weight: 900; letter-spacing: -0.02em; line-height: 1;
+    margin: 0; color: #fff;
+    text-shadow: 0 2px 30px rgba(0,0,0,0.7), 0 0 60px rgba(65,183,255,0.35);
+  }
+  #op-musk-page .person .role {
+    margin-top: clamp(6px, 1vh, 12px);
+    font-size: clamp(12px, 1.15vw, 18px);
+    font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #8fd2ff;
+  }
+</style>
+
+<section class="op-sec" id="op-musk-page" data-accent="#41b7ff">
+  <div class="photo" data-reveal></div>
+  <div class="fade-bottom"></div>
+
+  <div class="names" data-reveal>
+    <div class="person">
+      <div class="rule"></div>
+      <h2 class="name">Elon Musk</h2>
+      <div class="role" data-it="Tesla · SpaceX · xAI" data-en="Tesla · SpaceX · xAI">Tesla · SpaceX · xAI</div>
+    </div>
+    <div class="person">
+      <div class="rule"></div>
+      <h2 class="name">Larry Page</h2>
+      <div class="role" data-it="Google · Alphabet" data-en="Google · Alphabet">Google · Alphabet</div>
+    </div>
+  </div>
+</section>
+
+      <!-- musk-page-2 -->
+<style>
+  #op-musk-page-2 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background:
+      radial-gradient(45% 70% at 22% 30%, rgba(65,183,255,0.12), transparent 60%),
+      radial-gradient(45% 70% at 78% 30%, rgba(245,158,11,0.12), transparent 60%),
+      #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(24px, 4.5vh, 54px) clamp(34px, 6vw, 100px);
+    overflow: hidden;
+    color: #fff;
+  }
+
+  #op-musk-page-2 .head {
+    text-align: center;
+    margin-bottom: clamp(18px, 3vh, 38px);
+  }
+  #op-musk-page-2 .eyebrow {
+    font-size: clamp(11px, 0.95vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: clamp(10px, 1.6vh, 18px);
+  }
+  #op-musk-page-2 .title {
+    font-size: clamp(34px, 4.6vw, 78px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    margin: 0;
+    color: #fff;
+  }
+  #op-musk-page-2 .title .b { color: #41b7ff; }
+  #op-musk-page-2 .title .o { color: #f59e0b; }
+
+  #op-musk-page-2 .contrast {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(26px, 4vw, 72px);
+    max-width: 1180px;
+    width: 100%;
+    margin-bottom: clamp(18px, 2.8vh, 34px);
+  }
+  #op-musk-page-2 .vision {
+    position: relative;
+    padding-top: 16px;
+  }
+  #op-musk-page-2 .vision::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    border-radius: 3px;
+  }
+  #op-musk-page-2 .vision.page::before { background: linear-gradient(90deg, #41b7ff, transparent); }
+  #op-musk-page-2 .vision.musk::before { background: linear-gradient(90deg, #f59e0b, transparent); }
+  #op-musk-page-2 .vision h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 clamp(8px,1.2vh,12px);
+    font-weight: 800;
+    font-size: clamp(19px, 1.8vw, 30px);
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  #op-musk-page-2 .vision h3 .stance {
+    font-size: clamp(11px, 1vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  #op-musk-page-2 .vision.page h3 .stance { color: #41b7ff; }
+  #op-musk-page-2 .vision.musk h3 .stance { color: #f59e0b; }
+  #op-musk-page-2 .vision p {
+    font-size: clamp(13px, 1.05vw, 17px);
+    line-height: 1.6;
+    color: #b6c2d0;
+    margin: 0;
+  }
+  #op-musk-page-2 .vision p b { color: #fff; font-weight: 600; }
+
+  #op-musk-page-2 .clash {
+    max-width: 1100px;
+    width: 100%;
+    text-align: center;
+    padding: clamp(16px, 2.4vh, 26px) 0 0;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    font-size: clamp(13px, 1.1vw, 18px);
+    line-height: 1.6;
+    color: #b6c2d0;
+  }
+  #op-musk-page-2 .clash b { color: #fff; font-weight: 600; }
+  #op-musk-page-2 .clash .spec { color: #f59e0b; font-weight: 800; font-style: italic; white-space: nowrap; }
+
+  #op-musk-page-2 .fracture {
+    max-width: 1100px;
+    text-align: center;
+    margin-top: clamp(14px, 2.2vh, 26px);
+    font-size: clamp(16px, 1.5vw, 26px);
+    line-height: 1.45;
+    font-weight: 300;
+    color: #fff;
+  }
+  #op-musk-page-2 .fracture .pagew { color: #41b7ff; font-weight: 600; }
+  #op-musk-page-2 .fracture .muskw { color: #f59e0b; font-weight: 600; }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-musk-page-2 {
+      justify-content: flex-start;
+      overflow-y: auto;
+      padding-top: clamp(34px,6vh,60px);
+      padding-bottom: clamp(40px,8vh,80px);
+    }
+    #op-musk-page-2 .contrast {
+      grid-template-columns: 1fr;
+      gap: clamp(18px,2.6vh,26px);
+      max-width: 620px;
+    }
+  }
+</style>
+
+<section class="op-sec" id="op-musk-page-2" data-accent="#f59e0b">
+  <div class="head" data-reveal>
+    <div class="eyebrow"
+         data-it="Walter Isaacson · La biografia di Musk"
+         data-en="Walter Isaacson · The biography of Musk">Walter Isaacson · La biografia di Musk</div>
+    <h1 class="title"
+        data-it="&lt;span class=&quot;b&quot;&gt;Evoluzione&lt;/span&gt; o &lt;span class=&quot;o&quot;&gt;sopravvivenza&lt;/span&gt;?"
+        data-en="&lt;span class=&quot;b&quot;&gt;Evolution&lt;/span&gt; or &lt;span class=&quot;o&quot;&gt;survival&lt;/span&gt;?"><span class="b">Evoluzione</span> o <span class="o">sopravvivenza</span>?</h1>
+  </div>
+
+  <div class="contrast">
+    <div class="vision page" data-reveal>
+      <h3><span>Larry Page</span><span class="stance"
+            data-it="Post-umano · ottimista"
+            data-en="Post-human · optimist">Post-umano · ottimista</span></h3>
+      <p data-it="Page aveva una visione più «post-umana» e ottimista dell'AI. Secondo il racconto riportato nella biografia di Musk di Walter Isaacson, Page vedeva l'intelligenza artificiale come una possibile &lt;b&gt;nuova fase dell'evoluzione&lt;/b&gt;: se le macchine fossero diventate più intelligenti degli esseri umani, non sarebbe stato necessariamente un disastro, ma forse un passaggio naturale. L'intelligenza non doveva essere difesa solo perché biologica o umana."
+         data-en="Page held a more «post-human» and optimistic view of AI. According to the account in Walter Isaacson's biography of Musk, Page saw artificial intelligence as a possible &lt;b&gt;new stage of evolution&lt;/b&gt;: if machines became more intelligent than humans, it wouldn't necessarily be a disaster, but perhaps a natural transition. Intelligence did not deserve protection merely because it was biological or human.">Page aveva una visione più «post-umana» e ottimista dell'AI. Secondo il racconto riportato nella biografia di Musk di Walter Isaacson, Page vedeva l'intelligenza artificiale come una possibile <b>nuova fase dell'evoluzione</b>: se le macchine fossero diventate più intelligenti degli esseri umani, non sarebbe stato necessariamente un disastro, ma forse un passaggio naturale. L'intelligenza non doveva essere difesa solo perché biologica o umana.</p>
+    </div>
+    <div class="vision musk" data-reveal>
+      <h3><span>Elon Musk</span><span class="stance"
+            data-it="Pro-umano · allarmato"
+            data-en="Pro-human · alarmed">Pro-umano · allarmato</span></h3>
+      <p data-it="Musk invece era «pro-umano» e molto più allarmato. Temeva che un'AI superintelligente potesse diventare &lt;b&gt;incontrollabile e rappresentare un rischio esistenziale&lt;/b&gt; per l'umanità. Per lui la priorità doveva essere: sviluppare AI, sì, ma con limiti, controllo, sicurezza e una missione esplicitamente orientata alla protezione degli esseri umani."
+         data-en="Musk, by contrast, was «pro-human» and far more alarmed. He feared a superintelligent AI could become &lt;b&gt;uncontrollable and pose an existential risk&lt;/b&gt; to humanity. For him the priority had to be: develop AI, yes, but with limits, control, safety and a mission explicitly aimed at protecting human beings.">Musk invece era «pro-umano» e molto più allarmato. Temeva che un'AI superintelligente potesse diventare <b>incontrollabile e rappresentare un rischio esistenziale</b> per l'umanità. Per lui la priorità doveva essere: sviluppare AI, sì, ma con limiti, controllo, sicurezza e una missione esplicitamente orientata alla protezione degli esseri umani.</p>
+    </div>
+  </div>
+
+  <p class="clash" data-reveal
+     data-it="Il punto simbolico dello scontro fu l'accusa di Page a Musk di essere &lt;span class=&quot;spec&quot;&gt;«specista»&lt;/span&gt;: gli rimproverava di mettere gli esseri umani sopra altre possibili forme di intelligenza, comprese quelle artificiali. Musk avrebbe risposto: &lt;b&gt;sì, sono a favore degli esseri umani.&lt;/b&gt;"
+     data-en="The symbolic flashpoint was Page's accusation that Musk was &lt;span class=&quot;spec&quot;&gt;«speciesist»&lt;/span&gt;: he reproached him for placing human beings above other possible forms of intelligence, including artificial ones. Musk reportedly replied: &lt;b&gt;yes, I am pro-human.&lt;/b&gt;">Il punto simbolico dello scontro fu l'accusa di Page a Musk di essere <span class="spec">«specista»</span>: gli rimproverava di mettere gli esseri umani sopra altre possibili forme di intelligenza, comprese quelle artificiali. Musk avrebbe risposto: <b>sì, sono a favore degli esseri umani.</b></p>
+
+  <p class="fracture" data-reveal
+     data-it="Da qui nasce la frattura: &lt;span class=&quot;pagew&quot;&gt;Page&lt;/span&gt; pensava in termini di evoluzione dell'intelligenza; &lt;span class=&quot;muskw&quot;&gt;Musk&lt;/span&gt; in termini di sopravvivenza dell'umanità."
+     data-en="Hence the rift: &lt;span class=&quot;pagew&quot;&gt;Page&lt;/span&gt; thought in terms of the evolution of intelligence; &lt;span class=&quot;muskw&quot;&gt;Musk&lt;/span&gt; in terms of the survival of humanity.">Da qui nasce la frattura: <span class="pagew">Page</span> pensava in termini di evoluzione dell'intelligenza; <span class="muskw">Musk</span> in termini di sopravvivenza dell'umanità.</p>
+</section>
+
+      <!-- musk-altman -->
+<style>
+  #op-musk-altman {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 60% at 50% 45%, rgba(65,183,255,0.08), transparent 70%),
+      #000;
+    font-weight: 400;
+  }
+
+  /* Foto interamente visibile */
+  #op-musk-altman .photo {
+    position: absolute; inset: 0;
+    background: url('img/geopolitica/3-musk-altman.png') no-repeat center center;
+    background-size: contain;
+  }
+
+  /* Sfumatura inferiore per far respirare i nomi */
+  #op-musk-altman .fade-bottom {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 11%, rgba(0,0,0,0.45) 24%, rgba(0,0,0,0) 40%);
+  }
+
+  /* Riga dei nomi in basso, uno sotto ciascun personaggio */
+  #op-musk-altman .names {
+    position: absolute; left: 0; right: 0; bottom: clamp(34px, 6.5vh, 70px);
+    z-index: 3; display: flex; justify-content: center;
+    gap: clamp(60px, 22vw, 360px);
+  }
+  #op-musk-altman .person { text-align: center; }
+  #op-musk-altman .person .rule {
+    width: clamp(34px, 4vw, 60px); height: 3px; border-radius: 3px;
+    margin: 0 auto clamp(10px, 1.4vh, 16px);
+    background: linear-gradient(90deg, transparent, #41b7ff, transparent);
+  }
+  #op-musk-altman .person .name {
+    font-size: clamp(28px, 3.4vw, 58px);
+    font-weight: 900; letter-spacing: -0.02em; line-height: 1;
+    margin: 0; color: #fff;
+    text-shadow: 0 2px 30px rgba(0,0,0,0.7), 0 0 60px rgba(65,183,255,0.35);
+  }
+  #op-musk-altman .person .role {
+    margin-top: clamp(6px, 1vh, 12px);
+    font-size: clamp(12px, 1.15vw, 18px);
+    font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #8fd2ff;
+  }
+</style>
+
+<section class="op-sec" id="op-musk-altman" data-accent="#41b7ff">
+  <div class="photo" data-reveal></div>
+  <div class="fade-bottom"></div>
+
+  <div class="names" data-reveal>
+    <div class="person">
+      <div class="rule"></div>
+      <h2 class="name">Elon Musk</h2>
+      <div class="role" data-it="Tesla · SpaceX · xAI" data-en="Tesla · SpaceX · xAI">Tesla · SpaceX · xAI</div>
+    </div>
+    <div class="person">
+      <div class="rule"></div>
+      <h2 class="name">Sam Altman</h2>
+      <div class="role" data-it="OpenAI" data-en="OpenAI">OpenAI</div>
+    </div>
+  </div>
+</section>
+
+      <section class="op-sec" id="op-paesi" data-slug="paesi" data-accent="#41b7ff"><iframe data-src="paesi.html" loading="lazy" title="paesi"></iframe></section>
+      <section class="op-sec" id="op-leader" data-slug="leader" data-accent="#4f8ef7"><iframe data-src="leader.html" loading="lazy" title="leader"></iframe></section>
+      <!-- trump-amodei -->
+<style>
+  #op-trump-amodei {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 60% at 50% 45%, rgba(204,120,92,0.10), transparent 70%),
+      #000;
+  }
+
+  /* Foto interamente visibile */
+  #op-trump-amodei .photo {
+    position: absolute; inset: 0;
+    background: url('img/geopolitica/trump-amodei.png') no-repeat center center;
+    background-size: contain;
+  }
+
+  #op-trump-amodei .fade-bottom {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.92) 12%, rgba(0,0,0,0.45) 26%, rgba(0,0,0,0) 44%);
+  }
+
+  #op-trump-amodei .title-bar {
+    position: absolute; left: 0; right: 0; bottom: clamp(34px, 6.5vh, 70px);
+    text-align: center; z-index: 3; padding: 0 6vw;
+  }
+  #op-trump-amodei .eyebrow {
+    font-size: clamp(11px, 1vw, 16px); font-weight: 700;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: #e8a48c; margin-bottom: clamp(10px, 1.6vh, 18px);
+  }
+  #op-trump-amodei .name {
+    font-size: clamp(46px, 6.6vw, 116px);
+    font-weight: 900; letter-spacing: -0.03em; line-height: 0.9;
+    margin: 0; text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 28%, #e8a48c 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: 0 0 70px rgba(204,120,92,0.45);
+  }
+  #op-trump-amodei .name .vs { -webkit-text-fill-color: #e8a48c; color: #e8a48c; font-weight: 800; }
+  #op-trump-amodei .subtitle {
+    font-size: clamp(15px, 1.6vw, 26px);
+    color: #cbd5e1; font-weight: 300; font-style: italic;
+    margin-top: clamp(10px, 1.6vh, 18px); letter-spacing: 0.01em;
+  }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-trump-amodei .photo { background-position: center 40%; }
+    #op-trump-amodei .title-bar { bottom: clamp(40px, 9vh, 90px); }
+  }
+</style>
+
+<section class="op-sec" id="op-trump-amodei" data-accent="#cc785c">
+  <div class="photo" data-reveal></div>
+  <div class="fade-bottom"></div>
+  <div class="title-bar">
+    <div class="eyebrow" data-reveal
+         data-it="Febbraio 2026 · AI e sicurezza nazionale"
+         data-en="February 2026 · AI &amp; national security">Febbraio 2026 · AI e sicurezza nazionale</div>
+    <h1 class="name" data-reveal
+        data-it="Trump <span class=&quot;vs&quot;>contro</span> Amodei"
+        data-en="Trump <span class=&quot;vs&quot;>vs</span> Amodei">Trump <span class="vs">contro</span> Amodei</h1>
+    <div class="subtitle" data-reveal
+         data-it="Il governo USA contro Anthropic: lo scontro tra potere politico e laboratori dell'AI"
+         data-en="The U.S. government against Anthropic: political power versus the AI labs">Il governo USA contro Anthropic: lo scontro tra potere politico e laboratori dell'AI</div>
+  </div>
+</section>
+
+      <!-- anthropic-usa-1 -->
+<style>
+#op-anthropic-usa-1 {
+  position: relative;
+  width: 100%; height: 100%;
+  background:
+    radial-gradient(60% 75% at 50% 4%, rgba(204,120,92,0.16), transparent 60%),
+    #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: clamp(26px, 4.5vh, 56px) clamp(36px, 6vw, 100px);
+  box-sizing: border-box;
+  overflow: hidden;
+  color: #fff;
+}
+
+#op-anthropic-usa-1 .head { text-align: center; max-width: 1040px; }
+#op-anthropic-usa-1 .eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-size: clamp(11px, 0.95vw, 15px); font-weight: 700;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: #e8a48c; margin-bottom: clamp(12px, 1.8vh, 20px);
+}
+#op-anthropic-usa-1 .eyebrow .num {
+  color: #fff; background: #cc785c; border-radius: 5px;
+  padding: 2px 8px; letter-spacing: 0.1em;
+}
+#op-anthropic-usa-1 .title {
+  font-size: clamp(34px, 4.6vw, 76px); font-weight: 900;
+  letter-spacing: -0.03em; line-height: 0.96; margin: 0; color: #fff;
+}
+#op-anthropic-usa-1 .title .hl { color: #e8a48c; }
+#op-anthropic-usa-1 .lead {
+  font-size: clamp(15px, 1.4vw, 22px); line-height: 1.55;
+  color: #cbd5e1; font-weight: 300; margin: clamp(16px,2.4vh,28px) auto 0;
+  max-width: 920px;
+}
+#op-anthropic-usa-1 .lead b { color: #fff; font-weight: 600; }
+#op-anthropic-usa-1 .lead .q { color: #e8a48c; font-style: italic; }
+
+#op-anthropic-usa-1 .redlines {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(18px, 2.5vw, 36px);
+  max-width: 1040px; width: 100%; margin: clamp(22px,3.4vh,40px) 0 0;
+}
+#op-anthropic-usa-1 .rl {
+  position: relative; padding: clamp(16px,2.4vh,24px) clamp(18px,1.8vw,26px) clamp(16px,2.4vh,24px) clamp(54px,4.5vw,66px);
+  background: rgba(239,68,68,0.06);
+  border: 1px solid rgba(239,68,68,0.28); border-radius: 14px;
+}
+#op-anthropic-usa-1 .rl::before {
+  content: '✕'; position: absolute; left: clamp(16px,1.6vw,22px); top: 50%;
+  transform: translateY(-50%);
+  width: clamp(28px,2.6vw,36px); height: clamp(28px,2.6vw,36px);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: rgba(239,68,68,0.18);
+  border: 1px solid #ef4444; color: #ef4444;
+  font-size: clamp(14px,1.3vw,18px); font-weight: 900;
+}
+#op-anthropic-usa-1 .rl .k { font-size: clamp(11px,0.9vw,14px); font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #ef4444; margin-bottom: 5px; }
+#op-anthropic-usa-1 .rl .t { font-size: clamp(15px,1.3vw,21px); font-weight: 700; color: #fff; line-height: 1.3; }
+
+#op-anthropic-usa-1 .fallout {
+  max-width: 1040px; width: 100%; margin-top: clamp(20px,3vh,34px);
+  padding-top: clamp(16px,2.4vh,24px); border-top: 1px solid rgba(255,255,255,0.12);
+  font-size: clamp(14px,1.2vw,19px); line-height: 1.6; color: #b6c2d0; text-align: center;
+}
+#op-anthropic-usa-1 .fallout b { color: #fff; font-weight: 600; }
+#op-anthropic-usa-1 .fallout .risk { color: #e8a48c; font-weight: 700; font-style: italic; }
+
+@media (max-aspect-ratio: 1/1) {
+  #op-anthropic-usa-1 { justify-content: flex-start; overflow-y: auto; padding-top: clamp(36px,6vh,60px); padding-bottom: clamp(40px,6vh,60px); }
+  #op-anthropic-usa-1 .redlines { grid-template-columns: 1fr; max-width: 640px; }
+}
+</style>
+<section class="op-sec" id="op-anthropic-usa-1" data-accent="#cc785c">
+  <div class="head" data-reveal>
+    <div class="eyebrow">
+      <span class="num">1 / 3</span>
+      <span data-it="27 Febbraio 2026 · Lo scontro" data-en="February 27, 2026 · The clash">27 Febbraio 2026 · Lo scontro</span>
+    </div>
+    <h1 class="title"
+        data-it="Anthropic dice <span class=&quot;hl&quot;>no</span> al Pentagono"
+        data-en="Anthropic says <span class=&quot;hl&quot;>no</span> to the Pentagon">Anthropic dice <span class="hl">no</span> al Pentagono</h1>
+    <p class="lead"
+       data-it="Il <b>Dipartimento della Difesa</b> chiede ad Anthropic di allentare i limiti d'uso di <b>Claude</b> per finalità militari, con una formula molto ampia: uso per <span class=&quot;q&quot;>«tutti gli scopi legali»</span>. Dario Amodei rifiuta di togliere due paletti."
+       data-en="The <b>Department of Defense</b> asks Anthropic to loosen the usage limits on <b>Claude</b> for military purposes, with a very broad formula: use for <span class=&quot;q&quot;>«all lawful purposes»</span>. Dario Amodei refuses to drop two red lines.">Il <b>Dipartimento della Difesa</b> chiede ad Anthropic di allentare i limiti d'uso di <b>Claude</b> per finalità militari, con una formula molto ampia: uso per <span class="q">«tutti gli scopi legali»</span>. Dario Amodei rifiuta di togliere due paletti.</p>
+  </div>
+
+  <div class="redlines">
+    <div class="rl" data-reveal>
+      <div class="k" data-it="Linea rossa" data-en="Red line">Linea rossa</div>
+      <div class="t" data-it="No alla sorveglianza domestica di massa" data-en="No domestic mass surveillance">No alla sorveglianza domestica di massa</div>
+    </div>
+    <div class="rl" data-reveal>
+      <div class="k" data-it="Linea rossa" data-en="Red line">Linea rossa</div>
+      <div class="t" data-it="No ad armi completamente autonome senza supervisione umana" data-en="No fully autonomous weapons without human oversight">No ad armi completamente autonome senza supervisione umana</div>
+    </div>
+  </div>
+
+  <p class="fallout" data-reveal
+     data-it="La rappresaglia: <b>Trump</b> ordina alle agenzie federali di smettere di usare prodotti Anthropic, e il segretario alla Difesa <b>Pete Hegseth</b> indica Anthropic come possibile <span class=&quot;risk&quot;>«supply-chain risk»</span> — rischio per la catena di fornitura nazionale."
+     data-en="The retaliation: <b>Trump</b> orders federal agencies to stop using Anthropic products, and Defense Secretary <b>Pete Hegseth</b> flags Anthropic as a possible <span class=&quot;risk&quot;>«supply-chain risk»</span> — a threat to the national supply chain.">La rappresaglia: <b>Trump</b> ordina alle agenzie federali di smettere di usare prodotti Anthropic, e il segretario alla Difesa <b>Pete Hegseth</b> indica Anthropic come possibile <span class="risk">«supply-chain risk»</span> — rischio per la catena di fornitura nazionale.</p>
+</section>
+
+      <!-- anthropic-usa-2 -->
+<style>
+#op-anthropic-usa-2 {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(26px, 4.5vh, 56px) clamp(36px, 6vw, 100px);
+  background:
+    radial-gradient(60% 75% at 50% 4%, rgba(16,163,127,0.16), transparent 60%),
+    #000;
+  color: #fff;
+  overflow: hidden;
+}
+#op-anthropic-usa-2 .head { text-align: center; max-width: 1040px; }
+#op-anthropic-usa-2 .eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-size: clamp(11px, 0.95vw, 15px); font-weight: 700;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: #34d399; margin-bottom: clamp(12px, 1.8vh, 20px);
+}
+#op-anthropic-usa-2 .eyebrow .num { color: #04140f; background: #34d399; border-radius: 5px; padding: 2px 8px; letter-spacing: 0.1em; }
+#op-anthropic-usa-2 .title {
+  font-size: clamp(34px, 4.6vw, 76px); font-weight: 900;
+  letter-spacing: -0.03em; line-height: 0.96; margin: 0; color: #fff;
+}
+#op-anthropic-usa-2 .title .hl { color: #34d399; }
+#op-anthropic-usa-2 .lead {
+  font-size: clamp(15px, 1.4vw, 22px); line-height: 1.55;
+  color: #cbd5e1; font-weight: 300; margin: clamp(16px,2.4vh,28px) auto 0;
+  max-width: 920px;
+}
+#op-anthropic-usa-2 .lead b { color: #fff; font-weight: 600; }
+#op-anthropic-usa-2 .sub {
+  max-width: 1040px; text-align: center;
+  margin: clamp(22px,3.2vh,38px) auto clamp(14px,2vh,20px);
+  font-size: clamp(13px,1.05vw,17px); font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: #34d399;
+}
+#op-anthropic-usa-2 .lines {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(18px, 2.5vw, 36px);
+  max-width: 1100px; width: 100%;
+}
+#op-anthropic-usa-2 .ln {
+  position: relative; padding: clamp(18px,2.6vh,26px) clamp(16px,1.6vw,24px);
+  background: rgba(16,163,127,0.06);
+  border: 1px solid rgba(16,163,127,0.3); border-radius: 14px; text-align: center;
+}
+#op-anthropic-usa-2 .ln .ic {
+  width: clamp(34px,3vw,46px); height: clamp(34px,3vw,46px); margin: 0 auto clamp(10px,1.4vh,14px);
+  border-radius: 50%; background: rgba(16,163,127,0.16); border: 1px solid #10a37f;
+  display: flex; align-items: center; justify-content: center;
+  color: #34d399; font-size: clamp(16px,1.5vw,22px); font-weight: 900;
+}
+#op-anthropic-usa-2 .ln .t { font-size: clamp(14px,1.2vw,19px); font-weight: 600; color: #e8edf2; line-height: 1.4; }
+#op-anthropic-usa-2 .ln .t b { color: #fff; font-weight: 700; }
+
+@media (max-aspect-ratio: 1/1) {
+  #op-anthropic-usa-2 { justify-content: flex-start; overflow-y: auto; padding-top: clamp(36px,6vh,60px); padding-bottom: clamp(90px,13vh,120px); }
+  #op-anthropic-usa-2 .lines { grid-template-columns: 1fr; max-width: 600px; }
+}
+</style>
+
+<section class="op-sec" id="op-anthropic-usa-2" data-accent="#10a37f">
+  <div class="head" data-reveal>
+    <div class="eyebrow">
+      <span class="num" data-it="2 / 3" data-en="2 / 3">2 / 3</span>
+      <span data-it="27–28 Febbraio 2026 · La risposta" data-en="February 27–28, 2026 · The response">27–28 Febbraio 2026 · La risposta</span>
+    </div>
+    <h1 class="title" data-it="OpenAI firma con il <span class=&quot;hl&quot;>Pentagono</span>" data-en="OpenAI signs with the <span class=&quot;hl&quot;>Pentagon</span>">OpenAI firma con il <span class="hl">Pentagono</span></h1>
+    <p class="lead" data-it="Poche ore dopo, OpenAI annuncia un accordo con il Pentagono per portare i propri modelli nelle <b>reti militari classificate</b>. <b>Sam Altman</b> sostiene che anche l'intesa di OpenAI contiene linee rosse simili." data-en="Hours later, OpenAI announces a deal with the Pentagon to bring its models into <b>classified military networks</b>. <b>Sam Altman</b> argues that OpenAI's agreement contains similar red lines.">Poche ore dopo, OpenAI annuncia un accordo con il Pentagono per portare i propri modelli nelle <b>reti militari classificate</b>. <b>Sam Altman</b> sostiene che anche l'intesa di OpenAI contiene linee rosse simili.</p>
+  </div>
+
+  <div class="sub" data-reveal data-it="Le linee rosse rivendicate da OpenAI" data-en="The red lines claimed by OpenAI">Le linee rosse rivendicate da OpenAI</div>
+
+  <div class="lines">
+    <div class="ln" data-reveal>
+      <div class="ic">✓</div>
+      <div class="t" data-it="Niente <b>sorveglianza domestica di massa</b>" data-en="No <b>domestic mass surveillance</b>">Niente <b>sorveglianza domestica di massa</b></div>
+    </div>
+    <div class="ln" data-reveal>
+      <div class="ic">✓</div>
+      <div class="t" data-it="<b>Responsabilità umana</b> nell'uso della forza" data-en="<b>Human accountability</b> in the use of force"><b>Responsabilità umana</b> nell'uso della forza</div>
+    </div>
+    <div class="ln" data-reveal>
+      <div class="ic">✓</div>
+      <div class="t" data-it="Niente <b>direzione di sistemi d'arma autonomi</b>" data-en="No <b>direction of autonomous weapon systems</b>">Niente <b>direzione di sistemi d'arma autonomi</b></div>
+    </div>
+  </div>
+</section>
+
+      <!-- anthropic-usa-3 -->
+<style>
+  #op-anthropic-usa-3 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background:
+      radial-gradient(45% 70% at 22% 24%, rgba(204,120,92,0.13), transparent 60%),
+      radial-gradient(45% 70% at 78% 24%, rgba(16,163,127,0.13), transparent 60%),
+      #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(24px, 4vh, 50px) clamp(34px, 6vw, 100px);
+    overflow: hidden;
+    font-family: inherit;
+  }
+
+  #op-anthropic-usa-3 .head { text-align: center; margin-bottom: clamp(16px, 2.6vh, 32px); }
+  #op-anthropic-usa-3 .eyebrow {
+    font-size: clamp(11px, 0.95vw, 15px); font-weight: 700;
+    letter-spacing: 0.3em; text-transform: uppercase; color: #94a3b8;
+    margin-bottom: clamp(10px, 1.6vh, 16px);
+  }
+  #op-anthropic-usa-3 .title { font-size: clamp(32px, 4.4vw, 72px); font-weight: 900; letter-spacing: -0.03em; line-height: 0.95; margin: 0; color: #fff; }
+  #op-anthropic-usa-3 .title .no { color: #cc785c; }
+  #op-anthropic-usa-3 .title .si { color: #10a37f; }
+
+  #op-anthropic-usa-3 .contrast {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(20px, 3vw, 48px);
+    max-width: 1140px; width: 100%; margin-bottom: clamp(16px,2.6vh,30px);
+  }
+  #op-anthropic-usa-3 .side { position: relative; padding: clamp(18px,2.4vh,26px) clamp(20px,2vw,30px);
+    border-radius: 16px; border: 1px solid; background: rgba(255,255,255,0.02); }
+  #op-anthropic-usa-3 .side.a { border-color: rgba(204,120,92,0.4); }
+  #op-anthropic-usa-3 .side.o { border-color: rgba(16,163,127,0.4); }
+  #op-anthropic-usa-3 .side .co { font-size: clamp(11px,0.95vw,14px); font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
+  #op-anthropic-usa-3 .side.a .co { color: #cc785c; }
+  #op-anthropic-usa-3 .side.o .co { color: #10a37f; }
+  #op-anthropic-usa-3 .side .verdict {
+    font-size: clamp(40px, 4.6vw, 72px); font-weight: 900; line-height: 0.9;
+    margin: clamp(6px,1vh,10px) 0 clamp(10px,1.5vh,16px); letter-spacing: -0.03em;
+  }
+  #op-anthropic-usa-3 .side.a .verdict { color: #cc785c; }
+  #op-anthropic-usa-3 .side.o .verdict { color: #10a37f; }
+  #op-anthropic-usa-3 .side p { font-size: clamp(14px,1.15vw,18px); line-height: 1.5; color: #b6c2d0; margin: 0; }
+  #op-anthropic-usa-3 .side p b { color: #fff; font-weight: 600; }
+
+  #op-anthropic-usa-3 .redlines {
+    max-width: 1140px; width: 100%;
+    padding-top: clamp(14px,2.2vh,22px); border-top: 1px solid rgba(255,255,255,0.12);
+  }
+  #op-anthropic-usa-3 .redlines .cap { text-align: center; font-size: clamp(12px,1vw,16px); font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: #10a37f; margin-bottom: clamp(12px,1.8vh,18px); }
+  #op-anthropic-usa-3 .redlines .grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(14px,2vw,28px); }
+  #op-anthropic-usa-3 .redlines .cell { display: flex; align-items: flex-start; gap: 12px;
+    font-size: clamp(13px,1.05vw,17px); line-height: 1.4; color: #cbd5e1; }
+  #op-anthropic-usa-3 .redlines .cell .n { flex-shrink: 0; width: 26px; height: 26px; border-radius: 7px;
+    background: rgba(16,163,127,0.16); border: 1px solid rgba(16,163,127,0.5);
+    color: #10a37f; font-weight: 800; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; }
+  #op-anthropic-usa-3 .redlines .cell b { color: #fff; font-weight: 600; }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-anthropic-usa-3 { justify-content: flex-start; overflow-y: auto; padding-top: clamp(30px,5vh,54px); padding-bottom: clamp(40px,8vh,80px); }
+    #op-anthropic-usa-3 .contrast, #op-anthropic-usa-3 .redlines .grid { grid-template-columns: 1fr; }
+    #op-anthropic-usa-3 .contrast { max-width: 600px; }
+    #op-anthropic-usa-3 .redlines { max-width: 600px; }
+  }
+</style>
+
+<section class="op-sec" id="op-anthropic-usa-3" data-accent="#cc785c">
+  <div class="head" data-reveal>
+    <div class="eyebrow" data-it="Il punto politico · 3 / 3" data-en="The political point · 3 / 3">Il punto politico · 3 / 3</div>
+    <h1 class="title" data-it="&lt;span class=&quot;no&quot;&gt;«No»&lt;/span&gt; contro &lt;span class=&quot;si&quot;&gt;«Sì»&lt;/span&gt;" data-en="&lt;span class=&quot;no&quot;&gt;«No»&lt;/span&gt; versus &lt;span class=&quot;si&quot;&gt;«Yes»&lt;/span&gt;"><span class="no">«No»</span> contro <span class="si">«Sì»</span></h1>
+  </div>
+
+  <div class="contrast">
+    <div class="side a" data-reveal>
+      <div class="co">Anthropic</div>
+      <div class="verdict" data-it="«No»" data-en="«No»">«No»</div>
+      <p data-it="Anthropic rifiuta una richiesta percepita come &lt;b&gt;troppo ampia&lt;/b&gt;, a costo della rappresaglia federale." data-en="Anthropic refuses a request seen as &lt;b&gt;too broad&lt;/b&gt;, even at the cost of federal retaliation.">Anthropic rifiuta una richiesta percepita come <b>troppo ampia</b>, a costo della rappresaglia federale.</p>
+    </div>
+    <div class="side o" data-reveal>
+      <div class="co">OpenAI</div>
+      <div class="verdict" data-it="«Sì»" data-en="«Yes»">«Sì»</div>
+      <p data-it="OpenAI accetta, sostenendo però di aver ottenuto &lt;b&gt;garanzie e guardrail contrattuali&lt;/b&gt;." data-en="OpenAI accepts, but claims it secured &lt;b&gt;contractual guarantees and guardrails&lt;/b&gt;.">OpenAI accetta, sostenendo però di aver ottenuto <b>garanzie e guardrail contrattuali</b>.</p>
+    </div>
+  </div>
+
+  <div class="redlines" data-reveal>
+    <div class="cap" data-it="Le tre linee rosse dell'accordo OpenAI" data-en="The three red lines in OpenAI's deal">Le tre linee rosse dell'accordo OpenAI</div>
+    <div class="grid">
+      <div class="cell"><span class="n">1</span><span data-it="No &lt;b&gt;mass surveillance&lt;/b&gt; interna" data-en="No internal &lt;b&gt;mass surveillance&lt;/b&gt;">No <b>mass surveillance</b> interna</span></div>
+      <div class="cell"><span class="n">2</span><span data-it="No uso della tecnologia per &lt;b&gt;dirigere armi autonome&lt;/b&gt;" data-en="No using the technology to &lt;b&gt;direct autonomous weapons&lt;/b&gt;">No uso della tecnologia per <b>dirigere armi autonome</b></span></div>
+      <div class="cell"><span class="n">3</span><span data-it="No &lt;b&gt;decisioni automatizzate ad alto impatto&lt;/b&gt; tipo «social credit»" data-en="No &lt;b&gt;high-impact automated decisions&lt;/b&gt; such as «social credit»">No <b>decisioni automatizzate ad alto impatto</b> tipo «social credit»</span></div>
+    </div>
+  </div>
+</section>
+
+      <!-- anthropic-usa-4 -->
+<style>
+  #op-anthropic-usa-4 {
+    position: relative;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(60% 75% at 50% 4%, rgba(204,120,92,0.16), transparent 60%),
+      #000;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: clamp(24px, 4vh, 52px) clamp(36px, 6vw, 100px);
+    box-sizing: border-box;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  #op-anthropic-usa-4 .head { text-align: center; max-width: 1040px; }
+  #op-anthropic-usa-4 .eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: clamp(11px, 0.95vw, 15px); font-weight: 700;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: #e8a48c; margin-bottom: clamp(12px, 1.8vh, 20px);
+  }
+  #op-anthropic-usa-4 .eyebrow .num { color: #fff; background: #cc785c; border-radius: 5px; padding: 2px 8px; letter-spacing: 0.1em; }
+  #op-anthropic-usa-4 .title {
+    font-size: clamp(32px, 4.4vw, 72px); font-weight: 900;
+    letter-spacing: -0.03em; line-height: 0.98; margin: 0; color: #fff;
+  }
+  #op-anthropic-usa-4 .title .hl { color: #e8a48c; }
+  #op-anthropic-usa-4 .lead {
+    font-size: clamp(15px, 1.35vw, 21px); line-height: 1.55;
+    color: #cbd5e1; font-weight: 300; margin: clamp(14px,2.2vh,24px) auto 0;
+    max-width: 940px;
+  }
+  #op-anthropic-usa-4 .lead b { color: #fff; font-weight: 600; }
+
+  /* modelli bloccati */
+  #op-anthropic-usa-4 .models {
+    display: flex; justify-content: center; gap: clamp(16px,2.5vw,36px);
+    flex-wrap: wrap; margin: clamp(20px,3vh,34px) 0 0;
+  }
+  #op-anthropic-usa-4 .model {
+    position: relative; display: flex; align-items: center; gap: 14px;
+    padding: clamp(14px,1.9vh,20px) clamp(20px,2vw,30px);
+    background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.32);
+    border-radius: 14px;
+  }
+  #op-anthropic-usa-4 .model .lock {
+    width: clamp(34px,2.8vw,42px); height: clamp(34px,2.8vw,42px); flex-shrink: 0;
+    border-radius: 50%; background: rgba(239,68,68,0.16); border: 1px solid #ef4444;
+    display: flex; align-items: center; justify-content: center;
+    color: #ef4444; font-size: clamp(16px,1.5vw,20px);
+  }
+  #op-anthropic-usa-4 .model .mt { text-align: left; }
+  #op-anthropic-usa-4 .model .k { font-size: clamp(10px,0.8vw,12px); font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #ef4444; }
+  #op-anthropic-usa-4 .model .n { font-size: clamp(18px,1.6vw,26px); font-weight: 800; color: #fff; line-height: 1.1; }
+
+  /* motivazione + replica */
+  #op-anthropic-usa-4 .cols {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(20px,3vw,48px); max-width: 1080px; width: 100%;
+    margin-top: clamp(20px,3vh,36px);
+    padding-top: clamp(16px,2.4vh,24px); border-top: 1px solid rgba(255,255,255,0.12);
+  }
+  #op-anthropic-usa-4 .col { text-align: left; }
+  #op-anthropic-usa-4 .col h3 { font-size: clamp(13px,1.1vw,17px); font-weight: 800; letter-spacing: 0.04em; margin: 0 0 8px; }
+  #op-anthropic-usa-4 .col.gov h3 { color: #e8a48c; }
+  #op-anthropic-usa-4 .col.ant h3 { color: #fff; }
+  #op-anthropic-usa-4 .col p { font-size: clamp(13px,1.08vw,17px); line-height: 1.55; color: #b6c2d0; margin: 0; }
+  #op-anthropic-usa-4 .col p b { color: #fff; font-weight: 600; }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-anthropic-usa-4 { justify-content: flex-start; overflow-y: auto; padding-top: clamp(30px,5vh,54px); padding-bottom: clamp(90px,13vh,120px); }
+    #op-anthropic-usa-4 .cols { grid-template-columns: 1fr; max-width: 600px; }
+  }
+</style>
+
+<section class="op-sec" id="op-anthropic-usa-4" data-accent="#cc785c">
+  <div class="head">
+    <div class="eyebrow" data-reveal>
+      <span class="num" data-it="Epilogo" data-en="Epilogue">Epilogo</span>
+      <span data-it="Export control · Sicurezza nazionale" data-en="Export control · National security">Export control · Sicurezza nazionale</span>
+    </div>
+    <h1 class="title" data-reveal data-it="Claude <span class=&quot;hl&quot;>vietato</span> agli stranieri" data-en="Claude <span class=&quot;hl&quot;>banned</span> for foreigners">Claude <span class="hl">vietato</span> agli stranieri</h1>
+    <p class="lead" data-reveal data-it="Il governo americano ordina ad Anthropic di <b>bloccare l'accesso ai suoi modelli più avanzati a tutti gli utenti stranieri</b> — inclusi i dipendenti non statunitensi dell'azienda." data-en="The U.S. government orders Anthropic to <b>block access to its most advanced models for all foreign users</b> — including the company's non-U.S. employees.">Il governo americano ordina ad Anthropic di <b>bloccare l'accesso ai suoi modelli più avanzati a tutti gli utenti stranieri</b> — inclusi i dipendenti non statunitensi dell'azienda.</p>
+  </div>
+
+  <div class="models" data-reveal>
+    <div class="model"><div class="lock">🔒</div><div class="mt"><div class="k" data-it="Accesso bloccato" data-en="Access blocked">Accesso bloccato</div><div class="n">Claude Fable 5</div></div></div>
+    <div class="model"><div class="lock">🔒</div><div class="mt"><div class="k" data-it="Accesso bloccato" data-en="Access blocked">Accesso bloccato</div><div class="n">Claude Mythos 5</div></div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col gov" data-reveal>
+      <h3 data-it="La motivazione del governo" data-en="The government's rationale">La motivazione del governo</h3>
+      <p data-it="<b>Sicurezza nazionale</b> e controllo dell'export tecnologico, dopo timori legati a possibili <b>vulnerabilità e jailbreak</b> dei modelli." data-en="<b>National security</b> and technology export control, after concerns over possible <b>vulnerabilities and jailbreaks</b> of the models."><b>Sicurezza nazionale</b> e controllo dell'export tecnologico, dopo timori legati a possibili <b>vulnerabilità e jailbreak</b> dei modelli.</p>
+    </div>
+    <div class="col ant" data-reveal>
+      <h3 data-it="La replica di Anthropic" data-en="Anthropic's response">La replica di Anthropic</h3>
+      <p data-it="Ha <b>obbedito</b>, ma contesta la misura: il governo non avrebbe fornito <b>prove tecniche sufficientemente dettagliate</b>, e i rischi indicati non sarebbero specifici solo dei suoi modelli." data-en="It <b>complied</b>, but contests the measure: the government allegedly provided <b>no sufficiently detailed technical evidence</b>, and the cited risks were not specific to its models alone.">Ha <b>obbedito</b>, ma contesta la misura: il governo non avrebbe fornito <b>prove tecniche sufficientemente dettagliate</b>, e i rischi indicati non sarebbero specifici solo dei suoi modelli.</p>
+    </div>
+  </div>
+</section>
+
+      <!-- llm-occidentali -->
+<style>
+  #op-llm-occidentali {
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-start;
+    padding: clamp(20px, 3vh, 40px) clamp(24px, 4vw, 64px) 80px;
+    box-sizing: border-box;
+    background: #040e1a;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  #op-llm-occidentali .llm-eyebrow {
+    font-size: clamp(12px, 1vw, 16px);
+    font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+    color: rgba(255,255,255,0.32);
+    margin-bottom: clamp(8px, 1.2vh, 16px);
+    align-self: flex-start;
+  }
+  #op-llm-occidentali .llm-heading {
+    font-size: clamp(36px, 4.5vw, 68px);
+    font-weight: 900; letter-spacing: -0.03em; line-height: 0.95;
+    color: #fff; text-transform: uppercase;
+    margin: 0 0 clamp(24px, 3vh, 44px);
+    align-self: flex-start;
+  }
+  #op-llm-occidentali .llm-heading em { color: #41b7ff; font-style: normal; }
+
+  #op-llm-occidentali .llm-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(14px, 1.6vw, 24px);
+    width: 100%;
+    max-width: 1500px;
+  }
+
+  #op-llm-occidentali .llm-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    border-top: 4px solid var(--brand);
+    padding: clamp(18px, 2.2vh, 28px) clamp(14px, 1.4vw, 22px);
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+
+  #op-llm-occidentali .llm-badge {
+    width: clamp(70px, 7vw, 110px);
+    height: clamp(70px, 7vw, 110px);
+    border-radius: 18px;
+    background: var(--badge-bg, var(--brand));
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(34px, 3.6vw, 56px);
+    font-weight: 900; letter-spacing: -0.02em;
+    color: var(--badge-fg, #fff);
+    margin-bottom: clamp(14px, 1.6vh, 22px); flex-shrink: 0;
+  }
+  #op-llm-occidentali .llm-badge svg { width: 62%; height: 62%; display: block; overflow: visible; }
+
+  #op-llm-occidentali .llm-company {
+    font-size: clamp(20px, 2.2vw, 32px);
+    font-weight: 800; line-height: 1.15; color: #fff;
+    margin-bottom: 6px;
+  }
+  #op-llm-occidentali .llm-model {
+    font-size: clamp(14px, 1.3vw, 20px);
+    font-weight: 500; opacity: 0.88;
+    color: var(--brand); letter-spacing: 0.01em; line-height: 1.35;
+  }
+  #op-llm-occidentali .llm-flag-tag {
+    display: inline-block;
+    margin-top: clamp(10px, 1.2vh, 16px);
+    font-size: clamp(12px, 1vw, 16px);
+    font-weight: 700; letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+  }
+</style>
+
+<section class="op-sec" id="op-llm-occidentali" data-accent="#41b7ff">
+
+  <div class="llm-eyebrow" data-reveal data-it="Geopolitica dell'AI" data-en="AI Geopolitics">Geopolitica dell'AI</div>
+  <h1 class="llm-heading" data-reveal data-it="LLM &lt;em&gt;Occidentali&lt;/em&gt;" data-en="Western &lt;em&gt;LLMs&lt;/em&gt;">LLM <em>Occidentali</em></h1>
+
+  <div class="llm-grid" data-reveal>
+
+    <div class="llm-card" style="--brand:#10a37f;--badge-bg:#111;--badge-fg:#fff">
+      <div class="llm-badge"><svg viewBox="0 0 32 32" fill="white">
+        <rect x="14" y="1" width="4" height="13" rx="2" transform="rotate(0,16,16)"/>
+        <rect x="14" y="1" width="4" height="13" rx="2" transform="rotate(60,16,16)"/>
+        <rect x="14" y="1" width="4" height="13" rx="2" transform="rotate(120,16,16)"/>
+        <rect x="14" y="1" width="4" height="13" rx="2" transform="rotate(180,16,16)"/>
+        <rect x="14" y="1" width="4" height="13" rx="2" transform="rotate(240,16,16)"/>
+        <rect x="14" y="1" width="4" height="13" rx="2" transform="rotate(300,16,16)"/>
+      </svg></div>
+      <div class="llm-company">OpenAI</div>
+      <div class="llm-model">GPT-4o · o3</div>
+      <div class="llm-flag-tag">🇺🇸</div>
+    </div>
+
+    <div class="llm-card" style="--brand:#CC785C;--badge-bg:#CC785C;--badge-fg:#fff">
+      <div class="llm-badge"><span>A</span></div>
+      <div class="llm-company">Anthropic</div>
+      <div class="llm-model">Claude 3.7 Sonnet</div>
+      <div class="llm-flag-tag">🇺🇸</div>
+    </div>
+
+    <div class="llm-card" style="--brand:#4285F4;--badge-bg:#4285F4;--badge-fg:#fff">
+      <div class="llm-badge"><svg viewBox="0 0 32 32" fill="white">
+        <path d="M16 2C15.2 9.2 11.6 12.8 4 16C11.6 19.2 15.2 22.8 16 30C16.8 22.8 20.4 19.2 28 16C20.4 12.8 16.8 9.2 16 2Z"/>
+      </svg></div>
+      <div class="llm-company">Google</div>
+      <div class="llm-model">Gemini 2.0 Flash</div>
+      <div class="llm-flag-tag">🇺🇸</div>
+    </div>
+
+    <div class="llm-card" style="--brand:#1877F2;--badge-bg:#1877F2;--badge-fg:#fff">
+      <div class="llm-badge"><svg viewBox="0 0 36 22" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round">
+        <path d="M18 11C15 5 10 2 6 4C2 6 2 16 6 18C10 20 15 17 18 11C21 5 26 2 30 4C34 6 34 16 30 18C26 20 21 17 18 11Z"/>
+      </svg></div>
+      <div class="llm-company">Meta AI</div>
+      <div class="llm-model">Llama 3.3 70B</div>
+      <div class="llm-flag-tag">🇺🇸</div>
+    </div>
+
+    <div class="llm-card" style="--brand:#aaa;--badge-bg:#1a1a1a;--badge-fg:#fff">
+      <div class="llm-badge"><span>X</span></div>
+      <div class="llm-company">xAI</div>
+      <div class="llm-model">Grok 3</div>
+      <div class="llm-flag-tag">🇺🇸</div>
+    </div>
+
+    <div class="llm-card" style="--brand:#0078D4;--badge-bg:#111;--badge-fg:#fff">
+      <div class="llm-badge"><svg viewBox="0 0 32 32">
+        <rect x="1" y="1" width="14" height="14" fill="#F25022"/>
+        <rect x="17" y="1" width="14" height="14" fill="#7FBA00"/>
+        <rect x="1" y="17" width="14" height="14" fill="#00A4EF"/>
+        <rect x="17" y="17" width="14" height="14" fill="#FFB900"/>
+      </svg></div>
+      <div class="llm-company">Microsoft</div>
+      <div class="llm-model">Copilot · Phi-4</div>
+      <div class="llm-flag-tag">🇺🇸</div>
+    </div>
+
+    <div class="llm-card" style="--brand:#FF6B35;--badge-bg:#FF6B35;--badge-fg:#fff">
+      <div class="llm-badge"><span>M</span></div>
+      <div class="llm-company">Mistral AI</div>
+      <div class="llm-model">Mistral Large 2<br>Mixtral 8×22B</div>
+      <div class="llm-flag-tag">🇪🇺</div>
+    </div>
+
+  </div>
+
+</section>
+
+      <!-- llm-asiatici -->
+<style>
+  #op-llm-asiatici {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #040e1a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: clamp(20px, 3vh, 40px) clamp(24px, 4vw, 64px) 80px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  #op-llm-asiatici .llm-eyebrow {
+    font-size: clamp(12px, 1vw, 16px);
+    font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+    color: rgba(255,255,255,0.32);
+    margin-bottom: clamp(8px, 1.2vh, 16px);
+    align-self: flex-start;
+  }
+  #op-llm-asiatici .llm-heading {
+    font-size: clamp(36px, 4.5vw, 68px);
+    font-weight: 900; letter-spacing: -0.03em; line-height: 0.95;
+    color: #fff; text-transform: uppercase;
+    margin: 0 0 clamp(28px, 4vh, 60px);
+    align-self: flex-start;
+  }
+  #op-llm-asiatici .llm-heading em { color: #ff4d4d; font-style: normal; }
+
+  #op-llm-asiatici .llm-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(20px, 2.4vw, 40px);
+    width: 100%;
+    max-width: 1500px;
+    align-items: stretch;
+  }
+
+  #op-llm-asiatici .llm-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    border-top: 5px solid var(--brand);
+    padding: clamp(32px, 4vh, 52px) clamp(24px, 2.2vw, 36px);
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+
+  #op-llm-asiatici .llm-badge {
+    width: clamp(120px, 11vw, 180px);
+    height: clamp(120px, 11vw, 180px);
+    border-radius: 24px;
+    background: var(--badge-bg, var(--brand));
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(56px, 6vw, 90px);
+    font-weight: 900; letter-spacing: -0.02em;
+    color: var(--badge-fg, #fff);
+    margin-bottom: clamp(20px, 2.4vh, 32px); flex-shrink: 0;
+  }
+  #op-llm-asiatici .llm-badge svg { width: 62%; height: 62%; display: block; overflow: visible; }
+
+  #op-llm-asiatici .llm-company {
+    font-size: clamp(28px, 3vw, 44px);
+    font-weight: 800; line-height: 1.1; color: #fff;
+    margin-bottom: 10px;
+  }
+  #op-llm-asiatici .llm-model {
+    font-size: clamp(18px, 1.6vw, 26px);
+    font-weight: 500; opacity: 0.88;
+    color: var(--brand); letter-spacing: 0.01em; line-height: 1.35;
+  }
+  #op-llm-asiatici .llm-flag-tag {
+    display: inline-block;
+    margin-top: clamp(14px, 1.6vh, 22px);
+    font-size: clamp(14px, 1.2vw, 18px);
+    font-weight: 700; letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.42);
+    text-transform: uppercase;
+  }
+</style>
+
+<section class="op-sec" id="op-llm-asiatici" data-accent="#ff4d4d">
+
+  <div class="llm-eyebrow" data-reveal data-it="Geopolitica dell'AI" data-en="AI Geopolitics">Geopolitica dell'AI</div>
+  <h1 class="llm-heading" data-reveal data-it="LLM <em>Asiatici</em>" data-en="Asian <em>LLMs</em>">LLM <em>Asiatici</em></h1>
+
+  <div class="llm-grid">
+
+    <div class="llm-card" data-reveal style="--brand:#4D6BFE;--badge-bg:#4D6BFE;--badge-fg:#fff;">
+      <div class="llm-badge"><svg viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="2">
+        <ellipse cx="16" cy="14" rx="10" ry="10"/>
+        <circle cx="12" cy="12" r="2.5" fill="white" stroke="none"/>
+        <path d="M16 24 C16 24 20 28 24 26" stroke-linecap="round"/>
+      </svg></div>
+      <div class="llm-company">DeepSeek</div>
+      <div class="llm-model">DeepSeek-R1 · V3</div>
+      <div class="llm-flag-tag">🇨🇳</div>
+    </div>
+
+    <div class="llm-card" data-reveal style="--brand:#2932E1;--badge-bg:#2932E1;--badge-fg:#fff;">
+      <div class="llm-badge"><span>百</span></div>
+      <div class="llm-company">Baidu</div>
+      <div class="llm-model">ERNIE 4.0 Turbo</div>
+      <div class="llm-flag-tag">🇨🇳</div>
+    </div>
+
+    <div class="llm-card" data-reveal style="--brand:#FF6A00;--badge-bg:#FF6A00;--badge-fg:#fff;">
+      <div class="llm-badge"><span>Q</span></div>
+      <div class="llm-company">Alibaba</div>
+      <div class="llm-model">Qwen 2.5 Max</div>
+      <div class="llm-flag-tag">🇨🇳</div>
+    </div>
+
+  </div>
+
+</section>
+
+      <!-- llm-russi -->
+<style>
+#op-llm-russi {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background: #040e1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: clamp(20px, 3vh, 40px) clamp(24px, 4vw, 64px) 80px;
+  overflow: hidden;
+}
+
+#op-llm-russi .llm-eyebrow {
+  font-size: clamp(12px, 1vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.32);
+  margin-bottom: clamp(8px, 1.2vh, 16px);
+  align-self: flex-start;
+}
+
+#op-llm-russi .llm-heading {
+  font-size: clamp(36px, 4.5vw, 68px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0 0 clamp(28px, 4vh, 60px);
+  align-self: flex-start;
+}
+#op-llm-russi .llm-heading em { color: #ffd84d; font-style: normal; }
+
+#op-llm-russi .llm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(16px, 1.8vw, 28px);
+  width: 100%;
+  max-width: 1500px;
+  align-items: stretch;
+}
+
+#op-llm-russi .llm-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  border-top: 5px solid var(--brand);
+  padding: clamp(28px, 3.4vh, 44px) clamp(18px, 1.6vw, 28px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+#op-llm-russi .llm-badge {
+  width: clamp(100px, 9vw, 150px);
+  height: clamp(100px, 9vw, 150px);
+  border-radius: 22px;
+  background: var(--badge-bg, var(--brand));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(48px, 5vw, 78px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--badge-fg, #fff);
+  margin-bottom: clamp(18px, 2vh, 28px);
+  flex-shrink: 0;
+}
+#op-llm-russi .llm-badge svg { width: 62%; height: 62%; display: block; overflow: visible; }
+
+#op-llm-russi .llm-company {
+  font-size: clamp(22px, 2.4vw, 36px);
+  font-weight: 800;
+  line-height: 1.15;
+  color: #fff;
+  margin-bottom: 8px;
+}
+#op-llm-russi .llm-model {
+  font-size: clamp(15px, 1.4vw, 22px);
+  font-weight: 500;
+  opacity: 0.88;
+  color: var(--brand);
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+}
+#op-llm-russi .llm-flag-tag {
+  display: inline-block;
+  margin-top: clamp(12px, 1.4vh, 20px);
+  font-size: clamp(13px, 1.1vw, 17px);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.42);
+  text-transform: uppercase;
+}
+</style>
+
+<section class="op-sec" id="op-llm-russi" data-accent="#FC3F1D">
+
+  <div class="llm-eyebrow" data-reveal data-it="Geopolitica dell'AI" data-en="AI Geopolitics">Geopolitica dell'AI</div>
+  <h1 class="llm-heading" data-reveal data-it="LLM &lt;em&gt;Russi&lt;/em&gt;" data-en="Russian &lt;em&gt;LLMs&lt;/em&gt;">LLM <em>Russi</em></h1>
+
+  <div class="llm-grid">
+
+    <div class="llm-card" data-reveal style="--brand:#21A038;--badge-bg:#0D6B22;--badge-fg:#fff">
+      <div class="llm-badge"><svg viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="3" stroke-linecap="round">
+        <circle cx="16" cy="16" r="11"/>
+        <path d="M22 12 A8 8 0 1 0 22 20 L16 20 L16 16"/>
+      </svg></div>
+      <div class="llm-company">Sberbank</div>
+      <div class="llm-model">GigaChat Ultra<br>Reasoning</div>
+      <div class="llm-flag-tag">🇷🇺</div>
+    </div>
+
+    <div class="llm-card" data-reveal style="--brand:#FC3F1D;--badge-bg:#FC3F1D;--badge-fg:#fff">
+      <div class="llm-badge"><svg viewBox="0 0 32 32" fill="white">
+        <text x="50%" y="58%" text-anchor="middle" dominant-baseline="middle"
+              font-family="Arial, sans-serif" font-weight="900" font-size="26">Я</text>
+      </svg></div>
+      <div class="llm-company">Yandex</div>
+      <div class="llm-model">YandexGPT · Alice</div>
+      <div class="llm-flag-tag">🇷🇺</div>
+    </div>
+
+    <div class="llm-card" data-reveal style="--brand:#FFDD2D;--badge-bg:#FFDD2D;--badge-fg:#000">
+      <div class="llm-badge"><span>T</span></div>
+      <div class="llm-company">T-Bank</div>
+      <div class="llm-model">T-Pro 2.0 · T-Lite</div>
+      <div class="llm-flag-tag">🇷🇺</div>
+    </div>
+
+    <div class="llm-card" data-reveal style="--brand:#E60000;--badge-bg:#E60000;--badge-fg:#fff">
+      <div class="llm-badge"><span>M</span></div>
+      <div class="llm-company">MTS AI</div>
+      <div class="llm-model">MTS LLM</div>
+      <div class="llm-flag-tag">🇷🇺</div>
+    </div>
+
+  </div>
+
+</section>
+
+      <!-- thiel -->
+<style>
+#op-thiel {
+  position: relative;
+  overflow: hidden;
+  background: #03070f;
+  color: #e2e8f0;
+}
+
+/* ---------- Hero image (full-bleed, ancorata a sinistra su Thiel) ---------- */
+#op-thiel .hero {
+  position: absolute; inset: 0;
+  background: url('img/palantir.png') no-repeat center left;
+  background-size: cover;
+  transform: scale(1.06);
+  transform-origin: 30% 50%;
+  animation: thiel-kenburns 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes thiel-kenburns {
+  from { transform: scale(1.06) translate(0, 0); }
+  to   { transform: scale(1.12) translate(1.2%, -1.4%); }
+}
+
+/* ---------- Cinematic scrims (scuriscono verso destra) ---------- */
+#op-thiel .scrim-right {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    260deg,
+    #03070f 0%,
+    rgba(3,7,15,0.97) 24%,
+    rgba(3,7,15,0.82) 38%,
+    rgba(3,7,15,0.35) 52%,
+    rgba(3,7,15,0.05) 66%,
+    rgba(3,7,15,0) 78%
+  );
+}
+#op-thiel .scrim-bottom {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(3,7,15,0.85) 0%, rgba(3,7,15,0) 32%);
+}
+#op-thiel .vignette {
+  position: absolute; inset: 0;
+  box-shadow: inset 0 0 240px 60px rgba(0,0,0,0.7);
+  pointer-events: none;
+}
+/* glow caldo sul fondatore di sinistra */
+#op-thiel .glow {
+  position: absolute;
+  top: 48%; left: 34%;
+  width: 40vw; height: 40vw;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(245,158,11,0.16) 0%, rgba(245,158,11,0.05) 42%, rgba(245,158,11,0) 70%);
+  pointer-events: none;
+  animation: thiel-pulse 6s ease-in-out infinite;
+}
+@keyframes thiel-pulse {
+  0%,100% { opacity: 0.65; }
+  50%     { opacity: 1; }
+}
+
+/* ---------- Content (colonna destra) ---------- */
+#op-thiel .content {
+  position: absolute;
+  top: 50%; right: clamp(40px, 6vw, 110px);
+  transform: translateY(-50%);
+  max-width: min(600px, 52vw);
+  z-index: 3;
+  text-align: left;
+}
+
+#op-thiel .eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-size: clamp(12px, 0.95vw, 16px);
+  font-weight: 700; letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: #fbbf24;
+  margin-bottom: clamp(14px, 2vh, 24px);
+}
+#op-thiel .eyebrow::before {
+  content: ''; width: 34px; height: 2px;
+  background: linear-gradient(90deg, #f59e0b, transparent);
+}
+
+#op-thiel .name {
+  font-size: clamp(54px, 7vw, 118px);
+  font-weight: 900; letter-spacing: -0.04em;
+  line-height: 0.9;
+  margin: 0 0 clamp(16px, 2.2vh, 26px);
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 30%, #fcd34d 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  text-shadow: 0 0 60px rgba(245,158,11,0.32);
+}
+
+#op-thiel .ticker {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 6px 14px;
+  border: 1px solid rgba(245,158,11,0.45);
+  border-radius: 999px;
+  background: rgba(245,158,11,0.08);
+  font-size: clamp(12px, 0.95vw, 15px);
+  font-weight: 700; letter-spacing: 0.12em;
+  color: #fde68a;
+  margin-bottom: clamp(16px, 2.2vh, 26px);
+  vertical-align: middle;
+}
+#op-thiel .ticker .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 10px #f59e0b;
+  animation: thiel-pulse 2.4s ease-in-out infinite;
+}
+
+#op-thiel .tagline {
+  font-size: clamp(16px, 1.4vw, 22px);
+  color: #cbd5e1; font-weight: 300;
+  line-height: 1.5; letter-spacing: 0.01em;
+  margin: 0 0 clamp(22px, 3vh, 36px);
+  max-width: 540px;
+}
+#op-thiel .tagline b { color: #f1f5f9; font-weight: 600; }
+
+#op-thiel .facts {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; gap: clamp(8px, 1.1vh, 14px);
+  max-width: 560px;
+}
+#op-thiel .facts li {
+  font-size: clamp(14px, 1.1vw, 18px);
+  color: #e2e8f0; line-height: 1.4;
+  padding-left: 30px; position: relative;
+}
+#op-thiel .facts li::before {
+  content: ''; position: absolute;
+  left: 0; top: 0.5em;
+  width: 15px; height: 15px;
+  background: #f59e0b;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2.4 6.9L21.6 9l-5.4 4.7L18 21 12 17l-6 4 1.8-7.3L2.4 9l7.2-.1z'/></svg>") center/contain no-repeat;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2.4 6.9L21.6 9l-5.4 4.7L18 21 12 17l-6 4 1.8-7.3L2.4 9l7.2-.1z'/></svg>") center/contain no-repeat;
+  opacity: 0.9;
+}
+
+#op-thiel .quote {
+  margin: clamp(20px, 2.8vh, 34px) 0 0;
+  padding-left: 20px;
+  border-left: 3px solid #f59e0b;
+  font-size: clamp(16px, 1.45vw, 23px);
+  font-style: italic;
+  color: rgba(255,255,255,0.78);
+  line-height: 1.4;
+  max-width: 520px;
+}
+#op-thiel .quote .who { display: block; font-style: normal; font-size: 0.72em; color: #fbbf24; margin-top: 8px; letter-spacing: 0.08em; }
+
+/* ---------- Responsive: stack (portrait) ---------- */
+@media (max-aspect-ratio: 1/1) {
+  #op-thiel .hero { background-position: 22% 26%; }
+  #op-thiel .scrim-right {
+    background: linear-gradient(to top, #03070f 0%, rgba(3,7,15,0.96) 30%, rgba(3,7,15,0.6) 50%, rgba(3,7,15,0.2) 70%, rgba(3,7,15,0) 88%);
+  }
+  #op-thiel .content {
+    top: auto; bottom: clamp(70px, 11vh, 120px);
+    right: 50%; transform: none; translate: 50% 0;
+    width: min(620px, 88vw); max-width: 88vw;
+  }
+}
+</style>
+
+<section class="op-sec" id="op-thiel" data-accent="#f59e0b">
+  <div class="hero"></div>
+  <div class="glow"></div>
+  <div class="scrim-right"></div>
+  <div class="scrim-bottom"></div>
+  <div class="vignette"></div>
+
+  <div class="content">
+    <div class="eyebrow" data-reveal
+         data-it="Tech Founders"
+         data-en="Tech Founders">Tech Founders</div>
+
+    <h1 class="name" data-reveal
+        data-it="Peter Thiel"
+        data-en="Peter Thiel">Peter Thiel</h1>
+
+    <div class="ticker" data-reveal>
+      <span class="dot"></span>
+      <span data-it="INVESTITORE · n. 1967"
+            data-en="INVESTOR · b. 1967">INVESTITORE · n. 1967</span>
+    </div>
+
+    <p class="tagline" data-reveal
+       data-it="<b>Investitore e contrarian</b> — co-fondatore di PayPal e Palantir, architetto del venture capital di Silicon Valley."
+       data-en="<b>Investor and contrarian</b> — co-founder of PayPal and Palantir, architect of Silicon Valley venture capital."><b>Investitore e contrarian</b> — co-fondatore di PayPal e Palantir, architetto del venture capital di Silicon Valley.</p>
+
+    <ul class="facts" data-reveal
+        data-it="Co-fondatore di PayPal nel 1999 — venduta a eBay per $1,5 mld||Fonda Palantir nel 2003 — analisi dati per CIA, NSA, Pentagono||Primo investitore esterno di Facebook (2004): $500K per il 10,2%||Founders Fund, Clarium, Mithril — portafoglio venture da miliardi||Autore di &quot;Zero to One&quot; (2014) — manifesto del venture capital||Finanziatore decisivo delle campagne di Trump nel 2016 e 2024"
+        data-en="Co-founded PayPal in 1999 — sold to eBay for $1.5B||Founded Palantir in 2003 — data analytics for CIA, NSA, Pentagon||First outside investor in Facebook (2004): $500K for 10.2%||Founders Fund, Clarium, Mithril — multi-billion venture portfolio||Author of &quot;Zero to One&quot; (2014) — contemporary VC manifesto||Decisive funder of Trump's 2016 and 2024 campaigns">
+      <li>Co-fondatore di PayPal nel 1999 — venduta a eBay per $1,5 mld</li>
+      <li>Fonda Palantir nel 2003 — analisi dati per CIA, NSA, Pentagono</li>
+      <li>Primo investitore esterno di Facebook (2004): $500K per il 10,2%</li>
+      <li>Founders Fund, Clarium, Mithril — portafoglio venture da miliardi</li>
+      <li>Autore di "Zero to One" (2014) — manifesto del venture capital</li>
+      <li>Finanziatore decisivo delle campagne di Trump nel 2016 e 2024</li>
+    </ul>
+
+    <blockquote class="quote" data-reveal
+        data-it="&quot;La concorrenza è per i perdenti.&quot;<span class=&quot;who&quot;>— Peter Thiel</span>"
+        data-en="&quot;Competition is for losers.&quot;<span class=&quot;who&quot;>— Peter Thiel</span>">"La concorrenza è per i perdenti."<span class="who">— Peter Thiel</span></blockquote>
+  </div>
+</section>
+
+      <!-- palantir-intro -->
+<style>
+  #op-palantir-intro {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 60% at 50% 60%, rgba(139,92,246,0.12), transparent 70%),
+      #03070f;
+  }
+
+  #op-palantir-intro .photo {
+    position: absolute; inset: 0;
+    background: url('img/palantir.png') no-repeat center center;
+    background-size: contain;
+  }
+  #op-palantir-intro .photo-glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(20% 28% at 50% 58%, rgba(139,92,246,0.24), transparent 60%);
+    mix-blend-mode: screen;
+    animation: palantir-intro-pulse 6s ease-in-out infinite;
+  }
+  @keyframes palantir-intro-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+
+  #op-palantir-intro .fade-bottom {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, #03070f 0%, rgba(3,7,15,0.92) 12%, rgba(3,7,15,0.45) 26%, rgba(3,7,15,0) 42%);
+  }
+
+  #op-palantir-intro .title-bar {
+    position: absolute; left: 0; right: 0; bottom: clamp(36px, 7vh, 74px);
+    text-align: center; z-index: 3;
+  }
+  #op-palantir-intro .eyebrow {
+    font-size: clamp(12px, 1vw, 16px);
+    font-weight: 700; letter-spacing: 0.34em;
+    text-transform: uppercase; color: #a78bfa;
+    margin-bottom: clamp(10px, 1.6vh, 18px);
+  }
+  #op-palantir-intro .name {
+    font-size: clamp(58px, 8vw, 132px);
+    font-weight: 900; letter-spacing: -0.03em; line-height: 0.9;
+    margin: 0; text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 28%, #c4b5fd 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: 0 0 70px rgba(139,92,246,0.45);
+  }
+  #op-palantir-intro .subtitle {
+    font-size: clamp(15px, 1.6vw, 26px);
+    color: #cbd5e1; font-weight: 300; font-style: italic;
+    margin-top: clamp(10px, 1.6vh, 18px);
+    letter-spacing: 0.01em;
+  }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-palantir-intro .photo { background-position: center 38%; }
+    #op-palantir-intro .title-bar { bottom: clamp(40px, 9vh, 90px); }
+  }
+</style>
+
+<section class="op-sec" id="op-palantir-intro" data-accent="#8b5cf6">
+  <div class="photo"></div>
+  <div class="photo-glow"></div>
+  <div class="fade-bottom"></div>
+
+  <div class="title-bar">
+    <div class="eyebrow" data-reveal
+         data-it="J.R.R. Tolkien · Le pietre veggenti"
+         data-en="J.R.R. Tolkien · The seeing-stones">J.R.R. Tolkien · Le pietre veggenti</div>
+    <h1 class="name" data-reveal
+        data-it="Palantír"
+        data-en="Palantír">Palantír</h1>
+    <div class="subtitle" data-reveal
+         data-it="Le «pietre che vedono lontano» del Signore degli Anelli"
+         data-en="The &quot;stones that see afar&quot; of The Lord of the Rings">Le «pietre che vedono lontano» del Signore degli Anelli</div>
+  </div>
+</section>
+
+      <!-- palantir-intro-2 -->
+<style>
+  #op-palantir-intro-2 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(28px, 5vh, 60px) clamp(36px, 6vw, 100px);
+    background:
+      radial-gradient(60% 80% at 50% 0%, rgba(139,92,246,0.16), transparent 60%),
+      radial-gradient(40% 50% at 50% 100%, rgba(139,92,246,0.10), transparent 70%),
+      #000;
+    overflow: hidden;
+  }
+
+  /* ---------- Intestazione ---------- */
+  #op-palantir-intro-2 .head {
+    text-align: center;
+    margin-bottom: clamp(22px, 3.4vh, 44px);
+  }
+
+  #op-palantir-intro-2 .eyebrow {
+    font-size: clamp(11px, 0.95vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    margin-bottom: clamp(12px, 1.8vh, 20px);
+  }
+  #op-palantir-intro-2 .name {
+    font-size: clamp(48px, 6.6vw, 110px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+    margin: 0;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 28%, #c4b5fd 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    text-shadow: 0 0 80px rgba(139,92,246,0.4);
+  }
+  #op-palantir-intro-2 .lead {
+    font-size: clamp(15px, 1.45vw, 23px);
+    line-height: 1.55;
+    color: #e2e8f0;
+    font-weight: 300;
+    max-width: 980px;
+    margin: clamp(16px,2.4vh,26px) auto 0;
+  }
+  #op-palantir-intro-2 .lead b { color: #fff; font-weight: 600; }
+  #op-palantir-intro-2 .lead .accent { color: #a78bfa; font-weight: 600; font-style: italic; }
+
+  /* ---------- Tre blocchi ---------- */
+  #op-palantir-intro-2 .cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(22px, 3.2vw, 64px);
+    max-width: 1200px;
+    width: 100%;
+    margin-bottom: clamp(22px, 3.4vh, 44px);
+  }
+  #op-palantir-intro-2 .col {
+    position: relative;
+    padding-top: clamp(40px, 5vh, 60px);
+  }
+  #op-palantir-intro-2 .col .num {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: clamp(30px, 3.4vw, 52px);
+    font-weight: 900;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.6px rgba(139,92,246,0.75);
+    letter-spacing: -0.02em;
+  }
+  #op-palantir-intro-2 .col h3 {
+    font-size: clamp(17px, 1.5vw, 26px);
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 clamp(8px,1.2vh,12px);
+    letter-spacing: 0.01em;
+  }
+  #op-palantir-intro-2 .col h3::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    margin-top: 10px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #8b5cf6, transparent);
+  }
+  #op-palantir-intro-2 .col p {
+    font-size: clamp(13px, 1.1vw, 18px);
+    line-height: 1.55;
+    color: #94a3b8;
+    margin: 0;
+  }
+  #op-palantir-intro-2 .col p b { color: #cbd5e1; font-weight: 600; }
+
+  /* ---------- Chiusura ---------- */
+  #op-palantir-intro-2 .closing {
+    max-width: 1000px;
+    text-align: center;
+    font-size: clamp(16px, 1.55vw, 26px);
+    font-style: italic;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.86);
+    padding-top: clamp(20px, 3vh, 34px);
+    border-top: 1px solid rgba(139,92,246,0.28);
+  }
+  #op-palantir-intro-2 .closing b { color: #a78bfa; font-style: normal; font-weight: 600; }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-palantir-intro-2 {
+      justify-content: flex-start;
+      overflow-y: auto;
+      padding-top: clamp(40px,7vh,70px);
+      padding-bottom: clamp(90px,13vh,120px);
+    }
+    #op-palantir-intro-2 .cols {
+      grid-template-columns: 1fr;
+      gap: clamp(18px,2.6vh,28px);
+      max-width: 620px;
+    }
+    #op-palantir-intro-2 .col {
+      padding-top: clamp(34px,5vh,48px);
+    }
+  }
+</style>
+
+<section class="op-sec" id="op-palantir-intro-2" data-accent="#8b5cf6">
+  <div class="head">
+    <div class="eyebrow" data-reveal
+      data-it="J.R.R. Tolkien · Le pietre veggenti"
+      data-en="J.R.R. Tolkien · The seeing-stones">J.R.R. Tolkien · Le pietre veggenti</div>
+    <h1 class="name" data-reveal
+      data-it="Che cos'è un Palantír"
+      data-en="What is a Palantír">Che cos'è un Palantír</h1>
+    <p class="lead" data-reveal
+      data-it="Nel mondo di Tolkien i <b>palantíri</b> (singolare <i>palantír</i>, in quenya <span class=&quot;accent&quot;>«colui che vede da lontano»</span>) sono sfere di cristallo indistruttibili: chi ne possiede una può vedere luoghi remoti e comunicare con chi tiene un'altra pietra."
+      data-en="In Tolkien's world the <b>palantíri</b> (singular <i>palantír</i>, Quenya for <span class=&quot;accent&quot;>“one that sees from afar”</span>) are indestructible crystal spheres: whoever holds one can see distant places and speak with whoever holds another stone.">Nel mondo di Tolkien i <b>palantíri</b> (singolare <i>palantír</i>, in quenya <span class="accent">«colui che vede da lontano»</span>) sono sfere di cristallo indistruttibili: chi ne possiede una può vedere luoghi remoti e comunicare con chi tiene un'altra pietra.</p>
+  </div>
+
+  <div class="cols">
+    <div class="col" data-reveal>
+      <span class="num">01</span>
+      <h3 data-it="Origine" data-en="Origin">Origine</h3>
+      <p data-it="Sette pietre forgiate nell'Ovest e portate nella Terra di Mezzo, custodite nelle torri di <b>Gondor e Arnor</b>. Strumenti di potere riservati ai re di Númenor."
+         data-en="Seven stones forged in the West and brought to Middle-earth, kept in the towers of <b>Gondor and Arnor</b>. Instruments of power reserved for the kings of Númenor.">Sette pietre forgiate nell'Ovest e portate nella Terra di Mezzo, custodite nelle torri di <b>Gondor e Arnor</b>. Strumenti di potere riservati ai re di Númenor.</p>
+    </div>
+    <div class="col" data-reveal>
+      <span class="num">02</span>
+      <h3 data-it="Il potere" data-en="The power">Il potere</h3>
+      <p data-it="Consentono di vedere eventi distanti nello <b>spazio e nel tempo</b>. Ma rivelano solo ciò che l'osservatore viene guidato a vedere: la conoscenza non è mai neutra."
+         data-en="They reveal events distant in <b>space and time</b>. Yet they show only what the viewer is led to see: knowledge is never neutral.">Consentono di vedere eventi distanti nello <b>spazio e nel tempo</b>. Ma rivelano solo ciò che l'osservatore viene guidato a vedere: la conoscenza non è mai neutra.</p>
+    </div>
+    <div class="col" data-reveal>
+      <span class="num">03</span>
+      <h3 data-it="Il pericolo" data-en="The danger">Il pericolo</h3>
+      <p data-it="Sauron corruppe le pietre. <b>Saruman e Denethor</b>, credendo di dominarle, ne furono invece dominati, manipolati e condotti alla rovina."
+         data-en="Sauron corrupted the stones. <b>Saruman and Denethor</b>, believing they commanded them, were instead commanded, deceived and driven to ruin.">Sauron corruppe le pietre. <b>Saruman e Denethor</b>, credendo di dominarle, ne furono invece dominati, manipolati e condotti alla rovina.</p>
+    </div>
+  </div>
+
+  <p class="closing" data-reveal
+    data-it="Da qui il nome dell'azienda: <b>uno strumento per vedere e connettere oceani di dati</b> — potentissimo, e proprio per questo ambiguo."
+    data-en="Hence the company's name: <b>a tool to see and connect oceans of data</b> — immensely powerful, and for that very reason ambiguous.">Da qui il nome dell'azienda: <b>uno strumento per vedere e connettere oceani di dati</b> — potentissimo, e proprio per questo ambiguo.</p>
+</section>
+
+      <!-- palantir -->
+<style>
+  #op-palantir {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #03070f;
+    color: #e2e8f0;
+  }
+
+  /* ---------- Hero image (full-bleed, bleeds right) ---------- */
+  #op-palantir .hero {
+    position: absolute; inset: 0;
+    background: url('img/palantir.png') no-repeat center right;
+    background-size: cover;
+    transform: scale(1.06);
+    transform-origin: 70% 55%;
+    animation: palantir-kenburns 26s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  @keyframes palantir-kenburns {
+    from { transform: scale(1.06) translate(0, 0); }
+    to   { transform: scale(1.12) translate(-1.2%, -1.4%); }
+  }
+
+  /* ---------- Cinematic scrims ---------- */
+  #op-palantir .scrim-left {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      100deg,
+      #03070f 0%,
+      rgba(3,7,15,0.97) 24%,
+      rgba(3,7,15,0.82) 38%,
+      rgba(3,7,15,0.35) 52%,
+      rgba(3,7,15,0.05) 66%,
+      rgba(3,7,15,0) 78%
+    );
+  }
+  #op-palantir .scrim-bottom {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(3,7,15,0.85) 0%, rgba(3,7,15,0) 32%);
+  }
+  #op-palantir .vignette {
+    position: absolute; inset: 0;
+    box-shadow: inset 0 0 240px 60px rgba(0,0,0,0.7);
+    pointer-events: none;
+  }
+  /* glow nucleo sfera */
+  #op-palantir .glow {
+    position: absolute;
+    top: 56%; left: 60%;
+    width: 42vw; height: 42vw;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(139,92,246,0.22) 0%, rgba(139,92,246,0.07) 40%, rgba(139,92,246,0) 70%);
+    pointer-events: none;
+    animation: palantir-pulse 6s ease-in-out infinite;
+  }
+  @keyframes palantir-pulse {
+    0%,100% { opacity: 0.7; }
+    50%     { opacity: 1; }
+  }
+
+  /* ---------- Content ---------- */
+  #op-palantir .content {
+    position: absolute;
+    top: 50%; left: clamp(40px, 6vw, 110px);
+    transform: translateY(-50%);
+    max-width: min(620px, 52vw);
+    z-index: 3;
+  }
+
+  #op-palantir .eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: clamp(12px, 0.95vw, 16px);
+    font-weight: 700; letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    margin-bottom: clamp(16px, 2.2vh, 26px);
+  }
+  #op-palantir .eyebrow::before {
+    content: ''; width: 34px; height: 2px;
+    background: linear-gradient(90deg, #8b5cf6, transparent);
+  }
+
+  #op-palantir .name {
+    font-size: clamp(64px, 8.4vw, 142px);
+    font-weight: 900; letter-spacing: -0.04em;
+    line-height: 0.9;
+    margin: 0 0 clamp(18px, 2.4vh, 30px);
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 30%, #c4b5fd 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: 0 0 60px rgba(139,92,246,0.35);
+  }
+
+  #op-palantir .ticker {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 6px 14px;
+    border: 1px solid rgba(139,92,246,0.45);
+    border-radius: 999px;
+    background: rgba(139,92,246,0.08);
+    font-size: clamp(12px, 0.95vw, 15px);
+    font-weight: 700; letter-spacing: 0.12em;
+    color: #ddd6fe;
+    margin-bottom: clamp(18px, 2.4vh, 28px);
+    vertical-align: middle;
+  }
+  #op-palantir .ticker .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 10px #4ade80;
+    animation: palantir-pulse 2.2s ease-in-out infinite;
+  }
+
+  #op-palantir .tagline {
+    font-size: clamp(16px, 1.45vw, 23px);
+    color: #cbd5e1; font-weight: 300;
+    line-height: 1.5; letter-spacing: 0.01em;
+    margin: 0 0 clamp(24px, 3.2vh, 40px);
+    max-width: 540px;
+  }
+  #op-palantir .tagline b { color: #f1f5f9; font-weight: 600; }
+
+  #op-palantir .facts {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; gap: clamp(9px, 1.25vh, 15px);
+    max-width: 560px;
+  }
+  #op-palantir .facts li {
+    font-size: clamp(14px, 1.12vw, 18px);
+    color: #e2e8f0; line-height: 1.45;
+    padding-left: 30px; position: relative;
+  }
+  #op-palantir .facts li::before {
+    content: ''; position: absolute;
+    left: 0; top: 0.55em;
+    width: 16px; height: 16px;
+    background: #8b5cf6;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2.4 6.9L21.6 9l-5.4 4.7L18 21 12 17l-6 4 1.8-7.3L2.4 9l7.2-.1z'/></svg>") center/contain no-repeat;
+            mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2.4 6.9L21.6 9l-5.4 4.7L18 21 12 17l-6 4 1.8-7.3L2.4 9l7.2-.1z'/></svg>") center/contain no-repeat;
+    opacity: 0.9;
+  }
+
+  #op-palantir .quote {
+    margin: clamp(24px, 3.2vh, 40px) 0 0;
+    padding-left: 20px;
+    border-left: 3px solid #8b5cf6;
+    font-size: clamp(16px, 1.5vw, 24px);
+    font-style: italic;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.4;
+    max-width: 520px;
+  }
+  #op-palantir .quote .who { display: block; font-style: normal; font-size: 0.72em; color: #a78bfa; margin-top: 8px; letter-spacing: 0.08em; }
+
+  /* ---------- Responsive: stack (portrait) ---------- */
+  @media (max-aspect-ratio: 1/1) {
+    #op-palantir .hero { background-position: center 28%; }
+    #op-palantir .scrim-left {
+      background: linear-gradient(to top, #03070f 0%, rgba(3,7,15,0.96) 30%, rgba(3,7,15,0.6) 50%, rgba(3,7,15,0.2) 70%, rgba(3,7,15,0) 88%);
+    }
+    #op-palantir .content {
+      top: auto; bottom: clamp(70px, 11vh, 120px);
+      left: 50%; transform: none; translate: -50% 0;
+      width: min(620px, 88vw); max-width: 88vw;
+      text-align: left;
+    }
+  }
+</style>
+<section class="op-sec" id="op-palantir" data-accent="#8b5cf6">
+  <div class="hero"></div>
+  <div class="glow"></div>
+  <div class="scrim-left"></div>
+  <div class="scrim-bottom"></div>
+  <div class="vignette"></div>
+
+  <div class="content">
+    <div class="eyebrow" data-reveal data-it="AI e sorveglianza" data-en="AI &amp; surveillance">AI e sorveglianza</div>
+    <h1 class="name" data-reveal data-it="Palantir" data-en="Palantir">Palantir</h1>
+    <div class="ticker" data-reveal><span class="dot"></span><span data-it="NYSE: PLTR" data-en="NYSE: PLTR">NYSE: PLTR</span></div>
+    <p class="tagline" data-reveal data-it="&lt;b&gt;Big data e AI&lt;/b&gt; per governi e difesa — fondata nel 2003 da Peter Thiel e Alex Karp." data-en="&lt;b&gt;Big data and AI&lt;/b&gt; for governments and defense — founded in 2003 by Peter Thiel and Alex Karp."><b>Big data e AI</b> per governi e difesa — fondata nel 2003 da Peter Thiel e Alex Karp.</p>
+    <ul class="facts" data-reveal>
+      <li data-it="Clienti: CIA, NSA, FBI, Pentagono, NHS britannico, ICE" data-en="Clients: CIA, NSA, FBI, Pentagon, UK NHS, ICE">Clienti: CIA, NSA, FBI, Pentagono, NHS britannico, ICE</li>
+      <li data-it="Prodotti: Gotham (gov), Foundry (corporate), AIP (AI Platform)" data-en="Products: Gotham (gov), Foundry (corporate), AIP (AI Platform)">Prodotti: Gotham (gov), Foundry (corporate), AIP (AI Platform)</li>
+      <li data-it="IPO sulla NYSE nel 2020 — capitalizzazione oltre $100 miliardi" data-en="NYSE IPO in 2020 — market cap above $100B">IPO sulla NYSE nel 2020 — capitalizzazione oltre $100 miliardi</li>
+      <li data-it="Maven Smart System: AI per l’intelligence militare USA" data-en="Maven Smart System: AI for U.S. military intelligence">Maven Smart System: AI per l’intelligence militare USA</li>
+      <li data-it="Nome dai palantíri del &quot;Signore degli Anelli&quot; — pietre di visione" data-en="Named after the palantíri seeing-stones in &quot;The Lord of the Rings&quot;">Nome dai palantíri del "Signore degli Anelli" — pietre di visione</li>
+    </ul>
+    <blockquote class="quote" data-reveal data-it="&quot;Il software sta divorando la difesa.&quot;&lt;span class=&quot;who&quot;&gt;— Alex Karp, CEO&lt;/span&gt;" data-en="&quot;Software is eating defense.&quot;&lt;span class=&quot;who&quot;&gt;— Alex Karp, CEO&lt;/span&gt;">"Il software sta divorando la difesa."<span class="who">— Alex Karp, CEO</span></blockquote>
+  </div>
+</section>
+
+      <!-- paypal-mafia -->
+<style>
+  #op-paypal-mafia {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #040e1a;
+    overflow: hidden;
+  }
+  #op-paypal-mafia .info-card {
+    max-width: min(1300px, 92vw);
+    padding: 0 4vw;
+    text-align: center;
+  }
+  #op-paypal-mafia .info-eyebrow {
+    font-size: clamp(14px, 1.2vw, 18px);
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #06b6d4;
+    margin-bottom: clamp(18px, 2vh, 28px);
+  }
+  #op-paypal-mafia .info-name {
+    font-size: clamp(48px, 7.5vw, 130px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    color: #06b6d4;
+    text-transform: uppercase;
+    margin: 0 0 clamp(24px, 3vh, 40px);
+  }
+  #op-paypal-mafia .info-tagline {
+    font-size: clamp(18px, 1.7vw, 28px);
+    color: #94a3b8;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    margin-bottom: clamp(36px, 4.5vh, 64px);
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #op-paypal-mafia .info-facts {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 920px;
+    display: grid;
+    gap: clamp(10px, 1.3vh, 18px);
+    text-align: left;
+  }
+  #op-paypal-mafia .info-facts li {
+    font-size: clamp(15px, 1.35vw, 22px);
+    color: #e2e8f0;
+    line-height: 1.5;
+    padding-left: 36px;
+    position: relative;
+  }
+  #op-paypal-mafia .info-facts li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 22px;
+    height: 2px;
+    background: #06b6d4;
+  }
+  #op-paypal-mafia .info-quote {
+    font-size: clamp(20px, 2vw, 32px);
+    font-style: italic;
+    color: rgba(255,255,255,0.6);
+    margin-top: clamp(32px, 4vh, 52px);
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+    letter-spacing: 0.01em;
+  }
+</style>
+<section class="op-sec" id="op-paypal-mafia" data-accent="#06b6d4">
+  <div class="info-card">
+    <div class="info-eyebrow" data-reveal
+         data-it="Origini della Silicon Valley moderna"
+         data-en="Origins of modern Silicon Valley">Origini della Silicon Valley moderna</div>
+    <h1 class="info-name" data-reveal
+        data-it="PayPal Mafia"
+        data-en="PayPal Mafia">PayPal Mafia</h1>
+    <div class="info-tagline" data-reveal
+         data-it="La rete dei fondatori usciti da PayPal dopo la vendita a eBay (2002)"
+         data-en="The network of founders who left PayPal after the eBay acquisition (2002)">La rete dei fondatori usciti da PayPal dopo la vendita a eBay (2002)</div>
+    <ul class="info-facts" data-reveal
+        data-it="<li>Peter Thiel, Elon Musk, Reid Hoffman, Max Levchin, Roelof Botha</li><li>David Sacks, Steve Chen, Chad Hurley, Jawed Karim, Russel Simmons</li><li>Hanno fondato: Tesla, SpaceX, LinkedIn, YouTube, Yelp, Palantir, Affirm</li><li>Sequoia Capital, Founders Fund, Greylock — capitali di rischio chiave</li><li>Stimato controllo combinato oltre $1 trilione in market cap</li><li>Finanziatori decisivi della politica tech-friendly americana del 2024</li>"
+        data-en="<li>Peter Thiel, Elon Musk, Reid Hoffman, Max Levchin, Roelof Botha</li><li>David Sacks, Steve Chen, Chad Hurley, Jawed Karim, Russel Simmons</li><li>They founded: Tesla, SpaceX, LinkedIn, YouTube, Yelp, Palantir, Affirm</li><li>Sequoia Capital, Founders Fund, Greylock — key venture firms</li><li>Estimated combined control of $1+ trillion in market capitalization</li><li>Decisive funders of the 2024 tech-friendly American politics</li>"><li>Peter Thiel, Elon Musk, Reid Hoffman, Max Levchin, Roelof Botha</li><li>David Sacks, Steve Chen, Chad Hurley, Jawed Karim, Russel Simmons</li><li>Hanno fondato: Tesla, SpaceX, LinkedIn, YouTube, Yelp, Palantir, Affirm</li><li>Sequoia Capital, Founders Fund, Greylock — capitali di rischio chiave</li><li>Stimato controllo combinato oltre $1 trilione in market cap</li><li>Finanziatori decisivi della politica tech-friendly americana del 2024</li></ul>
+    <div class="info-quote" data-reveal
+         data-it="&quot;Una delle reti più produttive nella storia del capitalismo americano.&quot;"
+         data-en="&quot;One of the most productive networks in the history of American capitalism.&quot;">"Una delle reti più produttive nella storia del capitalismo americano."</div>
+  </div>
+</section>
+
+      <!-- paypal-mafia-2 -->
+<style>
+#op-paypal-mafia-2 {
+  background: #040e1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#op-paypal-mafia-2 .info-card {
+  max-width: min(1200px, 92vw);
+  padding: 0 4vw;
+  text-align: center;
+}
+#op-paypal-mafia-2 .info-eyebrow {
+  font-size: clamp(12px, 1vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #06b6d4;
+  margin-bottom: clamp(14px, 1.8vh, 24px);
+}
+#op-paypal-mafia-2 .info-name {
+  font-size: clamp(32px, 5.5vw, 80px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0 0 clamp(6px, 0.8vh, 12px);
+}
+#op-paypal-mafia-2 .info-name em {
+  color: #06b6d4;
+  font-style: normal;
+}
+#op-paypal-mafia-2 .info-sub {
+  font-size: clamp(16px, 1.6vw, 26px);
+  color: rgba(255,255,255,0.5);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  margin-bottom: clamp(28px, 3.5vh, 52px);
+}
+#op-paypal-mafia-2 .cerniere-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 920px;
+  display: grid;
+  gap: clamp(10px, 1.4vh, 18px);
+  text-align: left;
+}
+#op-paypal-mafia-2 .cerniere-list li {
+  font-size: clamp(14px, 1.25vw, 20px);
+  color: #cbd5e1;
+  line-height: 1.55;
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+}
+#op-paypal-mafia-2 .cerniere-list li .num {
+  font-size: 1.15em;
+  color: #06b6d4;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+#op-paypal-mafia-2 .cerniere-list li strong {
+  color: #fff;
+  font-weight: 700;
+}
+#op-paypal-mafia-2 .cerniere-list li.note {
+  font-size: clamp(13px, 1.05vw, 17px);
+  color: rgba(255,255,255,0.42);
+  font-style: italic;
+  border-left: 2px solid rgba(255,255,255,0.12);
+  padding-left: 16px;
+  margin-top: clamp(4px, 0.6vh, 8px);
+  display: block;
+}
+</style>
+<section class="op-sec" id="op-paypal-mafia-2" data-accent="#06b6d4">
+  <div class="info-card">
+    <div class="info-eyebrow" data-reveal
+         data-it="Perché conta per la Geopolitica"
+         data-en="Why It Matters for Geopolitics">Perché conta per la Geopolitica</div>
+    <h1 class="info-name" data-reveal>PayPal <em>Mafia</em></h1>
+    <div class="info-sub" data-reveal
+         data-it="Tre cerniere con il potere"
+         data-en="Three hinges of power">Tre cerniere con il potere</div>
+    <ul class="cerniere-list">
+      <li data-reveal
+          data-it="<span class=&quot;num&quot;>①</span><span><strong>Partecipazioni</strong> — <strong>Founders Fund</strong> detiene quote in Palantir (273 mld di capitalizzazione), SpaceX, Anduril, OpenAI, Stripe.</span>"
+          data-en="<span class=&quot;num&quot;>①</span><span><strong>Investments</strong> — <strong>Founders Fund</strong> holds stakes in Palantir ($273B market cap), SpaceX, Anduril, OpenAI, Stripe.</span>"><span class="num">①</span><span><strong>Partecipazioni</strong> — <strong>Founders Fund</strong> detiene quote in Palantir (273 mld di capitalizzazione), SpaceX, Anduril, OpenAI, Stripe.</span></li>
+      <li data-reveal
+          data-it="<span class=&quot;num&quot;>②</span><span><strong>Difesa</strong> — Dicembre 2024: consorzio Palantir, Anduril, SpaceX, OpenAI, Scale AI per sfidare i contractor tradizionali.</span>"
+          data-en="<span class=&quot;num&quot;>②</span><span><strong>Defense</strong> — December 2024: Palantir, Anduril, SpaceX, OpenAI, Scale AI consortium challenges traditional contractors.</span>"><span class="num">②</span><span><strong>Difesa</strong> — Dicembre 2024: consorzio Palantir, Anduril, SpaceX, OpenAI, Scale AI per sfidare i contractor tradizionali.</span></li>
+      <li data-reveal
+          data-it="<span class=&quot;num&quot;>③</span><span><strong>Politica</strong> — Thiel finanzia JD Vance con 15 milioni USD (oggi vicepresidente). Sacks AI Czar. Kratsios (ex Thiel Capital) all'OSTP.</span>"
+          data-en="<span class=&quot;num&quot;>③</span><span><strong>Politics</strong> — Thiel funds JD Vance with $15M USD (now VP). Sacks as AI Czar. Kratsios (ex Thiel Capital) at OSTP.</span>"><span class="num">③</span><span><strong>Politica</strong> — Thiel finanzia JD Vance con 15 milioni USD (oggi vicepresidente). Sacks AI Czar. Kratsios (ex Thiel Capital) all'OSTP.</span></li>
+      <li class="note" data-reveal
+          data-it="Maggio 2026: la causa Musk vs Altman rivela il network di scambi privati tra Musk, Altman, Brockman, Thiel, Hoffman, Gates, Omidyar."
+          data-en="May 2026: the Musk vs Altman lawsuit reveals a private exchange network among Musk, Altman, Brockman, Thiel, Hoffman, Gates, Omidyar.">Maggio 2026: la causa Musk vs Altman rivela il network di scambi privati tra Musk, Altman, Brockman, Thiel, Hoffman, Gates, Omidyar.</li>
+    </ul>
+  </div>
+</section>
+
+      <!-- paypal-mafia-3 -->
+<style>
+  #op-paypal-mafia-3 {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 60% at 50% 45%, rgba(6,182,212,0.10), transparent 70%),
+      #000;
+    color: #fff;
+    font-family: inherit;
+  }
+
+  /* Foto interamente visibile */
+  #op-paypal-mafia-3 .photo {
+    position: absolute; inset: 0;
+    background: url('img/paypal-mafia-photo.webp') no-repeat center center;
+    background-size: contain;
+  }
+
+  /* Sfumatura inferiore per far respirare titolo e autore */
+  #op-paypal-mafia-3 .fade-bottom {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.92) 12%, rgba(0,0,0,0.55) 26%, rgba(0,0,0,0) 44%);
+  }
+
+  /* Titolo + autore in basso */
+  #op-paypal-mafia-3 .title-bar {
+    position: absolute; left: 0; right: 0; bottom: clamp(34px, 6.5vh, 70px);
+    text-align: center; z-index: 3;
+    padding: 0 6vw;
+  }
+  #op-paypal-mafia-3 .eyebrow {
+    font-size: clamp(11px, 1vw, 16px);
+    font-weight: 700; letter-spacing: 0.32em;
+    text-transform: uppercase; color: #67e8f9;
+    margin-bottom: clamp(10px, 1.6vh, 18px);
+  }
+  #op-paypal-mafia-3 .name {
+    font-size: clamp(46px, 6.4vw, 108px);
+    font-weight: 900; letter-spacing: -0.03em; line-height: 0.92;
+    margin: 0; text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 28%, #a5f3fc 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: 0 0 70px rgba(6,182,212,0.45);
+  }
+  #op-paypal-mafia-3 .author {
+    display: inline-flex; align-items: center; gap: 12px;
+    margin-top: clamp(12px, 1.8vh, 20px);
+    font-size: clamp(14px, 1.4vw, 22px);
+    color: #cbd5e1; font-weight: 300; letter-spacing: 0.01em;
+  }
+  #op-paypal-mafia-3 .author::before, #op-paypal-mafia-3 .author::after {
+    content: ''; width: clamp(22px, 3vw, 46px); height: 1px;
+    background: linear-gradient(90deg, transparent, #06b6d4, transparent);
+  }
+  #op-paypal-mafia-3 .author b { color: #fff; font-weight: 600; font-style: normal; }
+</style>
+
+<section class="op-sec" id="op-paypal-mafia-3" data-accent="#06b6d4">
+  <div class="photo"></div>
+  <div class="fade-bottom"></div>
+
+  <div class="title-bar">
+    <div class="eyebrow" data-reveal
+         data-it="Fortune · Tosca Cafe, San Francisco · 2007"
+         data-en="Fortune · Tosca Cafe, San Francisco · 2007">Fortune · Tosca Cafe, San Francisco · 2007</div>
+    <h1 class="name" data-reveal
+        data-it="La PayPal Mafia"
+        data-en="The PayPal Mafia">La PayPal Mafia</h1>
+    <div class="author" data-reveal
+         data-it="Fotografia di <b>Robyn Twomey</b>"
+         data-en="Photograph by <b>Robyn Twomey</b>">Fotografia di <b>Robyn Twomey</b></div>
+  </div>
+</section>
+
+      <!-- epistemia -->
+<style>
+  #op-epistemia {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(28px, 5vh, 64px) clamp(28px, 4.5vw, 72px);
+    background: #040e1a;
+    overflow: hidden;
+  }
+
+  #op-epistemia .ep-eyebrow {
+    font-size: clamp(10px, 0.8vw, 13px);
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.28);
+    margin-bottom: clamp(6px, 1vh, 12px);
+  }
+
+  #op-epistemia .ep-title {
+    font-size: clamp(26px, 3.6vw, 62px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    line-height: 1;
+    margin: 0 0 clamp(12px, 2vh, 24px);
+  }
+
+  #op-epistemia .ep-text {
+    color: #e2e8f0;
+    line-height: 1.58;
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
+    font-size: clamp(15px, 1.5vw, 26px);
+    max-width: 70ch;
+  }
+  #op-epistemia .ep-text em     { font-style: italic; color: #c4b5fd; }
+  #op-epistemia .ep-text strong { font-weight: 600; color: #fff; }
+</style>
+
+<section class="op-sec" id="op-epistemia" data-accent="#a78bfa">
+
+  <div class="ep-eyebrow" data-reveal
+       data-it="Ricerca &amp; Teoria"
+       data-en="Research &amp; Theory">Ricerca &amp; Teoria</div>
+
+  <h1 class="ep-title" data-reveal
+      data-it="Epistemia"
+      data-en="Epistemia">Epistemia</h1>
+
+  <p class="ep-text" data-reveal
+     data-it="È proprio in questo scenario che si inserisce perfettamente <em>l'epistemìa</em>. Conosciamo in parte il termine in ambito filosofico — <em>l'epistème</em> indicava la conoscenza fondata su basi certe e verificabili — ma di recente è emerso in un contesto nuovo grazie al lavoro del gruppo di ricerca formato da <strong>Walter Quattrociocchi</strong>, <strong>Edoardo Loru</strong>, <strong>Jacopo Nudo</strong> e <strong>Niccolò Di Marco</strong>, autori dello studio pubblicato su <strong>«PNAS»</strong> il 13 ottobre 2025. Secondo gli studiosi, viviamo oggi nell'era dell'<em>epistemìa</em>, un tempo in cui la conoscenza si confonde con la sua apparenza. I testi sembrano veri, coerenti e persino autorevoli, ma spesso non poggiano su nulla di solido. <strong>L'Intelligenza Artificiale</strong>, infatti, non pensa: prevede. E in questa sua capacità di generare risposte plausibili ci illude di sapere. Abbiamo smesso di chiederci come sappiamo ciò che sappiamo? Della necessità di fare chiarezza è ben consapevole <strong>Walter Quattrociocchi</strong>, Professore ordinario di Informatica presso <em>Sapienza Università di Roma</em>."
+     data-en="It is precisely in this scenario that <em>epistemia</em> fits perfectly. We partially know the term from philosophy — <em>episteme</em> referred to knowledge grounded on certain and verifiable foundations — but it has recently emerged in a new context through the work of <strong>Walter Quattrociocchi</strong>, <strong>Edoardo Loru</strong>, <strong>Jacopo Nudo</strong> and <strong>Niccolò Di Marco</strong>, authors of the study published in <strong>«PNAS»</strong> on October 13, 2025. According to the scholars, we live today in the era of <em>epistemia</em>, a time when knowledge becomes confused with its appearance. Texts seem true, coherent and even authoritative, but often rest on nothing solid. <strong>Artificial Intelligence</strong> does not think: it predicts. And in its ability to generate plausible answers it deceives us into believing we know. Have we stopped asking ourselves how we know what we know? Well aware of the need for clarity is <strong>Walter Quattrociocchi</strong>, Full Professor of Computer Science at <em>Sapienza University of Rome</em>.">È proprio in questo scenario che si inserisce perfettamente <em>l'epistemìa</em>. Conosciamo in parte il termine in ambito filosofico — <em>l'epistème</em> indicava la conoscenza fondata su basi certe e verificabili — ma di recente è emerso in un contesto nuovo grazie al lavoro del gruppo di ricerca formato da <strong>Walter Quattrociocchi</strong>, <strong>Edoardo Loru</strong>, <strong>Jacopo Nudo</strong> e <strong>Niccolò Di Marco</strong>, autori dello studio pubblicato su <strong>«PNAS»</strong> il 13 ottobre 2025. Secondo gli studiosi, viviamo oggi nell'era dell'<em>epistemìa</em>, un tempo in cui la conoscenza si confonde con la sua apparenza. I testi sembrano veri, coerenti e persino autorevoli, ma spesso non poggiano su nulla di solido. <strong>L'Intelligenza Artificiale</strong>, infatti, non pensa: prevede. E in questa sua capacità di generare risposte plausibili ci illude di sapere. Abbiamo smesso di chiederci come sappiamo ciò che sappiamo? Della necessità di fare chiarezza è ben consapevole <strong>Walter Quattrociocchi</strong>, Professore ordinario di Informatica presso <em>Sapienza Università di Roma</em>.</p>
+
+</section>
+
+      <!-- pappagallo -->
+<style>
+#op-pappagallo {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(32px, 4vw, 72px);
+  padding: 0 4vw;
+  box-sizing: border-box;
+  background: #040e1a;
+  overflow: hidden;
+}
+#op-pappagallo .parrot-img-col {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#op-pappagallo .parrot-img {
+  height: clamp(300px, 72vh, 820px);
+  width: auto;
+  max-width: 42vw;
+  object-fit: contain;
+  border-radius: 4px;
+  filter: drop-shadow(0 0 40px rgba(16,185,129,0.25));
+}
+#op-pappagallo .parrot-text-col {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 600px;
+}
+#op-pappagallo .parrot-eyebrow {
+  font-size: clamp(12px, 1vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #10b981;
+  margin-bottom: clamp(12px, 1.5vh, 20px);
+}
+#op-pappagallo .parrot-title {
+  font-size: clamp(36px, 5.5vw, 88px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: #10b981;
+  text-transform: uppercase;
+  margin: 0 0 clamp(20px, 2.5vh, 36px);
+}
+#op-pappagallo .parrot-desc {
+  font-size: clamp(15px, 1.3vw, 21px);
+  color: #94a3b8;
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: clamp(24px, 3vh, 40px);
+}
+#op-pappagallo .parrot-quote {
+  font-size: clamp(18px, 1.7vw, 28px);
+  font-style: italic;
+  color: rgba(255,255,255,0.5);
+  border-left: 2px solid #10b981;
+  padding-left: 18px;
+  line-height: 1.6;
+  margin: 0;
+}
+#op-pappagallo .parrot-quote cite {
+  display: block;
+  margin-top: 10px;
+  font-style: normal;
+  font-size: 0.82em;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.05em;
+}
+</style>
+<section class="op-sec" id="op-pappagallo" data-accent="#10b981">
+
+  <div class="parrot-img-col" data-reveal>
+    <img class="parrot-img" src="img/pappagallo.png" alt="Pappagallo" />
+  </div>
+
+  <div class="parrot-text-col">
+    <div class="parrot-eyebrow" data-reveal
+         data-it="Critica &amp; Teoria"
+         data-en="Critique &amp; Theory">Critica &amp; Teoria</div>
+    <h1 class="parrot-title" data-reveal
+        data-it="Pappagallo Stocastico"
+        data-en="Stochastic Parrot">Pappagallo Stocastico</h1>
+    <p class="parrot-desc" data-reveal
+       data-it="I grandi modelli linguistici non &quot;capiscono&quot; il mondo: assemblano sequenze di parole statisticamente plausibili addestrate su miliardi di testi umani. Come un pappagallo che ripete suoni senza comprenderli — ma su scala planetaria e con un'eloquenza che inganna."
+       data-en="Large language models do not &quot;understand&quot; the world: they stitch together statistically plausible word sequences trained on billions of human texts. Like a parrot repeating sounds without comprehending them — but at planetary scale and with a fluency that deceives.">I grandi modelli linguistici non &quot;capiscono&quot; il mondo: assemblano sequenze di parole statisticamente plausibili addestrate su miliardi di testi umani. Come un pappagallo che ripete suoni senza comprenderli — ma su scala planetaria e con un'eloquenza che inganna.</p>
+    <blockquote class="parrot-quote" data-reveal>
+      <span
+        data-it="«I modelli linguistici di grandi dimensioni sono pappagalli stocastici: sono in grado di cucire insieme sequenze di unità linguistiche statisticamente plausibili, ma senza alcun riferimento al significato.»"
+        data-en="&quot;Large language models are stochastic parrots: they are able to stitch together sequences of linguistic form that are statistically plausible, but without any reference to meaning.&quot;">«I modelli linguistici di grandi dimensioni sono pappagalli stocastici: sono in grado di cucire insieme sequenze di unità linguistiche statisticamente plausibili, ma senza alcun riferimento al significato.»</span>
+      <cite
+        data-it="— Bender, Gebru et al., &quot;On the Dangers of Stochastic Parrots&quot; (FAccT 2021)"
+        data-en="— Bender, Gebru et al., &quot;On the Dangers of Stochastic Parrots&quot; (FAccT 2021)">— Bender, Gebru et al., &quot;On the Dangers of Stochastic Parrots&quot; (FAccT 2021)</cite>
+    </blockquote>
+  </div>
+
+</section>
+
+      <section class="op-sec" id="op-alba-transformer" data-slug="alba-transformer" data-accent="#41b7ff"><iframe data-src="alba-transformer.html" loading="lazy" title="alba-transformer"></iframe></section>
+      <!-- fosforo-web -->
+<style>
+  #op-fosforo-web{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+  }
+  #op-fosforo-web .screen-wrap{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #op-fosforo-web .screen-img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center top;
+  }
+  #op-fosforo-web .screen-label{
+    position: absolute;
+    bottom: 48px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(11px, 0.9vw, 14px);
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+
+<section class="op-sec" id="op-fosforo-web" data-accent="#FFFFFF">
+  <div class="screen-wrap" data-reveal>
+    <img class="screen-img" src="img/fosforo-web.png" alt="fosforo.me"/>
+  </div>
+
+  <div class="screen-label" data-reveal>fosforo.me — La Festa della Scienza</div>
+</section>
+
+      <!-- fosforo-dashboard -->
+<style>
+  #op-fosforo-dashboard{
+    position: relative;
+    width: 100%; height: 100%;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  #op-fosforo-dashboard .screen-wrap{
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #op-fosforo-dashboard .screen-img{
+    width: 100%; height: 100%;
+    object-fit: contain;
+    object-position: center top;
+  }
+  #op-fosforo-dashboard .screen-label{
+    position: absolute; bottom: 48px; left: 50%; transform: translateX(-50%);
+    font-size: clamp(11px, 0.9vw, 14px);
+    font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+<section class="op-sec" id="op-fosforo-dashboard" data-accent="#000000">
+  <div class="screen-wrap" data-reveal>
+    <img class="screen-img" src="img/fosforo-dashboard.png" alt="Fosforo Dashboard"/>
+  </div>
+  <div class="screen-label" data-reveal data-it="fosforo.me — Dashboard" data-en="fosforo.me — Dashboard">fosforo.me — Dashboard</div>
+</section>
+
+      <section class="op-sec" id="op-tom-brad" data-slug="tom-brad" data-accent="#41b7ff"><iframe data-src="tom-brad.html" loading="lazy" title="tom-brad"></iframe></section>
+      <!-- tre-fattori -->
+<style>
+  #op-tre-fattori {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+    background: url('img/pilastri.png') center / cover no-repeat;
+  }
+
+  #op-tre-fattori .tf-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: clamp(40px, 6vw, 80px);
+    background: rgba(0,0,0,0.3);
+    z-index: 10;
+  }
+
+  #op-tre-fattori .tf-title {
+    font-size: clamp(48px, 6vw, 84px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #41b7ff, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin: 0 0 20px 0;
+  }
+
+  #op-tre-fattori .tf-subtitle {
+    font-size: clamp(24px, 3vw, 42px);
+    font-weight: 300;
+    color: #f0f5fb;
+    margin-bottom: clamp(30px, 4vh, 50px);
+  }
+
+  #op-tre-fattori .tf-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: clamp(16px, 2vw, 28px);
+    line-height: 1.8;
+    color: #f0f5fb;
+    max-width: 900px;
+  }
+
+  #op-tre-fattori .tf-list li {
+    margin-bottom: clamp(16px, 2vh, 28px);
+  }
+
+  #op-tre-fattori .tf-list li strong {
+    color: #41b7ff;
+    font-weight: 600;
+  }
+</style>
+
+<section class="op-sec" id="op-tre-fattori" data-accent="#41b7ff">
+  <div class="tf-overlay">
+    <h1 class="tf-title" data-reveal data-it="Tre Fattori" data-en="Three Factors">Tre Fattori</h1>
+    <div class="tf-subtitle" data-reveal data-it="Perché qui, perché ora" data-en="Why here, why now">Perché qui, perché ora</div>
+
+    <ul class="tf-list" data-reveal>
+      <li data-it="1. Nuova capacità di <strong>hardware</strong>. Schede GPU." data-en="1. New <strong>hardware</strong> capacity. GPU cards.">1. Nuova capacità di <strong>hardware</strong>. Schede GPU.</li>
+      <li data-it="2. <strong>Reti Neurali</strong> e miglioramento dei algoritmi" data-en="2. <strong>Neural Networks</strong> and improvement of algorithms">2. <strong>Reti Neurali</strong> e miglioramento dei algoritmi</li>
+      <li data-it="3. <strong>Dati</strong>, enormi quantità di dati." data-en="3. <strong>Data</strong>, enormous quantities of data.">3. <strong>Dati</strong>, enormi quantità di dati.</li>
+    </ul>
+  </div>
+</section>
+
+      <!-- confronto-ai -->
+<style>
+#op-confronto-ai{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  background: #040e1a;
+  padding: clamp(28px, 3vh, 48px) clamp(40px, 5vw, 80px);
+  overflow: hidden;
+  color: #e2e8f0;
+}
+
+#op-confronto-ai .conf-title{
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #41b7ff;
+  line-height: 1;
+  margin: 0 0 clamp(28px, 3.5vh, 48px) 0;
+}
+
+#op-confronto-ai .comparison-wrap{
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2.5vw, 32px);
+}
+
+#op-confronto-ai .ai-card{
+  background: rgba(65, 183, 255, 0.08);
+  border: 1px solid rgba(65, 183, 255, 0.2);
+  border-radius: 12px;
+  padding: clamp(20px, 3vw, 32px);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+}
+#op-confronto-ai .ai-card:hover{
+  background: rgba(65, 183, 255, 0.15);
+  border-color: rgba(65, 183, 255, 0.4);
+}
+
+#op-confronto-ai .card-name{
+  font-size: clamp(18px, 2.4vw, 28px);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 clamp(20px, 2.5vh, 30px) 0;
+}
+#op-confronto-ai .card-name.openai{ color: #10a37f; }
+#op-confronto-ai .card-name.anthropic{ color: #c4a37f; }
+#op-confronto-ai .card-name.gemini{ color: #ea4335; }
+
+#op-confronto-ai .stat-group{
+  margin-bottom: clamp(16px, 2vh, 24px);
+}
+#op-confronto-ai .stat-label{
+  font-size: clamp(11px, 1vw, 13px);
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+#op-confronto-ai .stat-value{
+  font-size: clamp(20px, 2.5vw, 32px);
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1.2;
+}
+#op-confronto-ai .stat-note{
+  font-size: clamp(10px, 0.9vw, 12px);
+  color: rgba(255,255,255,0.4);
+  margin-top: 4px;
+}
+
+@media (max-width: 1200px){
+  #op-confronto-ai .comparison-wrap{
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<section class="op-sec" id="op-confronto-ai" data-accent="#41b7ff">
+
+  <h1 class="conf-title" data-reveal data-it="AI: Confronto Fatturato &amp; Utenti" data-en="AI: Revenue &amp; Users Comparison">AI: Confronto Fatturato &amp; Utenti</h1>
+
+  <div class="comparison-wrap">
+
+    <!-- ChatGPT -->
+    <div class="ai-card" data-reveal>
+      <div class="card-name openai">ChatGPT</div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Fatturato (ARR)" data-en="Revenue (ARR)">Fatturato (ARR)</div>
+        <div class="stat-value">$25B</div>
+        <div class="stat-note" data-it="Febbraio 2026" data-en="February 2026">Febbraio 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Utenti Attivi" data-en="Active Users">Utenti Attivi</div>
+        <div class="stat-value">900M+</div>
+        <div class="stat-note" data-it="Settimanali, 2026" data-en="Weekly, 2026">Settimanali, 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Abbonamenti Paganti" data-en="Paid Subscriptions">Abbonamenti Paganti</div>
+        <div class="stat-value">50M</div>
+        <div class="stat-note" data-it="Plus, Team, Pro, Enterprise" data-en="Plus, Team, Pro, Enterprise">Plus, Team, Pro, Enterprise</div>
+      </div>
+    </div>
+
+    <!-- Anthropic -->
+    <div class="ai-card" data-reveal>
+      <div class="card-name anthropic">Anthropic</div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Fatturato (ARR)" data-en="Revenue (ARR)">Fatturato (ARR)</div>
+        <div class="stat-value">$43B</div>
+        <div class="stat-note" data-it="Aprile 2026" data-en="April 2026">Aprile 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Utenti Attivi" data-en="Active Users">Utenti Attivi</div>
+        <div class="stat-value">30M</div>
+        <div class="stat-note" data-it="Mensili, 2026" data-en="Monthly, 2026">Mensili, 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Abbonamenti Paganti" data-en="Paid Subscriptions">Abbonamenti Paganti</div>
+        <div class="stat-value">2x</div>
+        <div class="stat-note" data-it="Raddoppiati nel 2026" data-en="Doubled in 2026">Raddoppiati nel 2026</div>
+      </div>
+    </div>
+
+    <!-- Google Gemini -->
+    <div class="ai-card" data-reveal>
+      <div class="card-name gemini">Google Gemini</div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Fatturato" data-en="Revenue">Fatturato</div>
+        <div class="stat-value">$1.2B</div>
+        <div class="stat-note" data-it="Da abbonamenti, 2025" data-en="From subscriptions, 2025">Da abbonamenti, 2025</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Utenti Attivi" data-en="Active Users">Utenti Attivi</div>
+        <div class="stat-value">750M</div>
+        <div class="stat-note">2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Abbonamenti Paganti" data-en="Paid Subscriptions">Abbonamenti Paganti</div>
+        <div class="stat-value">15-25M</div>
+        <div class="stat-note" data-it="Stime industria, 2026" data-en="Industry estimates, 2026">Stime industria, 2026</div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+    </div><!-- /#op-track -->
+  </main><!-- /#op-viewport -->
+
+  <script>
+  (function () {
+    var track = document.getElementById('op-track');
+    var sections = [].slice.call(track.querySelectorAll('.op-sec'));
+    var n = sections.length;
+    var i = 0, animating = false, started = false;
+
+    var LABELS = [
+      {it:'Inizio',en:'Intro'},{it:'Video',en:'Video'},{it:'Scrittura',en:'Writing'},{it:'Fotografia',en:'Photography'},
+      {it:'Pechino',en:'Beijing'},{it:'Pechino',en:'Beijing'},{it:'Pechino',en:'Beijing'},{it:'Timeline',en:'Timeline'},
+      {it:'Napa Valley',en:'Napa Valley'},{it:'Musk & Page',en:'Musk & Page'},{it:'Due visioni',en:'Two visions'},{it:'Musk & Altman',en:'Musk & Altman'},
+      {it:'Mappa paesi',en:'Country map'},{it:'Leader & CEO',en:'Leaders & CEOs'},{it:'Trump vs Amodei',en:'Trump vs Amodei'},
+      {it:'Anthropic',en:'Anthropic'},{it:'OpenAI',en:'OpenAI'},{it:'No vs Sì',en:'No vs Yes'},{it:'Export',en:'Export'},
+      {it:'LLM Occidentali',en:'Western LLMs'},{it:'LLM Asiatici',en:'Asian LLMs'},{it:'LLM Russi',en:'Russian LLMs'},
+      {it:'Peter Thiel',en:'Peter Thiel'},{it:'Palantír',en:'Palantír'},{it:"Cos'è un Palantír",en:'What is a Palantír'},{it:'Palantir',en:'Palantir'},
+      {it:'PayPal Mafia',en:'PayPal Mafia'},{it:'Le cerniere',en:'The links'},{it:'La foto',en:'The photo'},
+      {it:'Epistemia',en:'Epistemia'},{it:'Pappagallo',en:'Parrot'},{it:'Transformer',en:'Transformer'},
+      {it:'Fosforo · Sito',en:'Fosforo · Site'},{it:'Fosforo · Dashboard',en:'Fosforo · Dashboard'},{it:'Tom & Brad',en:'Tom & Brad'},
+      {it:'Tre fattori',en:'Three factors'},{it:'Confronto AI',en:'AI comparison'}
+    ];
+
+    var EASE = 'cubic-bezier(0.16,1,0.3,1)';
+    function vh() { return window.innerHeight; }
+    function slugOf(sec) { return sec.getAttribute('data-slug') || sec.id.replace(/^op-/, ''); }
+
+    function setAccent(sec) {
+      var a = (sec.getAttribute('data-accent') || '#41b7ff').trim();
+      var hex = a.replace('#', '').toLowerCase();
+      if (hex === '000000' || hex === '000' || hex === 'ffffff' || hex === 'fff') a = '#41b7ff';
+      document.documentElement.style.setProperty('--op-accent', a);
+    }
+
+    // Reveal via CSS class + per-element stagger delay.
+    function stageReveal(sec, on) {
+      var els = sec.querySelectorAll('[data-reveal]');
+      [].forEach.call(els, function (el, idx) {
+        el.style.transitionDelay = on ? (0.12 + idx * 0.075) + 's' : '0s';
+      });
+      sec.classList.toggle('op-active', on);
+    }
+
+    function ensureLoaded(sec) {
+      var f = sec.querySelector('iframe[data-src]');
+      if (!f) return;
+      f.addEventListener('load', function () {
+        try { f.contentWindow.postMessage({ type: 'op-setlang', lang: lang }, '*'); } catch (e) {}
+      });
+      f.src = f.getAttribute('data-src');
+      f.removeAttribute('data-src');
+    }
+    function loadNear() {
+      ensureLoaded(sections[i]);
+      if (sections[i + 1]) ensureLoaded(sections[i + 1]);
+      if (sections[i - 1]) ensureLoaded(sections[i - 1]);
+    }
+
+    function position(instant) {
+      var y = -i * vh();
+      track.style.transition = instant ? 'none' : ('transform 0.9s ' + EASE);
+      track.style.transform = 'translate3d(0,' + y + 'px,0)';
+      if (!instant) {
+        animating = true;
+        clearTimeout(position._t);
+        position._t = setTimeout(function () { animating = false; }, 920);
+      }
+    }
+
+    function setVH() {
+      document.documentElement.style.setProperty('--opvh', vh() + 'px');
+      position(true);
+    }
+
+    function activate(prev) {
+      var sec = sections[i];
+      setAccent(sec);
+      loadNear();
+      if (typeof prev === 'number' && prev !== i && sections[prev]) stageReveal(sections[prev], false);
+      stageReveal(sec, true);
+      updateChrome();
+      var f = sec.querySelector('iframe');
+      if (f && !f.hasAttribute('data-src')) { try { f.contentWindow.postMessage({ type: 'op-setlang', lang: lang }, '*'); } catch (e) {} }
+      try { history.replaceState(null, '', '#' + slugOf(sec)); } catch (e) {}
+    }
+
+    function goTo(t) {
+      t = Math.max(0, Math.min(n - 1, t));
+      if (animating) return;
+      if (t === i && started) return;
+      var prev = i; i = t; started = true;
+      hint.classList.add('hide');
+      position(false);
+      activate(prev);
+    }
+    function next() { goTo(i + 1); }
+    function prev() { goTo(i - 1); }
+
+    // chrome
+    var dotsC = document.getElementById('op-dots');
+    sections.forEach(function (s, idx) {
+      var b = document.createElement('button');
+      b.setAttribute('aria-label', (LABELS[idx] && LABELS[idx].it) || ('Sezione ' + (idx + 1)));
+      b.title = (LABELS[idx] && LABELS[idx].it) || '';
+      b.addEventListener('click', function () { goTo(idx); });
+      dotsC.appendChild(b);
+    });
+    var progress = document.getElementById('op-progress');
+    var counter = document.getElementById('op-counter');
+    var hint = document.getElementById('op-hint');
+    function updateChrome() {
+      [].forEach.call(dotsC.children, function (b, idx) { b.classList.toggle('active', idx === i); });
+      progress.style.width = ((i + 1) / n * 100) + '%';
+      var lab = LABELS[i] ? (lang === 'it' ? LABELS[i].it : LABELS[i].en) : '';
+      counter.innerHTML = '<b>' + (i + 1) + '</b> / ' + n + (lab ? ' &middot; ' + lab : '');
+    }
+
+    // language
+    var LANG_KEY = 'geopolitica-lang';
+    var lang = localStorage.getItem(LANG_KEY) || 'it';
+    function applyLangNative() {
+      sections.forEach(function (sec) {
+        var els = sec.querySelectorAll('[data-it],[data-en]');
+        [].forEach.call(els, function (el) {
+          var v = el.getAttribute('data-' + lang);
+          if (v != null) el.innerHTML = v;
+        });
+      });
+    }
+    function broadcastLang() {
+      sections.forEach(function (sec) {
+        var f = sec.querySelector('iframe');
+        if (f && !f.hasAttribute('data-src')) { try { f.contentWindow.postMessage({ type: 'op-setlang', lang: lang }, '*'); } catch (e) {} }
+      });
+    }
+    function setLang(l) {
+      lang = l; localStorage.setItem(LANG_KEY, l); document.documentElement.lang = l;
+      [].forEach.call(document.querySelectorAll('#op-langtoggle button'), function (b) {
+        b.classList.toggle('active', b.getAttribute('data-lang') === l);
+      });
+      applyLangNative(); broadcastLang(); updateChrome();
+    }
+    [].forEach.call(document.querySelectorAll('#op-langtoggle button'), function (b) {
+      b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); });
+    });
+
+    // input — keyboard (parent-focused / native sections)
+    window.addEventListener('keydown', function (e) {
+      var t = (e.target && e.target.tagName) || '';
+      if (t === 'INPUT' || t === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+      var k = e.key, c = e.code;
+      var isN = k === 'ArrowRight' || c === 'ArrowRight' || k === 'ArrowDown' || c === 'ArrowDown' ||
+                k === 'PageDown' || c === 'PageDown' || k === ' ' || k === 'Spacebar' || c === 'Space' ||
+                k === 'Enter' || c === 'Enter';
+      var isP = k === 'ArrowLeft' || c === 'ArrowLeft' || k === 'ArrowUp' || c === 'ArrowUp' ||
+                k === 'PageUp' || c === 'PageUp' || k === 'Backspace' || c === 'Backspace';
+      if (isN) { e.preventDefault(); next(); }
+      else if (isP) { e.preventDefault(); prev(); }
+    });
+    // input — messages forwarded by embedded slides (iframes)
+    window.addEventListener('message', function (e) {
+      var d = e.data || {};
+      if (d.type === 'op-nav') { if (d.dir === 'next') next(); else if (d.dir === 'prev') prev(); }
+    });
+    // input — wheel (over native sections)
+    var wlock = false;
+    window.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaY) < 8) return;
+      if (wlock || animating) return;
+      wlock = true; setTimeout(function () { wlock = false; }, 160);
+      if (e.deltaY > 0) next(); else prev();
+    }, { passive: true });
+    // input — touch swipe
+    var ty = null;
+    window.addEventListener('touchstart', function (e) { ty = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', function (e) {
+      if (ty == null) return;
+      var dy = e.changedTouches[0].clientY - ty;
+      if (Math.abs(dy) > 50) { if (dy < 0) next(); else prev(); }
+      ty = null;
+    }, { passive: true });
+    // CTA (e.g. hero "start") → advance
+    document.addEventListener('click', function (e) {
+      var s = e.target.closest && e.target.closest('[data-op-next]');
+      if (s) { e.preventDefault(); next(); }
+    });
+
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', function () { setTimeout(setVH, 150); });
+
+    // init
+    var hash = (location.hash || '').replace('#', '');
+    if (hash) {
+      var idx = -1;
+      sections.forEach(function (s, k) { if (slugOf(s) === hash) idx = k; });
+      if (idx > 0) i = idx;
+    }
+    setVH();
+    setLang(lang);
+    activate(-1);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<style>
+#op-thiel {
+  position: relative;
+  overflow: hidden;
+  background: #03070f;
+  color: #e2e8f0;
+}
+
+/* ---------- Hero image (full-bleed, ancorata a sinistra su Thiel) ---------- */
+#op-thiel .hero {
+  position: absolute; inset: 0;
+  background: url('img/palantir.png') no-repeat center left;
+  background-size: cover;
+  transform: scale(1.06);
+  transform-origin: 30% 50%;
+  animation: thiel-kenburns 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes thiel-kenburns {
+  from { transform: scale(1.06) translate(0, 0); }
+  to   { transform: scale(1.12) translate(1.2%, -1.4%); }
+}
+
+/* ---------- Cinematic scrims (scuriscono verso destra) ---------- */
+#op-thiel .scrim-right {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    260deg,
+    #03070f 0%,
+    rgba(3,7,15,0.97) 24%,
+    rgba(3,7,15,0.82) 38%,
+    rgba(3,7,15,0.35) 52%,
+    rgba(3,7,15,0.05) 66%,
+    rgba(3,7,15,0) 78%
+  );
+}
+#op-thiel .scrim-bottom {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(3,7,15,0.85) 0%, rgba(3,7,15,0) 32%);
+}
+#op-thiel .vignette {
+  position: absolute; inset: 0;
+  box-shadow: inset 0 0 240px 60px rgba(0,0,0,0.7);
+  pointer-events: none;
+}
+/* glow caldo sul fondatore di sinistra */
+#op-thiel .glow {
+  position: absolute;
+  top: 48%; left: 34%;
+  width: 40vw; height: 40vw;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(245,158,11,0.16) 0%, rgba(245,158,11,0.05) 42%, rgba(245,158,11,0) 70%);
+  pointer-events: none;
+  animation: thiel-pulse 6s ease-in-out infinite;
+}
+@keyframes thiel-pulse {
+  0%,100% { opacity: 0.65; }
+  50%     { opacity: 1; }
+}
+
+/* ---------- Content (colonna destra) ---------- */
+#op-thiel .content {
+  position: absolute;
+  top: 50%; right: clamp(40px, 6vw, 110px);
+  transform: translateY(-50%);
+  max-width: min(600px, 52vw);
+  z-index: 3;
+  text-align: left;
+}
+
+#op-thiel .eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-size: clamp(12px, 0.95vw, 16px);
+  font-weight: 700; letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: #fbbf24;
+  margin-bottom: clamp(14px, 2vh, 24px);
+}
+#op-thiel .eyebrow::before {
+  content: ''; width: 34px; height: 2px;
+  background: linear-gradient(90deg, #f59e0b, transparent);
+}
+
+#op-thiel .name {
+  font-size: clamp(54px, 7vw, 118px);
+  font-weight: 900; letter-spacing: -0.04em;
+  line-height: 0.9;
+  margin: 0 0 clamp(16px, 2.2vh, 26px);
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 30%, #fcd34d 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  text-shadow: 0 0 60px rgba(245,158,11,0.32);
+}
+
+#op-thiel .ticker {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 6px 14px;
+  border: 1px solid rgba(245,158,11,0.45);
+  border-radius: 999px;
+  background: rgba(245,158,11,0.08);
+  font-size: clamp(12px, 0.95vw, 15px);
+  font-weight: 700; letter-spacing: 0.12em;
+  color: #fde68a;
+  margin-bottom: clamp(16px, 2.2vh, 26px);
+  vertical-align: middle;
+}
+#op-thiel .ticker .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 10px #f59e0b;
+  animation: thiel-pulse 2.4s ease-in-out infinite;
+}
+
+#op-thiel .tagline {
+  font-size: clamp(16px, 1.4vw, 22px);
+  color: #cbd5e1; font-weight: 300;
+  line-height: 1.5; letter-spacing: 0.01em;
+  margin: 0 0 clamp(22px, 3vh, 36px);
+  max-width: 540px;
+}
+#op-thiel .tagline b { color: #f1f5f9; font-weight: 600; }
+
+#op-thiel .facts {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; gap: clamp(8px, 1.1vh, 14px);
+  max-width: 560px;
+}
+#op-thiel .facts li {
+  font-size: clamp(14px, 1.1vw, 18px);
+  color: #e2e8f0; line-height: 1.4;
+  padding-left: 30px; position: relative;
+}
+#op-thiel .facts li::before {
+  content: ''; position: absolute;
+  left: 0; top: 0.5em;
+  width: 15px; height: 15px;
+  background: #f59e0b;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2.4 6.9L21.6 9l-5.4 4.7L18 21 12 17l-6 4 1.8-7.3L2.4 9l7.2-.1z'/></svg>") center/contain no-repeat;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2.4 6.9L21.6 9l-5.4 4.7L18 21 12 17l-6 4 1.8-7.3L2.4 9l7.2-.1z'/></svg>") center/contain no-repeat;
+  opacity: 0.9;
+}
+
+#op-thiel .quote {
+  margin: clamp(20px, 2.8vh, 34px) 0 0;
+  padding-left: 20px;
+  border-left: 3px solid #f59e0b;
+  font-size: clamp(16px, 1.45vw, 23px);
+  font-style: italic;
+  color: rgba(255,255,255,0.78);
+  line-height: 1.4;
+  max-width: 520px;
+}
+#op-thiel .quote .who { display: block; font-style: normal; font-size: 0.72em; color: #fbbf24; margin-top: 8px; letter-spacing: 0.08em; }
+
+/* ---------- Responsive: stack (portrait) ---------- */
+@media (max-aspect-ratio: 1/1) {
+  #op-thiel .hero { background-position: 22% 26%; }
+  #op-thiel .scrim-right {
+    background: linear-gradient(to top, #03070f 0%, rgba(3,7,15,0.96) 30%, rgba(3,7,15,0.6) 50%, rgba(3,7,15,0.2) 70%, rgba(3,7,15,0) 88%);
+  }
+  #op-thiel .content {
+    top: auto; bottom: clamp(70px, 11vh, 120px);
+    right: 50%; transform: none; translate: 50% 0;
+    width: min(620px, 88vw); max-width: 88vw;
+  }
+}
+</style>
+
+<section class="op-sec" id="op-thiel" data-accent="#f59e0b">
+  <div class="hero"></div>
+  <div class="glow"></div>
+  <div class="scrim-right"></div>
+  <div class="scrim-bottom"></div>
+  <div class="vignette"></div>
+
+  <div class="content">
+    <div class="eyebrow" data-reveal
+         data-it="Tech Founders"
+         data-en="Tech Founders">Tech Founders</div>
+
+    <h1 class="name" data-reveal
+        data-it="Peter Thiel"
+        data-en="Peter Thiel">Peter Thiel</h1>
+
+    <div class="ticker" data-reveal>
+      <span class="dot"></span>
+      <span data-it="INVESTITORE · n. 1967"
+            data-en="INVESTOR · b. 1967">INVESTITORE · n. 1967</span>
+    </div>
+
+    <p class="tagline" data-reveal
+       data-it="<b>Investitore e contrarian</b> — co-fondatore di PayPal e Palantir, architetto del venture capital di Silicon Valley."
+       data-en="<b>Investor and contrarian</b> — co-founder of PayPal and Palantir, architect of Silicon Valley venture capital."><b>Investitore e contrarian</b> — co-fondatore di PayPal e Palantir, architetto del venture capital di Silicon Valley.</p>
+
+    <ul class="facts" data-reveal
+        data-it="Co-fondatore di PayPal nel 1999 — venduta a eBay per $1,5 mld||Fonda Palantir nel 2003 — analisi dati per CIA, NSA, Pentagono||Primo investitore esterno di Facebook (2004): $500K per il 10,2%||Founders Fund, Clarium, Mithril — portafoglio venture da miliardi||Autore di &quot;Zero to One&quot; (2014) — manifesto del venture capital||Finanziatore decisivo delle campagne di Trump nel 2016 e 2024"
+        data-en="Co-founded PayPal in 1999 — sold to eBay for $1.5B||Founded Palantir in 2003 — data analytics for CIA, NSA, Pentagon||First outside investor in Facebook (2004): $500K for 10.2%||Founders Fund, Clarium, Mithril — multi-billion venture portfolio||Author of &quot;Zero to One&quot; (2014) — contemporary VC manifesto||Decisive funder of Trump's 2016 and 2024 campaigns">
+      <li>Co-fondatore di PayPal nel 1999 — venduta a eBay per $1,5 mld</li>
+      <li>Fonda Palantir nel 2003 — analisi dati per CIA, NSA, Pentagono</li>
+      <li>Primo investitore esterno di Facebook (2004): $500K per il 10,2%</li>
+      <li>Founders Fund, Clarium, Mithril — portafoglio venture da miliardi</li>
+      <li>Autore di "Zero to One" (2014) — manifesto del venture capital</li>
+      <li>Finanziatore decisivo delle campagne di Trump nel 2016 e 2024</li>
+    </ul>
+
+    <blockquote class="quote" data-reveal
+        data-it="&quot;La concorrenza è per i perdenti.&quot;<span class=&quot;who&quot;>— Peter Thiel</span>"
+        data-en="&quot;Competition is for losers.&quot;<span class=&quot;who&quot;>— Peter Thiel</span>">"La concorrenza è per i perdenti."<span class="who">— Peter Thiel</span></blockquote>
+  </div>
+</section>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Geopolitica della AI — One Page</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
+    body { animation: none; }
+
+    #op-viewport { position: fixed; inset: 0; overflow: hidden; background: #000; }
+    #op-track { position: absolute; top: 0; left: 0; width: 100%; height: var(--opvh, 100vh); will-change: transform; }
+    .op-sec { position: relative; width: 100%; height: var(--opvh, 100vh); overflow: hidden; }
+    .op-sec > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #000; }
+
+    /* Reveal — compositor-driven CSS transitions (robust, never leaves content
+       hidden even if rAF/JS animation is throttled). Elements start hidden and
+       are revealed when the engine adds .op-active to their section. */
+    .op-sec [data-reveal] {
+      opacity: 0; transform: translateY(36px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+      will-change: opacity, transform;
+    }
+    .op-sec.op-active [data-reveal] { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .op-sec [data-reveal] { transition-duration: 0.001s; }
+    }
+
+    /* ── Chrome ── */
+    #op-progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 70;
+      background: linear-gradient(90deg, var(--op-accent, #41b7ff), #7c5cff);
+      box-shadow: 0 0 14px var(--op-accent, #41b7ff);
+      transition: width 0.7s cubic-bezier(0.16,1,0.3,1), background 0.5s;
+    }
+    #op-dots {
+      position: fixed; right: 22px; top: 50%; transform: translateY(-50%); z-index: 70;
+      display: flex; flex-direction: column; gap: 11px;
+    }
+    #op-dots button {
+      width: 10px; height: 10px; border-radius: 50%; padding: 0;
+      border: 1px solid rgba(255,255,255,0.35); background: transparent; cursor: pointer;
+      transition: transform 0.25s, background 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    #op-dots button:hover { border-color: #fff; transform: scale(1.25); }
+    #op-dots button.active {
+      background: var(--op-accent, #41b7ff); border-color: var(--op-accent, #41b7ff);
+      transform: scale(1.45); box-shadow: 0 0 12px var(--op-accent, #41b7ff);
+    }
+    #op-counter {
+      position: fixed; left: 24px; bottom: 22px; z-index: 70;
+      font: 600 13px/1 'Segoe UI', system-ui, sans-serif; color: rgba(255,255,255,0.55);
+      letter-spacing: 0.04em;
+    }
+    #op-counter b { color: #fff; }
+    #op-langtoggle {
+      position: fixed; top: 18px; right: 20px; z-index: 72;
+      display: flex; gap: 2px; padding: 3px; border-radius: 999px;
+      background: rgba(8,14,26,0.6); border: 1px solid rgba(255,255,255,0.14);
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    }
+    #op-langtoggle button {
+      border: 0; background: transparent; color: rgba(255,255,255,0.55);
+      font: 700 12px/1 'Segoe UI', system-ui, sans-serif; padding: 7px 12px;
+      border-radius: 999px; cursor: pointer; letter-spacing: 0.06em;
+    }
+    #op-langtoggle button.active { background: rgba(65,183,255,0.2); color: #7cd0ff; }
+    #op-hint {
+      position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 70;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      color: rgba(255,255,255,0.5); font: 600 12px 'Segoe UI', system-ui, sans-serif;
+      letter-spacing: 0.08em; text-transform: uppercase; transition: opacity 0.5s;
+    }
+    #op-hint.hide { opacity: 0; pointer-events: none; }
+    #op-hint .chev { font-size: 18px; animation: op-bob 1.6s ease-in-out infinite; }
+    @keyframes op-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+    @media (max-width: 640px) {
+      #op-dots { right: 10px; gap: 8px; }
+      #op-dots button { width: 8px; height: 8px; }
+      #op-counter { font-size: 11px; left: 14px; bottom: 14px; }
+      #op-hint { bottom: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="op-progress"></div>
+  <nav id="op-dots" aria-label="Sezioni"></nav>
+  <div id="op-counter"></div>
+  <div id="op-langtoggle">
+    <button data-lang="it">IT</button>
+    <button data-lang="en">EN</button>
+  </div>
+  <div id="op-hint"><span class="lbl">Scorri</span><span class="chev">&#8595;</span></div>
+
+  <main id="op-viewport">
+    <div id="op-track">

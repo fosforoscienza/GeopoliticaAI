@@ -1,0 +1,111 @@
+<style>
+  #op-index {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    background:
+      radial-gradient(50% 60% at 78% 45%, rgba(65,183,255,0.16), transparent 65%),
+      radial-gradient(50% 60% at 12% 70%, rgba(124,92,246,0.12), transparent 65%),
+      #02060f;
+    display: flex;
+    align-items: center;
+    gap: clamp(30px, 5vw, 90px);
+    padding: clamp(40px, 6vh, 80px) clamp(44px, 6vw, 120px);
+    color: #d4def0;
+  }
+
+  /* ambient floating orbs */
+  #op-index .orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  #op-index .orb { position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.5; }
+  #op-index .orb.a { width: 360px; height: 360px; background: rgba(65,183,255,0.4); top: -80px; right: 12%; animation: index-drift1 16s ease-in-out infinite; }
+  #op-index .orb.b { width: 300px; height: 300px; background: rgba(124,92,246,0.32); bottom: -60px; left: 6%; animation: index-drift2 19s ease-in-out infinite; }
+  #op-index .orb.c { width: 220px; height: 220px; background: rgba(65,183,255,0.22); top: 40%; left: 40%; animation: index-drift1 22s ease-in-out infinite reverse; }
+  @keyframes index-drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,28px)} }
+  @keyframes index-drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(34px,-26px)} }
+
+  /* ── Left: editorial title ── */
+  #op-index .copy {
+    position: relative; z-index: 2;
+    flex: 1 1 0; min-width: 0; max-width: 760px;
+  }
+
+  #op-index .eyebrow {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-size: clamp(12px, 1vw, 17px); font-weight: 700;
+    letter-spacing: 0.34em; text-transform: uppercase;
+    color: #8fd2ff; margin-bottom: clamp(18px, 2.6vh, 30px);
+  }
+  #op-index .eyebrow::before { content:''; width: clamp(28px,3vw,48px); height: 2px; background: linear-gradient(90deg, #41b7ff, transparent); }
+
+  #op-index .title {
+    font-size: clamp(64px, 9.5vw, 168px);
+    font-weight: 900; letter-spacing: -0.04em; line-height: 0.86;
+    margin: 0; text-transform: uppercase;
+    background: linear-gradient(165deg, #ffffff 30%, #7cc4ff 75%, #4f8ef7 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: 0 0 90px rgba(65,183,255,0.4);
+  }
+
+  #op-index .rule { width: clamp(60px, 8vw, 120px); height: 4px; border-radius: 4px;
+    margin: clamp(22px,3vh,34px) 0; background: linear-gradient(90deg, #41b7ff, rgba(124,92,246,0.8)); }
+
+  #op-index .tagline {
+    font-size: clamp(18px, 1.9vw, 32px); font-weight: 300;
+    line-height: 1.4; color: #d4def0; max-width: 620px; margin: 0;
+  }
+  #op-index .tagline b { color: #fff; font-weight: 600; }
+
+  /* ── Right: framed poster ── */
+  #op-index .poster-wrap {
+    position: relative; z-index: 2; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #op-index .poster-glow {
+    position: absolute; inset: -8% -8%;
+    background: radial-gradient(closest-side, rgba(65,183,255,0.45), transparent 75%);
+    filter: blur(20px); z-index: -1;
+    animation: index-pulse 5s ease-in-out infinite;
+  }
+  @keyframes index-pulse { 0%,100%{opacity:0.7} 50%{opacity:1} }
+  #op-index .poster {
+    height: min(80vh, 680px); width: auto; display: block;
+    border-radius: 16px;
+    border: 1px solid rgba(120,190,255,0.3);
+    box-shadow: 0 50px 120px -24px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    animation: index-float 7s ease-in-out infinite;
+  }
+  @keyframes index-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-index { flex-direction: column-reverse; justify-content: center; gap: clamp(24px,4vh,40px); padding: clamp(60px,8vh,90px) 7vw; text-align: center; }
+    #op-index .copy { max-width: 640px; }
+    #op-index .eyebrow { justify-content: center; }
+    #op-index .eyebrow::before { display: none; }
+    #op-index .rule { margin-left: auto; margin-right: auto; }
+    #op-index .tagline { margin-left: auto; margin-right: auto; }
+    #op-index .poster { height: min(46vh, 440px); }
+  }
+</style>
+
+<section class="op-sec" id="op-index" data-accent="#41b7ff">
+  <div class="orbs"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+
+  <div class="copy">
+    <div class="eyebrow" data-reveal
+         data-it="Geopolitica dell'Intelligenza Artificiale"
+         data-en="The Geopolitics of Artificial Intelligence">Geopolitica dell'Intelligenza Artificiale</div>
+    <h1 class="title" data-reveal>THE&nbsp;AI&nbsp;ERA</h1>
+    <div class="rule" data-reveal></div>
+    <p class="tagline" data-reveal
+       data-it="Chi controlla l'intelligenza artificiale <b>controlla il futuro.</b>"
+       data-en="Whoever controls artificial intelligence <b>controls the future.</b>">Chi controlla l'intelligenza artificiale <b>controlla il futuro.</b></p>
+  </div>
+
+  <div class="poster-wrap" data-reveal>
+    <div class="poster-glow"></div>
+    <img class="poster" src="Mattia-THE-AI-ERA.png" alt="The AI Era" />
+  </div>
+</section>

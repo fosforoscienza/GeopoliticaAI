@@ -1,0 +1,174 @@
+<style>
+  #op-palantir-intro-2 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(28px, 5vh, 60px) clamp(36px, 6vw, 100px);
+    background:
+      radial-gradient(60% 80% at 50% 0%, rgba(139,92,246,0.16), transparent 60%),
+      radial-gradient(40% 50% at 50% 100%, rgba(139,92,246,0.10), transparent 70%),
+      #000;
+    overflow: hidden;
+  }
+
+  /* ---------- Intestazione ---------- */
+  #op-palantir-intro-2 .head {
+    text-align: center;
+    margin-bottom: clamp(22px, 3.4vh, 44px);
+  }
+
+  #op-palantir-intro-2 .eyebrow {
+    font-size: clamp(11px, 0.95vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    margin-bottom: clamp(12px, 1.8vh, 20px);
+  }
+  #op-palantir-intro-2 .name {
+    font-size: clamp(48px, 6.6vw, 110px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+    margin: 0;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 28%, #c4b5fd 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    text-shadow: 0 0 80px rgba(139,92,246,0.4);
+  }
+  #op-palantir-intro-2 .lead {
+    font-size: clamp(15px, 1.45vw, 23px);
+    line-height: 1.55;
+    color: #e2e8f0;
+    font-weight: 300;
+    max-width: 980px;
+    margin: clamp(16px,2.4vh,26px) auto 0;
+  }
+  #op-palantir-intro-2 .lead b { color: #fff; font-weight: 600; }
+  #op-palantir-intro-2 .lead .accent { color: #a78bfa; font-weight: 600; font-style: italic; }
+
+  /* ---------- Tre blocchi ---------- */
+  #op-palantir-intro-2 .cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(22px, 3.2vw, 64px);
+    max-width: 1200px;
+    width: 100%;
+    margin-bottom: clamp(22px, 3.4vh, 44px);
+  }
+  #op-palantir-intro-2 .col {
+    position: relative;
+    padding-top: clamp(40px, 5vh, 60px);
+  }
+  #op-palantir-intro-2 .col .num {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: clamp(30px, 3.4vw, 52px);
+    font-weight: 900;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.6px rgba(139,92,246,0.75);
+    letter-spacing: -0.02em;
+  }
+  #op-palantir-intro-2 .col h3 {
+    font-size: clamp(17px, 1.5vw, 26px);
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 clamp(8px,1.2vh,12px);
+    letter-spacing: 0.01em;
+  }
+  #op-palantir-intro-2 .col h3::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    margin-top: 10px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #8b5cf6, transparent);
+  }
+  #op-palantir-intro-2 .col p {
+    font-size: clamp(13px, 1.1vw, 18px);
+    line-height: 1.55;
+    color: #94a3b8;
+    margin: 0;
+  }
+  #op-palantir-intro-2 .col p b { color: #cbd5e1; font-weight: 600; }
+
+  /* ---------- Chiusura ---------- */
+  #op-palantir-intro-2 .closing {
+    max-width: 1000px;
+    text-align: center;
+    font-size: clamp(16px, 1.55vw, 26px);
+    font-style: italic;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.86);
+    padding-top: clamp(20px, 3vh, 34px);
+    border-top: 1px solid rgba(139,92,246,0.28);
+  }
+  #op-palantir-intro-2 .closing b { color: #a78bfa; font-style: normal; font-weight: 600; }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-palantir-intro-2 {
+      justify-content: flex-start;
+      overflow-y: auto;
+      padding-top: clamp(40px,7vh,70px);
+      padding-bottom: clamp(90px,13vh,120px);
+    }
+    #op-palantir-intro-2 .cols {
+      grid-template-columns: 1fr;
+      gap: clamp(18px,2.6vh,28px);
+      max-width: 620px;
+    }
+    #op-palantir-intro-2 .col {
+      padding-top: clamp(34px,5vh,48px);
+    }
+  }
+</style>
+
+<section class="op-sec" id="op-palantir-intro-2" data-accent="#8b5cf6">
+  <div class="head">
+    <div class="eyebrow" data-reveal
+      data-it="J.R.R. Tolkien · Le pietre veggenti"
+      data-en="J.R.R. Tolkien · The seeing-stones">J.R.R. Tolkien · Le pietre veggenti</div>
+    <h1 class="name" data-reveal
+      data-it="Che cos'è un Palantír"
+      data-en="What is a Palantír">Che cos'è un Palantír</h1>
+    <p class="lead" data-reveal
+      data-it="Nel mondo di Tolkien i <b>palantíri</b> (singolare <i>palantír</i>, in quenya <span class=&quot;accent&quot;>«colui che vede da lontano»</span>) sono sfere di cristallo indistruttibili: chi ne possiede una può vedere luoghi remoti e comunicare con chi tiene un'altra pietra."
+      data-en="In Tolkien's world the <b>palantíri</b> (singular <i>palantír</i>, Quenya for <span class=&quot;accent&quot;>“one that sees from afar”</span>) are indestructible crystal spheres: whoever holds one can see distant places and speak with whoever holds another stone.">Nel mondo di Tolkien i <b>palantíri</b> (singolare <i>palantír</i>, in quenya <span class="accent">«colui che vede da lontano»</span>) sono sfere di cristallo indistruttibili: chi ne possiede una può vedere luoghi remoti e comunicare con chi tiene un'altra pietra.</p>
+  </div>
+
+  <div class="cols">
+    <div class="col" data-reveal>
+      <span class="num">01</span>
+      <h3 data-it="Origine" data-en="Origin">Origine</h3>
+      <p data-it="Sette pietre forgiate nell'Ovest e portate nella Terra di Mezzo, custodite nelle torri di <b>Gondor e Arnor</b>. Strumenti di potere riservati ai re di Númenor."
+         data-en="Seven stones forged in the West and brought to Middle-earth, kept in the towers of <b>Gondor and Arnor</b>. Instruments of power reserved for the kings of Númenor.">Sette pietre forgiate nell'Ovest e portate nella Terra di Mezzo, custodite nelle torri di <b>Gondor e Arnor</b>. Strumenti di potere riservati ai re di Númenor.</p>
+    </div>
+    <div class="col" data-reveal>
+      <span class="num">02</span>
+      <h3 data-it="Il potere" data-en="The power">Il potere</h3>
+      <p data-it="Consentono di vedere eventi distanti nello <b>spazio e nel tempo</b>. Ma rivelano solo ciò che l'osservatore viene guidato a vedere: la conoscenza non è mai neutra."
+         data-en="They reveal events distant in <b>space and time</b>. Yet they show only what the viewer is led to see: knowledge is never neutral.">Consentono di vedere eventi distanti nello <b>spazio e nel tempo</b>. Ma rivelano solo ciò che l'osservatore viene guidato a vedere: la conoscenza non è mai neutra.</p>
+    </div>
+    <div class="col" data-reveal>
+      <span class="num">03</span>
+      <h3 data-it="Il pericolo" data-en="The danger">Il pericolo</h3>
+      <p data-it="Sauron corruppe le pietre. <b>Saruman e Denethor</b>, credendo di dominarle, ne furono invece dominati, manipolati e condotti alla rovina."
+         data-en="Sauron corrupted the stones. <b>Saruman and Denethor</b>, believing they commanded them, were instead commanded, deceived and driven to ruin.">Sauron corruppe le pietre. <b>Saruman e Denethor</b>, credendo di dominarle, ne furono invece dominati, manipolati e condotti alla rovina.</p>
+    </div>
+  </div>
+
+  <p class="closing" data-reveal
+    data-it="Da qui il nome dell'azienda: <b>uno strumento per vedere e connettere oceani di dati</b> — potentissimo, e proprio per questo ambiguo."
+    data-en="Hence the company's name: <b>a tool to see and connect oceans of data</b> — immensely powerful, and for that very reason ambiguous.">Da qui il nome dell'azienda: <b>uno strumento per vedere e connettere oceani di dati</b> — potentissimo, e proprio per questo ambiguo.</p>
+</section>

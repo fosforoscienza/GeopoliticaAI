@@ -1,0 +1,69 @@
+<style>
+  #op-trump-amodei {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 60% at 50% 45%, rgba(204,120,92,0.10), transparent 70%),
+      #000;
+  }
+
+  /* Foto interamente visibile */
+  #op-trump-amodei .photo {
+    position: absolute; inset: 0;
+    background: url('img/geopolitica/trump-amodei.png') no-repeat center center;
+    background-size: contain;
+  }
+
+  #op-trump-amodei .fade-bottom {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.92) 12%, rgba(0,0,0,0.45) 26%, rgba(0,0,0,0) 44%);
+  }
+
+  #op-trump-amodei .title-bar {
+    position: absolute; left: 0; right: 0; bottom: clamp(34px, 6.5vh, 70px);
+    text-align: center; z-index: 3; padding: 0 6vw;
+  }
+  #op-trump-amodei .eyebrow {
+    font-size: clamp(11px, 1vw, 16px); font-weight: 700;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: #e8a48c; margin-bottom: clamp(10px, 1.6vh, 18px);
+  }
+  #op-trump-amodei .name {
+    font-size: clamp(46px, 6.6vw, 116px);
+    font-weight: 900; letter-spacing: -0.03em; line-height: 0.9;
+    margin: 0; text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 28%, #e8a48c 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: 0 0 70px rgba(204,120,92,0.45);
+  }
+  #op-trump-amodei .name .vs { -webkit-text-fill-color: #e8a48c; color: #e8a48c; font-weight: 800; }
+  #op-trump-amodei .subtitle {
+    font-size: clamp(15px, 1.6vw, 26px);
+    color: #cbd5e1; font-weight: 300; font-style: italic;
+    margin-top: clamp(10px, 1.6vh, 18px); letter-spacing: 0.01em;
+  }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-trump-amodei .photo { background-position: center 40%; }
+    #op-trump-amodei .title-bar { bottom: clamp(40px, 9vh, 90px); }
+  }
+</style>
+
+<section class="op-sec" id="op-trump-amodei" data-accent="#cc785c">
+  <div class="photo" data-reveal></div>
+  <div class="fade-bottom"></div>
+  <div class="title-bar">
+    <div class="eyebrow" data-reveal
+         data-it="Febbraio 2026 · AI e sicurezza nazionale"
+         data-en="February 2026 · AI &amp; national security">Febbraio 2026 · AI e sicurezza nazionale</div>
+    <h1 class="name" data-reveal
+        data-it="Trump <span class=&quot;vs&quot;>contro</span> Amodei"
+        data-en="Trump <span class=&quot;vs&quot;>vs</span> Amodei">Trump <span class="vs">contro</span> Amodei</h1>
+    <div class="subtitle" data-reveal
+         data-it="Il governo USA contro Anthropic: lo scontro tra potere politico e laboratori dell'AI"
+         data-en="The U.S. government against Anthropic: political power versus the AI labs">Il governo USA contro Anthropic: lo scontro tra potere politico e laboratori dell'AI</div>
+  </div>
+</section>

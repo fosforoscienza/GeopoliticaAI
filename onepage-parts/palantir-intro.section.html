@@ -1,0 +1,78 @@
+<style>
+  #op-palantir-intro {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 60% at 50% 60%, rgba(139,92,246,0.12), transparent 70%),
+      #03070f;
+  }
+
+  #op-palantir-intro .photo {
+    position: absolute; inset: 0;
+    background: url('img/palantir.png') no-repeat center center;
+    background-size: contain;
+  }
+  #op-palantir-intro .photo-glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(20% 28% at 50% 58%, rgba(139,92,246,0.24), transparent 60%);
+    mix-blend-mode: screen;
+    animation: palantir-intro-pulse 6s ease-in-out infinite;
+  }
+  @keyframes palantir-intro-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+
+  #op-palantir-intro .fade-bottom {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, #03070f 0%, rgba(3,7,15,0.92) 12%, rgba(3,7,15,0.45) 26%, rgba(3,7,15,0) 42%);
+  }
+
+  #op-palantir-intro .title-bar {
+    position: absolute; left: 0; right: 0; bottom: clamp(36px, 7vh, 74px);
+    text-align: center; z-index: 3;
+  }
+  #op-palantir-intro .eyebrow {
+    font-size: clamp(12px, 1vw, 16px);
+    font-weight: 700; letter-spacing: 0.34em;
+    text-transform: uppercase; color: #a78bfa;
+    margin-bottom: clamp(10px, 1.6vh, 18px);
+  }
+  #op-palantir-intro .name {
+    font-size: clamp(58px, 8vw, 132px);
+    font-weight: 900; letter-spacing: -0.03em; line-height: 0.9;
+    margin: 0; text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 28%, #c4b5fd 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: 0 0 70px rgba(139,92,246,0.45);
+  }
+  #op-palantir-intro .subtitle {
+    font-size: clamp(15px, 1.6vw, 26px);
+    color: #cbd5e1; font-weight: 300; font-style: italic;
+    margin-top: clamp(10px, 1.6vh, 18px);
+    letter-spacing: 0.01em;
+  }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-palantir-intro .photo { background-position: center 38%; }
+    #op-palantir-intro .title-bar { bottom: clamp(40px, 9vh, 90px); }
+  }
+</style>
+
+<section class="op-sec" id="op-palantir-intro" data-accent="#8b5cf6">
+  <div class="photo"></div>
+  <div class="photo-glow"></div>
+  <div class="fade-bottom"></div>
+
+  <div class="title-bar">
+    <div class="eyebrow" data-reveal
+         data-it="J.R.R. Tolkien · Le pietre veggenti"
+         data-en="J.R.R. Tolkien · The seeing-stones">J.R.R. Tolkien · Le pietre veggenti</div>
+    <h1 class="name" data-reveal
+        data-it="Palantír"
+        data-en="Palantír">Palantír</h1>
+    <div class="subtitle" data-reveal
+         data-it="Le «pietre che vedono lontano» del Signore degli Anelli"
+         data-en="The &quot;stones that see afar&quot; of The Lord of the Rings">Le «pietre che vedono lontano» del Signore degli Anelli</div>
+  </div>
+</section>

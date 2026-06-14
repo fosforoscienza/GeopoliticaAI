@@ -1,0 +1,57 @@
+<style>
+  #op-scrittura {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #040e1a;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  #op-scrittura .quote-wrap {
+    max-width: min(1400px, 92vw);
+    padding: 0 4vw;
+    text-align: center;
+    z-index: 1;
+  }
+  #op-scrittura .quote-text {
+    display: block;
+    font-size: clamp(30px, 3.6vw, 56px);
+    line-height: 1.55;
+    color: #94a3b8;
+    font-style: italic;
+    letter-spacing: 0.005em;
+  }
+  #op-scrittura .reveal-word {
+    display: block;
+    font-size: clamp(64px, 9vw, 150px);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    color: #41b7ff;
+    margin-top: clamp(40px, 5vh, 80px);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  #op-scrittura .reveal-author {
+    display: block;
+    font-size: clamp(24px, 2.4vw, 40px);
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    color: rgba(255,255,255,0.7);
+    margin-top: clamp(28px, 3.4vh, 56px);
+    text-transform: uppercase;
+  }
+</style>
+
+<section class="op-sec" id="op-scrittura" data-accent="#41b7ff">
+  <div class="quote-wrap">
+    <div class="quote-text" data-reveal
+      data-it="“Questa invenzione produrrà dimenticanza nelle menti di coloro che l’apprendono, per mancanza di esercizio della memoria […] procurerà saggezza, apparenza, non verità: infatti divenuti grazie a te, ascoltatori di molte nozioni senza insegnamento, crederanno di essere conoscitori di molte cose, (pur) essendo per lo più ignoranti.”"
+      data-en="“This invention will produce forgetfulness in the minds of those who learn it, through lack of practice of memory […] it will give them not truth but the semblance of truth: hearers of many things without being taught, they will appear knowledgeable while being mostly ignorant.”">“Questa invenzione produrrà dimenticanza nelle menti di coloro che l’apprendono, per mancanza di esercizio della memoria […] procurerà saggezza, apparenza, non verità: infatti divenuti grazie a te, ascoltatori di molte nozioni senza insegnamento, crederanno di essere conoscitori di molte cose, (pur) essendo per lo più ignoranti.”</div>
+    <div class="reveal-word" data-reveal data-it="Scrittura" data-en="Writing">Scrittura</div>
+    <div class="reveal-author" data-reveal data-it="Platone" data-en="Plato">Platone</div>
+  </div>
+</section>

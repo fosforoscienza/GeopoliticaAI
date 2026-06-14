@@ -238,3 +238,50 @@ async function loadSchede(folder) {
   );
   return results.filter(Boolean);
 }
+
+// ════════════════════════════════════════════════════
+// One-page embedding
+// When a slide runs inside the onepage.html shell (in an iframe) it must NOT
+// navigate on its own: it hides its own chrome, forwards presenter/keyboard
+// input to the parent shell, and accepts language-sync messages. Inert when
+// the slide is opened standalone (window.self === window.top).
+// ════════════════════════════════════════════════════
+(function initEmbed() {
+  if (window.self === window.top) return;          // standalone → do nothing
+  document.documentElement.classList.add('op-embedded');
+
+  function hideChrome() {
+    ['nav-dots', 'lang-toggle'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    document.querySelectorAll('.nav-arrow').forEach(a => { a.style.display = 'none'; });
+  }
+  if (document.readyState !== 'loading') hideChrome();
+  else document.addEventListener('DOMContentLoaded', hideChrome);
+
+  // Forward navigation keys to the parent shell (capture phase, so the slide's
+  // own keyboard handlers never fire while embedded).
+  window.addEventListener('keydown', (e) => {
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+    const k = e.key, c = e.code;
+    const isNext = k === 'ArrowRight' || c === 'ArrowRight' || k === 'ArrowDown' || c === 'ArrowDown' ||
+                   k === 'PageDown' || c === 'PageDown' || k === ' ' || k === 'Spacebar' || c === 'Space' ||
+                   k === 'Enter' || c === 'Enter';
+    const isPrev = k === 'ArrowLeft' || c === 'ArrowLeft' || k === 'ArrowUp' || c === 'ArrowUp' ||
+                   k === 'PageUp' || c === 'PageUp' || k === 'Backspace' || c === 'Backspace';
+    if (!isNext && !isPrev) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    try { window.parent.postMessage({ type: 'op-nav', dir: isNext ? 'next' : 'prev' }, '*'); } catch (_) {}
+  }, true);
+
+  // Accept language sync from the shell.
+  window.addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.type === 'op-setlang' && (d.lang === 'it' || d.lang === 'en')) {
+      try { setLang(d.lang); } catch (_) {}
+    }
+  });
+})();

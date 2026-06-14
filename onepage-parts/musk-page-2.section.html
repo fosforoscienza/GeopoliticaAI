@@ -1,0 +1,167 @@
+<style>
+  #op-musk-page-2 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background:
+      radial-gradient(45% 70% at 22% 30%, rgba(65,183,255,0.12), transparent 60%),
+      radial-gradient(45% 70% at 78% 30%, rgba(245,158,11,0.12), transparent 60%),
+      #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(24px, 4.5vh, 54px) clamp(34px, 6vw, 100px);
+    overflow: hidden;
+    color: #fff;
+  }
+
+  #op-musk-page-2 .head {
+    text-align: center;
+    margin-bottom: clamp(18px, 3vh, 38px);
+  }
+  #op-musk-page-2 .eyebrow {
+    font-size: clamp(11px, 0.95vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: clamp(10px, 1.6vh, 18px);
+  }
+  #op-musk-page-2 .title {
+    font-size: clamp(34px, 4.6vw, 78px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    margin: 0;
+    color: #fff;
+  }
+  #op-musk-page-2 .title .b { color: #41b7ff; }
+  #op-musk-page-2 .title .o { color: #f59e0b; }
+
+  #op-musk-page-2 .contrast {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(26px, 4vw, 72px);
+    max-width: 1180px;
+    width: 100%;
+    margin-bottom: clamp(18px, 2.8vh, 34px);
+  }
+  #op-musk-page-2 .vision {
+    position: relative;
+    padding-top: 16px;
+  }
+  #op-musk-page-2 .vision::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    border-radius: 3px;
+  }
+  #op-musk-page-2 .vision.page::before { background: linear-gradient(90deg, #41b7ff, transparent); }
+  #op-musk-page-2 .vision.musk::before { background: linear-gradient(90deg, #f59e0b, transparent); }
+  #op-musk-page-2 .vision h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 clamp(8px,1.2vh,12px);
+    font-weight: 800;
+    font-size: clamp(19px, 1.8vw, 30px);
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  #op-musk-page-2 .vision h3 .stance {
+    font-size: clamp(11px, 1vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  #op-musk-page-2 .vision.page h3 .stance { color: #41b7ff; }
+  #op-musk-page-2 .vision.musk h3 .stance { color: #f59e0b; }
+  #op-musk-page-2 .vision p {
+    font-size: clamp(13px, 1.05vw, 17px);
+    line-height: 1.6;
+    color: #b6c2d0;
+    margin: 0;
+  }
+  #op-musk-page-2 .vision p b { color: #fff; font-weight: 600; }
+
+  #op-musk-page-2 .clash {
+    max-width: 1100px;
+    width: 100%;
+    text-align: center;
+    padding: clamp(16px, 2.4vh, 26px) 0 0;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    font-size: clamp(13px, 1.1vw, 18px);
+    line-height: 1.6;
+    color: #b6c2d0;
+  }
+  #op-musk-page-2 .clash b { color: #fff; font-weight: 600; }
+  #op-musk-page-2 .clash .spec { color: #f59e0b; font-weight: 800; font-style: italic; white-space: nowrap; }
+
+  #op-musk-page-2 .fracture {
+    max-width: 1100px;
+    text-align: center;
+    margin-top: clamp(14px, 2.2vh, 26px);
+    font-size: clamp(16px, 1.5vw, 26px);
+    line-height: 1.45;
+    font-weight: 300;
+    color: #fff;
+  }
+  #op-musk-page-2 .fracture .pagew { color: #41b7ff; font-weight: 600; }
+  #op-musk-page-2 .fracture .muskw { color: #f59e0b; font-weight: 600; }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-musk-page-2 {
+      justify-content: flex-start;
+      overflow-y: auto;
+      padding-top: clamp(34px,6vh,60px);
+      padding-bottom: clamp(40px,8vh,80px);
+    }
+    #op-musk-page-2 .contrast {
+      grid-template-columns: 1fr;
+      gap: clamp(18px,2.6vh,26px);
+      max-width: 620px;
+    }
+  }
+</style>
+
+<section class="op-sec" id="op-musk-page-2" data-accent="#f59e0b">
+  <div class="head" data-reveal>
+    <div class="eyebrow"
+         data-it="Walter Isaacson · La biografia di Musk"
+         data-en="Walter Isaacson · The biography of Musk">Walter Isaacson · La biografia di Musk</div>
+    <h1 class="title"
+        data-it="&lt;span class=&quot;b&quot;&gt;Evoluzione&lt;/span&gt; o &lt;span class=&quot;o&quot;&gt;sopravvivenza&lt;/span&gt;?"
+        data-en="&lt;span class=&quot;b&quot;&gt;Evolution&lt;/span&gt; or &lt;span class=&quot;o&quot;&gt;survival&lt;/span&gt;?"><span class="b">Evoluzione</span> o <span class="o">sopravvivenza</span>?</h1>
+  </div>
+
+  <div class="contrast">
+    <div class="vision page" data-reveal>
+      <h3><span>Larry Page</span><span class="stance"
+            data-it="Post-umano · ottimista"
+            data-en="Post-human · optimist">Post-umano · ottimista</span></h3>
+      <p data-it="Page aveva una visione più «post-umana» e ottimista dell'AI. Secondo il racconto riportato nella biografia di Musk di Walter Isaacson, Page vedeva l'intelligenza artificiale come una possibile &lt;b&gt;nuova fase dell'evoluzione&lt;/b&gt;: se le macchine fossero diventate più intelligenti degli esseri umani, non sarebbe stato necessariamente un disastro, ma forse un passaggio naturale. L'intelligenza non doveva essere difesa solo perché biologica o umana."
+         data-en="Page held a more «post-human» and optimistic view of AI. According to the account in Walter Isaacson's biography of Musk, Page saw artificial intelligence as a possible &lt;b&gt;new stage of evolution&lt;/b&gt;: if machines became more intelligent than humans, it wouldn't necessarily be a disaster, but perhaps a natural transition. Intelligence did not deserve protection merely because it was biological or human.">Page aveva una visione più «post-umana» e ottimista dell'AI. Secondo il racconto riportato nella biografia di Musk di Walter Isaacson, Page vedeva l'intelligenza artificiale come una possibile <b>nuova fase dell'evoluzione</b>: se le macchine fossero diventate più intelligenti degli esseri umani, non sarebbe stato necessariamente un disastro, ma forse un passaggio naturale. L'intelligenza non doveva essere difesa solo perché biologica o umana.</p>
+    </div>
+    <div class="vision musk" data-reveal>
+      <h3><span>Elon Musk</span><span class="stance"
+            data-it="Pro-umano · allarmato"
+            data-en="Pro-human · alarmed">Pro-umano · allarmato</span></h3>
+      <p data-it="Musk invece era «pro-umano» e molto più allarmato. Temeva che un'AI superintelligente potesse diventare &lt;b&gt;incontrollabile e rappresentare un rischio esistenziale&lt;/b&gt; per l'umanità. Per lui la priorità doveva essere: sviluppare AI, sì, ma con limiti, controllo, sicurezza e una missione esplicitamente orientata alla protezione degli esseri umani."
+         data-en="Musk, by contrast, was «pro-human» and far more alarmed. He feared a superintelligent AI could become &lt;b&gt;uncontrollable and pose an existential risk&lt;/b&gt; to humanity. For him the priority had to be: develop AI, yes, but with limits, control, safety and a mission explicitly aimed at protecting human beings.">Musk invece era «pro-umano» e molto più allarmato. Temeva che un'AI superintelligente potesse diventare <b>incontrollabile e rappresentare un rischio esistenziale</b> per l'umanità. Per lui la priorità doveva essere: sviluppare AI, sì, ma con limiti, controllo, sicurezza e una missione esplicitamente orientata alla protezione degli esseri umani.</p>
+    </div>
+  </div>
+
+  <p class="clash" data-reveal
+     data-it="Il punto simbolico dello scontro fu l'accusa di Page a Musk di essere &lt;span class=&quot;spec&quot;&gt;«specista»&lt;/span&gt;: gli rimproverava di mettere gli esseri umani sopra altre possibili forme di intelligenza, comprese quelle artificiali. Musk avrebbe risposto: &lt;b&gt;sì, sono a favore degli esseri umani.&lt;/b&gt;"
+     data-en="The symbolic flashpoint was Page's accusation that Musk was &lt;span class=&quot;spec&quot;&gt;«speciesist»&lt;/span&gt;: he reproached him for placing human beings above other possible forms of intelligence, including artificial ones. Musk reportedly replied: &lt;b&gt;yes, I am pro-human.&lt;/b&gt;">Il punto simbolico dello scontro fu l'accusa di Page a Musk di essere <span class="spec">«specista»</span>: gli rimproverava di mettere gli esseri umani sopra altre possibili forme di intelligenza, comprese quelle artificiali. Musk avrebbe risposto: <b>sì, sono a favore degli esseri umani.</b></p>
+
+  <p class="fracture" data-reveal
+     data-it="Da qui nasce la frattura: &lt;span class=&quot;pagew&quot;&gt;Page&lt;/span&gt; pensava in termini di evoluzione dell'intelligenza; &lt;span class=&quot;muskw&quot;&gt;Musk&lt;/span&gt; in termini di sopravvivenza dell'umanità."
+     data-en="Hence the rift: &lt;span class=&quot;pagew&quot;&gt;Page&lt;/span&gt; thought in terms of the evolution of intelligence; &lt;span class=&quot;muskw&quot;&gt;Musk&lt;/span&gt; in terms of the survival of humanity.">Da qui nasce la frattura: <span class="pagew">Page</span> pensava in termini di evoluzione dell'intelligenza; <span class="muskw">Musk</span> in termini di sopravvivenza dell'umanità.</p>
+</section>

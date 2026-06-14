@@ -1,0 +1,101 @@
+<style>
+#op-pappagallo {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(32px, 4vw, 72px);
+  padding: 0 4vw;
+  box-sizing: border-box;
+  background: #040e1a;
+  overflow: hidden;
+}
+#op-pappagallo .parrot-img-col {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#op-pappagallo .parrot-img {
+  height: clamp(300px, 72vh, 820px);
+  width: auto;
+  max-width: 42vw;
+  object-fit: contain;
+  border-radius: 4px;
+  filter: drop-shadow(0 0 40px rgba(16,185,129,0.25));
+}
+#op-pappagallo .parrot-text-col {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 600px;
+}
+#op-pappagallo .parrot-eyebrow {
+  font-size: clamp(12px, 1vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #10b981;
+  margin-bottom: clamp(12px, 1.5vh, 20px);
+}
+#op-pappagallo .parrot-title {
+  font-size: clamp(36px, 5.5vw, 88px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: #10b981;
+  text-transform: uppercase;
+  margin: 0 0 clamp(20px, 2.5vh, 36px);
+}
+#op-pappagallo .parrot-desc {
+  font-size: clamp(15px, 1.3vw, 21px);
+  color: #94a3b8;
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: clamp(24px, 3vh, 40px);
+}
+#op-pappagallo .parrot-quote {
+  font-size: clamp(18px, 1.7vw, 28px);
+  font-style: italic;
+  color: rgba(255,255,255,0.5);
+  border-left: 2px solid #10b981;
+  padding-left: 18px;
+  line-height: 1.6;
+  margin: 0;
+}
+#op-pappagallo .parrot-quote cite {
+  display: block;
+  margin-top: 10px;
+  font-style: normal;
+  font-size: 0.82em;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.05em;
+}
+</style>
+<section class="op-sec" id="op-pappagallo" data-accent="#10b981">
+
+  <div class="parrot-img-col" data-reveal>
+    <img class="parrot-img" src="img/pappagallo.png" alt="Pappagallo" />
+  </div>
+
+  <div class="parrot-text-col">
+    <div class="parrot-eyebrow" data-reveal
+         data-it="Critica &amp; Teoria"
+         data-en="Critique &amp; Theory">Critica &amp; Teoria</div>
+    <h1 class="parrot-title" data-reveal
+        data-it="Pappagallo Stocastico"
+        data-en="Stochastic Parrot">Pappagallo Stocastico</h1>
+    <p class="parrot-desc" data-reveal
+       data-it="I grandi modelli linguistici non &quot;capiscono&quot; il mondo: assemblano sequenze di parole statisticamente plausibili addestrate su miliardi di testi umani. Come un pappagallo che ripete suoni senza comprenderli — ma su scala planetaria e con un'eloquenza che inganna."
+       data-en="Large language models do not &quot;understand&quot; the world: they stitch together statistically plausible word sequences trained on billions of human texts. Like a parrot repeating sounds without comprehending them — but at planetary scale and with a fluency that deceives.">I grandi modelli linguistici non &quot;capiscono&quot; il mondo: assemblano sequenze di parole statisticamente plausibili addestrate su miliardi di testi umani. Come un pappagallo che ripete suoni senza comprenderli — ma su scala planetaria e con un'eloquenza che inganna.</p>
+    <blockquote class="parrot-quote" data-reveal>
+      <span
+        data-it="«I modelli linguistici di grandi dimensioni sono pappagalli stocastici: sono in grado di cucire insieme sequenze di unità linguistiche statisticamente plausibili, ma senza alcun riferimento al significato.»"
+        data-en="&quot;Large language models are stochastic parrots: they are able to stitch together sequences of linguistic form that are statistically plausible, but without any reference to meaning.&quot;">«I modelli linguistici di grandi dimensioni sono pappagalli stocastici: sono in grado di cucire insieme sequenze di unità linguistiche statisticamente plausibili, ma senza alcun riferimento al significato.»</span>
+      <cite
+        data-it="— Bender, Gebru et al., &quot;On the Dangers of Stochastic Parrots&quot; (FAccT 2021)"
+        data-en="— Bender, Gebru et al., &quot;On the Dangers of Stochastic Parrots&quot; (FAccT 2021)">— Bender, Gebru et al., &quot;On the Dangers of Stochastic Parrots&quot; (FAccT 2021)</cite>
+    </blockquote>
+  </div>
+
+</section>

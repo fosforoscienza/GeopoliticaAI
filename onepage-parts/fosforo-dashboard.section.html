@@ -1,0 +1,32 @@
+<style>
+  #op-fosforo-dashboard{
+    position: relative;
+    width: 100%; height: 100%;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  #op-fosforo-dashboard .screen-wrap{
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #op-fosforo-dashboard .screen-img{
+    width: 100%; height: 100%;
+    object-fit: contain;
+    object-position: center top;
+  }
+  #op-fosforo-dashboard .screen-label{
+    position: absolute; bottom: 48px; left: 50%; transform: translateX(-50%);
+    font-size: clamp(11px, 0.9vw, 14px);
+    font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+<section class="op-sec" id="op-fosforo-dashboard" data-accent="#000000">
+  <div class="screen-wrap" data-reveal>
+    <img class="screen-img" src="img/fosforo-dashboard.png" alt="Fosforo Dashboard"/>
+  </div>
+  <div class="screen-label" data-reveal data-it="fosforo.me — Dashboard" data-en="fosforo.me — Dashboard">fosforo.me — Dashboard</div>
+</section>

@@ -1,0 +1,165 @@
+<style>
+#op-confronto-ai{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  background: #040e1a;
+  padding: clamp(28px, 3vh, 48px) clamp(40px, 5vw, 80px);
+  overflow: hidden;
+  color: #e2e8f0;
+}
+
+#op-confronto-ai .conf-title{
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #41b7ff;
+  line-height: 1;
+  margin: 0 0 clamp(28px, 3.5vh, 48px) 0;
+}
+
+#op-confronto-ai .comparison-wrap{
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2.5vw, 32px);
+}
+
+#op-confronto-ai .ai-card{
+  background: rgba(65, 183, 255, 0.08);
+  border: 1px solid rgba(65, 183, 255, 0.2);
+  border-radius: 12px;
+  padding: clamp(20px, 3vw, 32px);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+}
+#op-confronto-ai .ai-card:hover{
+  background: rgba(65, 183, 255, 0.15);
+  border-color: rgba(65, 183, 255, 0.4);
+}
+
+#op-confronto-ai .card-name{
+  font-size: clamp(18px, 2.4vw, 28px);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 clamp(20px, 2.5vh, 30px) 0;
+}
+#op-confronto-ai .card-name.openai{ color: #10a37f; }
+#op-confronto-ai .card-name.anthropic{ color: #c4a37f; }
+#op-confronto-ai .card-name.gemini{ color: #ea4335; }
+
+#op-confronto-ai .stat-group{
+  margin-bottom: clamp(16px, 2vh, 24px);
+}
+#op-confronto-ai .stat-label{
+  font-size: clamp(11px, 1vw, 13px);
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+#op-confronto-ai .stat-value{
+  font-size: clamp(20px, 2.5vw, 32px);
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1.2;
+}
+#op-confronto-ai .stat-note{
+  font-size: clamp(10px, 0.9vw, 12px);
+  color: rgba(255,255,255,0.4);
+  margin-top: 4px;
+}
+
+@media (max-width: 1200px){
+  #op-confronto-ai .comparison-wrap{
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<section class="op-sec" id="op-confronto-ai" data-accent="#41b7ff">
+
+  <h1 class="conf-title" data-reveal data-it="AI: Confronto Fatturato &amp; Utenti" data-en="AI: Revenue &amp; Users Comparison">AI: Confronto Fatturato &amp; Utenti</h1>
+
+  <div class="comparison-wrap">
+
+    <!-- ChatGPT -->
+    <div class="ai-card" data-reveal>
+      <div class="card-name openai">ChatGPT</div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Fatturato (ARR)" data-en="Revenue (ARR)">Fatturato (ARR)</div>
+        <div class="stat-value">$25B</div>
+        <div class="stat-note" data-it="Febbraio 2026" data-en="February 2026">Febbraio 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Utenti Attivi" data-en="Active Users">Utenti Attivi</div>
+        <div class="stat-value">900M+</div>
+        <div class="stat-note" data-it="Settimanali, 2026" data-en="Weekly, 2026">Settimanali, 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Abbonamenti Paganti" data-en="Paid Subscriptions">Abbonamenti Paganti</div>
+        <div class="stat-value">50M</div>
+        <div class="stat-note" data-it="Plus, Team, Pro, Enterprise" data-en="Plus, Team, Pro, Enterprise">Plus, Team, Pro, Enterprise</div>
+      </div>
+    </div>
+
+    <!-- Anthropic -->
+    <div class="ai-card" data-reveal>
+      <div class="card-name anthropic">Anthropic</div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Fatturato (ARR)" data-en="Revenue (ARR)">Fatturato (ARR)</div>
+        <div class="stat-value">$43B</div>
+        <div class="stat-note" data-it="Aprile 2026" data-en="April 2026">Aprile 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Utenti Attivi" data-en="Active Users">Utenti Attivi</div>
+        <div class="stat-value">30M</div>
+        <div class="stat-note" data-it="Mensili, 2026" data-en="Monthly, 2026">Mensili, 2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Abbonamenti Paganti" data-en="Paid Subscriptions">Abbonamenti Paganti</div>
+        <div class="stat-value">2x</div>
+        <div class="stat-note" data-it="Raddoppiati nel 2026" data-en="Doubled in 2026">Raddoppiati nel 2026</div>
+      </div>
+    </div>
+
+    <!-- Google Gemini -->
+    <div class="ai-card" data-reveal>
+      <div class="card-name gemini">Google Gemini</div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Fatturato" data-en="Revenue">Fatturato</div>
+        <div class="stat-value">$1.2B</div>
+        <div class="stat-note" data-it="Da abbonamenti, 2025" data-en="From subscriptions, 2025">Da abbonamenti, 2025</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Utenti Attivi" data-en="Active Users">Utenti Attivi</div>
+        <div class="stat-value">750M</div>
+        <div class="stat-note">2026</div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label" data-it="Abbonamenti Paganti" data-en="Paid Subscriptions">Abbonamenti Paganti</div>
+        <div class="stat-value">15-25M</div>
+        <div class="stat-note" data-it="Stime industria, 2026" data-en="Industry estimates, 2026">Stime industria, 2026</div>
+      </div>
+    </div>
+
+  </div>
+
+</section>

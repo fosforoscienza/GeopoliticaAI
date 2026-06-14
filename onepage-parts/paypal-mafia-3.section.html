@@ -1,0 +1,74 @@
+<style>
+  #op-paypal-mafia-3 {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 60% at 50% 45%, rgba(6,182,212,0.10), transparent 70%),
+      #000;
+    color: #fff;
+    font-family: inherit;
+  }
+
+  /* Foto interamente visibile */
+  #op-paypal-mafia-3 .photo {
+    position: absolute; inset: 0;
+    background: url('img/paypal-mafia-photo.webp') no-repeat center center;
+    background-size: contain;
+  }
+
+  /* Sfumatura inferiore per far respirare titolo e autore */
+  #op-paypal-mafia-3 .fade-bottom {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.92) 12%, rgba(0,0,0,0.55) 26%, rgba(0,0,0,0) 44%);
+  }
+
+  /* Titolo + autore in basso */
+  #op-paypal-mafia-3 .title-bar {
+    position: absolute; left: 0; right: 0; bottom: clamp(34px, 6.5vh, 70px);
+    text-align: center; z-index: 3;
+    padding: 0 6vw;
+  }
+  #op-paypal-mafia-3 .eyebrow {
+    font-size: clamp(11px, 1vw, 16px);
+    font-weight: 700; letter-spacing: 0.32em;
+    text-transform: uppercase; color: #67e8f9;
+    margin-bottom: clamp(10px, 1.6vh, 18px);
+  }
+  #op-paypal-mafia-3 .name {
+    font-size: clamp(46px, 6.4vw, 108px);
+    font-weight: 900; letter-spacing: -0.03em; line-height: 0.92;
+    margin: 0; text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 28%, #a5f3fc 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: 0 0 70px rgba(6,182,212,0.45);
+  }
+  #op-paypal-mafia-3 .author {
+    display: inline-flex; align-items: center; gap: 12px;
+    margin-top: clamp(12px, 1.8vh, 20px);
+    font-size: clamp(14px, 1.4vw, 22px);
+    color: #cbd5e1; font-weight: 300; letter-spacing: 0.01em;
+  }
+  #op-paypal-mafia-3 .author::before, #op-paypal-mafia-3 .author::after {
+    content: ''; width: clamp(22px, 3vw, 46px); height: 1px;
+    background: linear-gradient(90deg, transparent, #06b6d4, transparent);
+  }
+  #op-paypal-mafia-3 .author b { color: #fff; font-weight: 600; font-style: normal; }
+</style>
+
+<section class="op-sec" id="op-paypal-mafia-3" data-accent="#06b6d4">
+  <div class="photo"></div>
+  <div class="fade-bottom"></div>
+
+  <div class="title-bar">
+    <div class="eyebrow" data-reveal
+         data-it="Fortune · Tosca Cafe, San Francisco · 2007"
+         data-en="Fortune · Tosca Cafe, San Francisco · 2007">Fortune · Tosca Cafe, San Francisco · 2007</div>
+    <h1 class="name" data-reveal
+        data-it="La PayPal Mafia"
+        data-en="The PayPal Mafia">La PayPal Mafia</h1>
+    <div class="author" data-reveal
+         data-it="Fotografia di <b>Robyn Twomey</b>"
+         data-en="Photograph by <b>Robyn Twomey</b>">Fotografia di <b>Robyn Twomey</b></div>
+  </div>
+</section>

@@ -1,0 +1,192 @@
+<style>
+  #op-palantir {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #03070f;
+    color: #e2e8f0;
+  }
+
+  /* ---------- Hero image (full-bleed, bleeds right) ---------- */
+  #op-palantir .hero {
+    position: absolute; inset: 0;
+    background: url('img/palantir.png') no-repeat center right;
+    background-size: cover;
+    transform: scale(1.06);
+    transform-origin: 70% 55%;
+    animation: palantir-kenburns 26s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  @keyframes palantir-kenburns {
+    from { transform: scale(1.06) translate(0, 0); }
+    to   { transform: scale(1.12) translate(-1.2%, -1.4%); }
+  }
+
+  /* ---------- Cinematic scrims ---------- */
+  #op-palantir .scrim-left {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      100deg,
+      #03070f 0%,
+      rgba(3,7,15,0.97) 24%,
+      rgba(3,7,15,0.82) 38%,
+      rgba(3,7,15,0.35) 52%,
+      rgba(3,7,15,0.05) 66%,
+      rgba(3,7,15,0) 78%
+    );
+  }
+  #op-palantir .scrim-bottom {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(3,7,15,0.85) 0%, rgba(3,7,15,0) 32%);
+  }
+  #op-palantir .vignette {
+    position: absolute; inset: 0;
+    box-shadow: inset 0 0 240px 60px rgba(0,0,0,0.7);
+    pointer-events: none;
+  }
+  /* glow nucleo sfera */
+  #op-palantir .glow {
+    position: absolute;
+    top: 56%; left: 60%;
+    width: 42vw; height: 42vw;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(139,92,246,0.22) 0%, rgba(139,92,246,0.07) 40%, rgba(139,92,246,0) 70%);
+    pointer-events: none;
+    animation: palantir-pulse 6s ease-in-out infinite;
+  }
+  @keyframes palantir-pulse {
+    0%,100% { opacity: 0.7; }
+    50%     { opacity: 1; }
+  }
+
+  /* ---------- Content ---------- */
+  #op-palantir .content {
+    position: absolute;
+    top: 50%; left: clamp(40px, 6vw, 110px);
+    transform: translateY(-50%);
+    max-width: min(620px, 52vw);
+    z-index: 3;
+  }
+
+  #op-palantir .eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: clamp(12px, 0.95vw, 16px);
+    font-weight: 700; letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    margin-bottom: clamp(16px, 2.2vh, 26px);
+  }
+  #op-palantir .eyebrow::before {
+    content: ''; width: 34px; height: 2px;
+    background: linear-gradient(90deg, #8b5cf6, transparent);
+  }
+
+  #op-palantir .name {
+    font-size: clamp(64px, 8.4vw, 142px);
+    font-weight: 900; letter-spacing: -0.04em;
+    line-height: 0.9;
+    margin: 0 0 clamp(18px, 2.4vh, 30px);
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 30%, #c4b5fd 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    text-shadow: 0 0 60px rgba(139,92,246,0.35);
+  }
+
+  #op-palantir .ticker {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 6px 14px;
+    border: 1px solid rgba(139,92,246,0.45);
+    border-radius: 999px;
+    background: rgba(139,92,246,0.08);
+    font-size: clamp(12px, 0.95vw, 15px);
+    font-weight: 700; letter-spacing: 0.12em;
+    color: #ddd6fe;
+    margin-bottom: clamp(18px, 2.4vh, 28px);
+    vertical-align: middle;
+  }
+  #op-palantir .ticker .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 10px #4ade80;
+    animation: palantir-pulse 2.2s ease-in-out infinite;
+  }
+
+  #op-palantir .tagline {
+    font-size: clamp(16px, 1.45vw, 23px);
+    color: #cbd5e1; font-weight: 300;
+    line-height: 1.5; letter-spacing: 0.01em;
+    margin: 0 0 clamp(24px, 3.2vh, 40px);
+    max-width: 540px;
+  }
+  #op-palantir .tagline b { color: #f1f5f9; font-weight: 600; }
+
+  #op-palantir .facts {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; gap: clamp(9px, 1.25vh, 15px);
+    max-width: 560px;
+  }
+  #op-palantir .facts li {
+    font-size: clamp(14px, 1.12vw, 18px);
+    color: #e2e8f0; line-height: 1.45;
+    padding-left: 30px; position: relative;
+  }
+  #op-palantir .facts li::before {
+    content: ''; position: absolute;
+    left: 0; top: 0.55em;
+    width: 16px; height: 16px;
+    background: #8b5cf6;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2.4 6.9L21.6 9l-5.4 4.7L18 21 12 17l-6 4 1.8-7.3L2.4 9l7.2-.1z'/></svg>") center/contain no-repeat;
+            mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2.4 6.9L21.6 9l-5.4 4.7L18 21 12 17l-6 4 1.8-7.3L2.4 9l7.2-.1z'/></svg>") center/contain no-repeat;
+    opacity: 0.9;
+  }
+
+  #op-palantir .quote {
+    margin: clamp(24px, 3.2vh, 40px) 0 0;
+    padding-left: 20px;
+    border-left: 3px solid #8b5cf6;
+    font-size: clamp(16px, 1.5vw, 24px);
+    font-style: italic;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.4;
+    max-width: 520px;
+  }
+  #op-palantir .quote .who { display: block; font-style: normal; font-size: 0.72em; color: #a78bfa; margin-top: 8px; letter-spacing: 0.08em; }
+
+  /* ---------- Responsive: stack (portrait) ---------- */
+  @media (max-aspect-ratio: 1/1) {
+    #op-palantir .hero { background-position: center 28%; }
+    #op-palantir .scrim-left {
+      background: linear-gradient(to top, #03070f 0%, rgba(3,7,15,0.96) 30%, rgba(3,7,15,0.6) 50%, rgba(3,7,15,0.2) 70%, rgba(3,7,15,0) 88%);
+    }
+    #op-palantir .content {
+      top: auto; bottom: clamp(70px, 11vh, 120px);
+      left: 50%; transform: none; translate: -50% 0;
+      width: min(620px, 88vw); max-width: 88vw;
+      text-align: left;
+    }
+  }
+</style>
+<section class="op-sec" id="op-palantir" data-accent="#8b5cf6">
+  <div class="hero"></div>
+  <div class="glow"></div>
+  <div class="scrim-left"></div>
+  <div class="scrim-bottom"></div>
+  <div class="vignette"></div>
+
+  <div class="content">
+    <div class="eyebrow" data-reveal data-it="AI e sorveglianza" data-en="AI &amp; surveillance">AI e sorveglianza</div>
+    <h1 class="name" data-reveal data-it="Palantir" data-en="Palantir">Palantir</h1>
+    <div class="ticker" data-reveal><span class="dot"></span><span data-it="NYSE: PLTR" data-en="NYSE: PLTR">NYSE: PLTR</span></div>
+    <p class="tagline" data-reveal data-it="&lt;b&gt;Big data e AI&lt;/b&gt; per governi e difesa — fondata nel 2003 da Peter Thiel e Alex Karp." data-en="&lt;b&gt;Big data and AI&lt;/b&gt; for governments and defense — founded in 2003 by Peter Thiel and Alex Karp."><b>Big data e AI</b> per governi e difesa — fondata nel 2003 da Peter Thiel e Alex Karp.</p>
+    <ul class="facts" data-reveal>
+      <li data-it="Clienti: CIA, NSA, FBI, Pentagono, NHS britannico, ICE" data-en="Clients: CIA, NSA, FBI, Pentagon, UK NHS, ICE">Clienti: CIA, NSA, FBI, Pentagono, NHS britannico, ICE</li>
+      <li data-it="Prodotti: Gotham (gov), Foundry (corporate), AIP (AI Platform)" data-en="Products: Gotham (gov), Foundry (corporate), AIP (AI Platform)">Prodotti: Gotham (gov), Foundry (corporate), AIP (AI Platform)</li>
+      <li data-it="IPO sulla NYSE nel 2020 — capitalizzazione oltre $100 miliardi" data-en="NYSE IPO in 2020 — market cap above $100B">IPO sulla NYSE nel 2020 — capitalizzazione oltre $100 miliardi</li>
+      <li data-it="Maven Smart System: AI per l’intelligence militare USA" data-en="Maven Smart System: AI for U.S. military intelligence">Maven Smart System: AI per l’intelligence militare USA</li>
+      <li data-it="Nome dai palantíri del &quot;Signore degli Anelli&quot; — pietre di visione" data-en="Named after the palantíri seeing-stones in &quot;The Lord of the Rings&quot;">Nome dai palantíri del "Signore degli Anelli" — pietre di visione</li>
+    </ul>
+    <blockquote class="quote" data-reveal data-it="&quot;Il software sta divorando la difesa.&quot;&lt;span class=&quot;who&quot;&gt;— Alex Karp, CEO&lt;/span&gt;" data-en="&quot;Software is eating defense.&quot;&lt;span class=&quot;who&quot;&gt;— Alex Karp, CEO&lt;/span&gt;">"Il software sta divorando la difesa."<span class="who">— Alex Karp, CEO</span></blockquote>
+  </div>
+</section>

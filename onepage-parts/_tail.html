@@ -1,0 +1,205 @@
+    </div><!-- /#op-track -->
+  </main><!-- /#op-viewport -->
+
+  <script>
+  (function () {
+    var track = document.getElementById('op-track');
+    var sections = [].slice.call(track.querySelectorAll('.op-sec'));
+    var n = sections.length;
+    var i = 0, animating = false, started = false;
+
+    var LABELS = [
+      {it:'Inizio',en:'Intro'},{it:'Video',en:'Video'},{it:'Scrittura',en:'Writing'},{it:'Fotografia',en:'Photography'},
+      {it:'Pechino',en:'Beijing'},{it:'Pechino',en:'Beijing'},{it:'Pechino',en:'Beijing'},{it:'Timeline',en:'Timeline'},
+      {it:'Napa Valley',en:'Napa Valley'},{it:'Musk & Page',en:'Musk & Page'},{it:'Due visioni',en:'Two visions'},{it:'Musk & Altman',en:'Musk & Altman'},
+      {it:'Mappa paesi',en:'Country map'},{it:'Leader & CEO',en:'Leaders & CEOs'},{it:'Trump vs Amodei',en:'Trump vs Amodei'},
+      {it:'Anthropic',en:'Anthropic'},{it:'OpenAI',en:'OpenAI'},{it:'No vs Sì',en:'No vs Yes'},{it:'Export',en:'Export'},
+      {it:'LLM Occidentali',en:'Western LLMs'},{it:'LLM Asiatici',en:'Asian LLMs'},{it:'LLM Russi',en:'Russian LLMs'},
+      {it:'Peter Thiel',en:'Peter Thiel'},{it:'Palantír',en:'Palantír'},{it:"Cos'è un Palantír",en:'What is a Palantír'},{it:'Palantir',en:'Palantir'},
+      {it:'PayPal Mafia',en:'PayPal Mafia'},{it:'Le cerniere',en:'The links'},{it:'La foto',en:'The photo'},
+      {it:'Epistemia',en:'Epistemia'},{it:'Pappagallo',en:'Parrot'},{it:'Transformer',en:'Transformer'},
+      {it:'Fosforo · Sito',en:'Fosforo · Site'},{it:'Fosforo · Dashboard',en:'Fosforo · Dashboard'},{it:'Tom & Brad',en:'Tom & Brad'},
+      {it:'Tre fattori',en:'Three factors'},{it:'Confronto AI',en:'AI comparison'}
+    ];
+
+    var EASE = 'cubic-bezier(0.16,1,0.3,1)';
+    function vh() { return window.innerHeight; }
+    function slugOf(sec) { return sec.getAttribute('data-slug') || sec.id.replace(/^op-/, ''); }
+
+    function setAccent(sec) {
+      var a = (sec.getAttribute('data-accent') || '#41b7ff').trim();
+      var hex = a.replace('#', '').toLowerCase();
+      if (hex === '000000' || hex === '000' || hex === 'ffffff' || hex === 'fff') a = '#41b7ff';
+      document.documentElement.style.setProperty('--op-accent', a);
+    }
+
+    // Reveal via CSS class + per-element stagger delay.
+    function stageReveal(sec, on) {
+      var els = sec.querySelectorAll('[data-reveal]');
+      [].forEach.call(els, function (el, idx) {
+        el.style.transitionDelay = on ? (0.12 + idx * 0.075) + 's' : '0s';
+      });
+      sec.classList.toggle('op-active', on);
+    }
+
+    function ensureLoaded(sec) {
+      var f = sec.querySelector('iframe[data-src]');
+      if (!f) return;
+      f.addEventListener('load', function () {
+        try { f.contentWindow.postMessage({ type: 'op-setlang', lang: lang }, '*'); } catch (e) {}
+      });
+      f.src = f.getAttribute('data-src');
+      f.removeAttribute('data-src');
+    }
+    function loadNear() {
+      ensureLoaded(sections[i]);
+      if (sections[i + 1]) ensureLoaded(sections[i + 1]);
+      if (sections[i - 1]) ensureLoaded(sections[i - 1]);
+    }
+
+    function position(instant) {
+      var y = -i * vh();
+      track.style.transition = instant ? 'none' : ('transform 0.9s ' + EASE);
+      track.style.transform = 'translate3d(0,' + y + 'px,0)';
+      if (!instant) {
+        animating = true;
+        clearTimeout(position._t);
+        position._t = setTimeout(function () { animating = false; }, 920);
+      }
+    }
+
+    function setVH() {
+      document.documentElement.style.setProperty('--opvh', vh() + 'px');
+      position(true);
+    }
+
+    function activate(prev) {
+      var sec = sections[i];
+      setAccent(sec);
+      loadNear();
+      if (typeof prev === 'number' && prev !== i && sections[prev]) stageReveal(sections[prev], false);
+      stageReveal(sec, true);
+      updateChrome();
+      var f = sec.querySelector('iframe');
+      if (f && !f.hasAttribute('data-src')) { try { f.contentWindow.postMessage({ type: 'op-setlang', lang: lang }, '*'); } catch (e) {} }
+      try { history.replaceState(null, '', '#' + slugOf(sec)); } catch (e) {}
+    }
+
+    function goTo(t) {
+      t = Math.max(0, Math.min(n - 1, t));
+      if (animating) return;
+      if (t === i && started) return;
+      var prev = i; i = t; started = true;
+      hint.classList.add('hide');
+      position(false);
+      activate(prev);
+    }
+    function next() { goTo(i + 1); }
+    function prev() { goTo(i - 1); }
+
+    // chrome
+    var dotsC = document.getElementById('op-dots');
+    sections.forEach(function (s, idx) {
+      var b = document.createElement('button');
+      b.setAttribute('aria-label', (LABELS[idx] && LABELS[idx].it) || ('Sezione ' + (idx + 1)));
+      b.title = (LABELS[idx] && LABELS[idx].it) || '';
+      b.addEventListener('click', function () { goTo(idx); });
+      dotsC.appendChild(b);
+    });
+    var progress = document.getElementById('op-progress');
+    var counter = document.getElementById('op-counter');
+    var hint = document.getElementById('op-hint');
+    function updateChrome() {
+      [].forEach.call(dotsC.children, function (b, idx) { b.classList.toggle('active', idx === i); });
+      progress.style.width = ((i + 1) / n * 100) + '%';
+      var lab = LABELS[i] ? (lang === 'it' ? LABELS[i].it : LABELS[i].en) : '';
+      counter.innerHTML = '<b>' + (i + 1) + '</b> / ' + n + (lab ? ' &middot; ' + lab : '');
+    }
+
+    // language
+    var LANG_KEY = 'geopolitica-lang';
+    var lang = localStorage.getItem(LANG_KEY) || 'it';
+    function applyLangNative() {
+      sections.forEach(function (sec) {
+        var els = sec.querySelectorAll('[data-it],[data-en]');
+        [].forEach.call(els, function (el) {
+          var v = el.getAttribute('data-' + lang);
+          if (v != null) el.innerHTML = v;
+        });
+      });
+    }
+    function broadcastLang() {
+      sections.forEach(function (sec) {
+        var f = sec.querySelector('iframe');
+        if (f && !f.hasAttribute('data-src')) { try { f.contentWindow.postMessage({ type: 'op-setlang', lang: lang }, '*'); } catch (e) {} }
+      });
+    }
+    function setLang(l) {
+      lang = l; localStorage.setItem(LANG_KEY, l); document.documentElement.lang = l;
+      [].forEach.call(document.querySelectorAll('#op-langtoggle button'), function (b) {
+        b.classList.toggle('active', b.getAttribute('data-lang') === l);
+      });
+      applyLangNative(); broadcastLang(); updateChrome();
+    }
+    [].forEach.call(document.querySelectorAll('#op-langtoggle button'), function (b) {
+      b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); });
+    });
+
+    // input — keyboard (parent-focused / native sections)
+    window.addEventListener('keydown', function (e) {
+      var t = (e.target && e.target.tagName) || '';
+      if (t === 'INPUT' || t === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+      var k = e.key, c = e.code;
+      var isN = k === 'ArrowRight' || c === 'ArrowRight' || k === 'ArrowDown' || c === 'ArrowDown' ||
+                k === 'PageDown' || c === 'PageDown' || k === ' ' || k === 'Spacebar' || c === 'Space' ||
+                k === 'Enter' || c === 'Enter';
+      var isP = k === 'ArrowLeft' || c === 'ArrowLeft' || k === 'ArrowUp' || c === 'ArrowUp' ||
+                k === 'PageUp' || c === 'PageUp' || k === 'Backspace' || c === 'Backspace';
+      if (isN) { e.preventDefault(); next(); }
+      else if (isP) { e.preventDefault(); prev(); }
+    });
+    // input — messages forwarded by embedded slides (iframes)
+    window.addEventListener('message', function (e) {
+      var d = e.data || {};
+      if (d.type === 'op-nav') { if (d.dir === 'next') next(); else if (d.dir === 'prev') prev(); }
+    });
+    // input — wheel (over native sections)
+    var wlock = false;
+    window.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaY) < 8) return;
+      if (wlock || animating) return;
+      wlock = true; setTimeout(function () { wlock = false; }, 160);
+      if (e.deltaY > 0) next(); else prev();
+    }, { passive: true });
+    // input — touch swipe
+    var ty = null;
+    window.addEventListener('touchstart', function (e) { ty = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', function (e) {
+      if (ty == null) return;
+      var dy = e.changedTouches[0].clientY - ty;
+      if (Math.abs(dy) > 50) { if (dy < 0) next(); else prev(); }
+      ty = null;
+    }, { passive: true });
+    // CTA (e.g. hero "start") → advance
+    document.addEventListener('click', function (e) {
+      var s = e.target.closest && e.target.closest('[data-op-next]');
+      if (s) { e.preventDefault(); next(); }
+    });
+
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', function () { setTimeout(setVH, 150); });
+
+    // init
+    var hash = (location.hash || '').replace('#', '');
+    if (hash) {
+      var idx = -1;
+      sections.forEach(function (s, k) { if (slugOf(s) === hash) idx = k; });
+      if (idx > 0) i = idx;
+    }
+    setVH();
+    setLang(lang);
+    activate(-1);
+  })();
+  </script>
+</body>
+</html>
