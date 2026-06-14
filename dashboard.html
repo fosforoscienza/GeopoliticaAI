@@ -77,6 +77,8 @@
     .view-switch button:not(.active):hover { background: rgba(255,255,255,0.06); color: #fff; }
 
     /* ═══════════ GRID (card) view ═══════════ */
+    /* keep the [hidden] attribute working despite the display rules below */
+    .dash-grid[hidden], .dash-list[hidden] { display: none !important; }
     .dash-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, 224px);
@@ -87,7 +89,7 @@
       border-radius: 12px; overflow: hidden;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.1);
-      cursor: grab; user-select: none;
+      cursor: grab; user-select: none; touch-action: none;
       transition: border 0.15s, box-shadow 0.15s, opacity 0.15s, transform 0.12s;
     }
     .dash-card:hover { border-color: rgba(255,255,255,0.28); transform: translateY(-2px); }
@@ -153,7 +155,7 @@
       padding: 12px 16px; border-radius: 10px;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.08);
-      cursor: grab; user-select: none;
+      cursor: grab; user-select: none; touch-action: none;
       transition: background 0.18s, border 0.18s, opacity 0.18s, transform 0.18s;
     }
     .dash-item:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.2); }
@@ -345,7 +347,6 @@
         const hidden = isHidden(page);
         const card = document.createElement('div');
         card.className = 'dash-card' + (hidden ? ' is-hidden' : '');
-        card.draggable = true;
         card.dataset.page = page;
         card.innerHTML = `
           <div class="card-thumb">
@@ -379,7 +380,6 @@
         const hidden = isHidden(page);
         const item = document.createElement('div');
         item.className = 'dash-item' + (hidden ? ' hidden-slide' : '');
-        item.draggable = true;
         item.dataset.page = page;
         const name = SLIDE_NAMES[page] || page;
         item.innerHTML = `
@@ -441,46 +441,54 @@
       setupDnD(list, 'dash-item', 'y');
     }
 
-    // ═══════════ Shared drag & drop ═══════════
-    // axis 'x' → left/right insertion (grid); 'y' → above/below (list)
+    // ═══════════ Shared drag & drop (pointer-based, live sort) ═══════════
+    // Native HTML5 drag is unreliable with the <iframe> thumbnails, so we use
+    // pointer events and reorder the DOM live as the pointer moves.
+    // axis 'x' → reorder by horizontal position (grid); 'y' → vertical (list)
     function setupDnD(container, itemClass, axis) {
-      let dragged = null;
-      const before = axis === 'x' ? 'drop-left'  : 'drop-above';
-      const after  = axis === 'x' ? 'drop-right' : 'drop-below';
-
       container.querySelectorAll('.' + itemClass).forEach(item => {
-        item.addEventListener('dragstart', (e) => {
-          dragged = item;
-          item.classList.add('dragging');
-          e.dataTransfer.effectAllowed = 'move';
-          try { e.dataTransfer.setData('text/plain', item.dataset.page); } catch (_) {}
-        });
-        item.addEventListener('dragend', () => {
-          item.classList.remove('dragging');
-          container.querySelectorAll('.' + itemClass).forEach(el => el.classList.remove(before, after));
-          dragged = null;
-          state.order = [...container.children].map(el => el.dataset.page);
-          render();
-          setDirty();
-        });
-        item.addEventListener('dragover', (e) => {
-          if (!dragged || dragged === item) return;
-          e.preventDefault();
-          const rect = item.getBoundingClientRect();
-          const mid = axis === 'x' ? rect.left + rect.width / 2 : rect.top + rect.height / 2;
-          const pos = axis === 'x' ? e.clientX : e.clientY;
-          item.classList.toggle(before, pos < mid);
-          item.classList.toggle(after,  pos >= mid);
-        });
-        item.addEventListener('dragleave', () => item.classList.remove(before, after));
-        item.addEventListener('drop', (e) => {
-          if (!dragged || dragged === item) return;
-          e.preventDefault();
-          const rect = item.getBoundingClientRect();
-          const mid = axis === 'x' ? rect.left + rect.width / 2 : rect.top + rect.height / 2;
-          const pos = axis === 'x' ? e.clientX : e.clientY;
-          if (pos < mid) container.insertBefore(dragged, item);
-          else container.insertBefore(dragged, item.nextSibling);
+        item.addEventListener('pointerdown', (e) => {
+          if (e.button !== 0) return;                       // left button / primary touch only
+          if (e.target.closest('button, input, a, label, select, textarea')) return; // let controls work
+
+          const startX = e.clientX, startY = e.clientY;
+          let started = false;
+
+          const onMove = (ev) => {
+            if (!started) {
+              if (Math.abs(ev.clientX - startX) < 5 && Math.abs(ev.clientY - startY) < 5) return;
+              started = true;
+              item.classList.add('dragging');
+              item.style.pointerEvents = 'none';            // so elementFromPoint sees the card underneath
+              document.body.style.userSelect = 'none';
+            }
+            ev.preventDefault();
+            const el = document.elementFromPoint(ev.clientX, ev.clientY);
+            const over = el && el.closest('.' + itemClass);
+            if (!over || over === item || over.parentElement !== container) return;
+            const rect = over.getBoundingClientRect();
+            const mid = axis === 'x' ? rect.left + rect.width / 2 : rect.top + rect.height / 2;
+            const pos = axis === 'x' ? ev.clientX : ev.clientY;
+            if (pos < mid) container.insertBefore(item, over);
+            else           container.insertBefore(item, over.nextSibling);
+          };
+
+          const onUp = () => {
+            document.removeEventListener('pointermove', onMove);
+            document.removeEventListener('pointerup', onUp);
+            document.removeEventListener('pointercancel', onUp);
+            if (!started) return;
+            item.classList.remove('dragging');
+            item.style.pointerEvents = '';
+            document.body.style.userSelect = '';
+            state.order = [...container.children].map(el => el.dataset.page);
+            render();
+            setDirty();
+          };
+
+          document.addEventListener('pointermove', onMove);
+          document.addEventListener('pointerup', onUp);
+          document.addEventListener('pointercancel', onUp);
         });
       });
     }
