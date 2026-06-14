@@ -775,8 +775,8 @@
         step++;
         renderState();
       } else {
-        const next = PAGES[currentPageIndex() + 1];
-        if (next) window.location.href = next;
+        const ni = currentPageIndex() + 1;
+        if (PAGES[ni]) window.location.href = pageHref(ni);
       }
     }
 
@@ -788,8 +788,8 @@
         step--;
         renderState();
       } else {
-        const prev = PAGES[currentPageIndex() - 1];
-        if (prev) window.location.href = prev;
+        const pi = currentPageIndex() - 1;
+        if (PAGES[pi]) window.location.href = pageHref(pi);
       }
     }
 

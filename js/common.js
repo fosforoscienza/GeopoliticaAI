@@ -86,9 +86,19 @@ loadSlidesConfig();
 
 function currentPageIndex() {
   const fn = (window.location.pathname.split('/').pop() || 'index.html') || 'index.html';
+  // A slide can appear more than once in PAGES (duplicates from the dashboard).
+  // The exact position is carried in the ?i= query param; fall back to the
+  // first occurrence by filename when it's absent or stale.
+  const qi = parseInt(new URLSearchParams(window.location.search).get('i'), 10);
+  if (!isNaN(qi) && qi >= 0 && qi < PAGES.length && PAGES[qi] === fn) return qi;
   const idx = PAGES.indexOf(fn);
   return idx < 0 ? 0 : idx;
 }
+
+// Navigation target that preserves the exact position (so duplicate slides
+// are disambiguated). When embedded in the onepage shell, navigation is
+// positional and handled by the shell, so this is only used standalone.
+function pageHref(idx) { return PAGES[idx] + '?i=' + idx; }
 
 // Hidden shortcut: press "O" anywhere to open the slide-order dashboard.
 document.addEventListener('keydown', (e) => {
@@ -115,7 +125,7 @@ function buildNavDots(activePage) {
     if (!dot._navWired) {
       dot.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (i !== activePage) window.location.href = PAGES[i];
+        if (i !== activePage) window.location.href = pageHref(i);
       });
       dot._navWired = true;
     }
@@ -129,11 +139,11 @@ function initNavArrows(activePage) {
   const next = document.getElementById('nav-next');
   if (prev) {
     if (activePage === 0) prev.classList.add('hidden');
-    else { prev.classList.remove('hidden'); prev.href = PAGES[activePage - 1]; }
+    else { prev.classList.remove('hidden'); prev.href = pageHref(activePage - 1); }
   }
   if (next) {
     if (activePage === PAGES.length - 1) next.classList.add('hidden');
-    else { next.classList.remove('hidden'); next.href = PAGES[activePage + 1]; }
+    else { next.classList.remove('hidden'); next.href = pageHref(activePage + 1); }
   }
 }
 
@@ -145,11 +155,11 @@ function initNav(activePage) {
   const next = document.getElementById('nav-next');
   if (prev) {
     if (activePage === 0) prev.classList.add('hidden');
-    else { prev.classList.remove('hidden'); prev.href = PAGES[activePage - 1]; }
+    else { prev.classList.remove('hidden'); prev.href = pageHref(activePage - 1); }
   }
   if (next) {
     if (activePage === PAGES.length - 1) next.classList.add('hidden');
-    else { next.classList.remove('hidden'); next.href = PAGES[activePage + 1]; }
+    else { next.classList.remove('hidden'); next.href = pageHref(activePage + 1); }
   }
 
   // Keyboard — global (slide nav only, carousels override per-page)
@@ -186,11 +196,11 @@ function initNav(activePage) {
 
     if (isPrev && activePage > 0) {
       e.preventDefault();
-      window.location.href = PAGES[activePage - 1];
+      window.location.href = pageHref(activePage - 1);
     }
     if (isNext && activePage < PAGES.length - 1) {
       e.preventDefault();
-      window.location.href = PAGES[activePage + 1];
+      window.location.href = pageHref(activePage + 1);
     }
   });
 }
