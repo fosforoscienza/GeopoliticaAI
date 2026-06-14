@@ -6,68 +6,137 @@
   <title>Geopolitica della AI</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    /* ── Title-page only ── */
-    html, body { background: #000 !important; }
-    body { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 40px; padding: 60px; }
+    :root { --accent: #41b7ff; --accent-soft: #8fd2ff; }
+    html, body { background: #02060f !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; }
 
-    .title-container {
-      flex: 1; display: flex; flex-direction: column; justify-content: center;
-      z-index: 1;
-    }
-
-    .title-container h1 {
-      font-size: 64px; font-weight: 700; line-height: 1.2;
-      color: #f0f5fb; margin-bottom: 20px;
-    }
-
-    .title-image {
-      flex: 1; max-width: 500px; width: 100%;
-      object-fit: contain;
-      z-index: 1;
+    .stage {
+      position: fixed; inset: 0; overflow: hidden;
+      background:
+        radial-gradient(50% 60% at 78% 45%, rgba(65,183,255,0.16), transparent 65%),
+        radial-gradient(50% 60% at 12% 70%, rgba(124,92,246,0.12), transparent 65%),
+        #02060f;
+      display: flex; align-items: center;
+      gap: clamp(30px, 5vw, 90px);
+      padding: clamp(40px, 6vh, 80px) clamp(44px, 6vw, 120px);
+      box-sizing: border-box;
     }
 
-    .slide-hint {
-      position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%);
-      font-size: 22px; color: rgba(255,255,255,0.5);
-      animation: fade-up 1s both 1.1s, bounce-r 1.8s ease-in-out 2.2s infinite;
+    /* ambient floating orbs */
+    .orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.5; }
+    .orb.a { width: 360px; height: 360px; background: rgba(65,183,255,0.4); top: -80px; right: 12%; animation: drift1 16s ease-in-out infinite; }
+    .orb.b { width: 300px; height: 300px; background: rgba(124,92,246,0.32); bottom: -60px; left: 6%; animation: drift2 19s ease-in-out infinite; }
+    .orb.c { width: 220px; height: 220px; background: rgba(65,183,255,0.22); top: 40%; left: 40%; animation: drift1 22s ease-in-out infinite reverse; }
+    @keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,28px)} }
+    @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(34px,-26px)} }
+
+    /* ── Left: editorial title ── */
+    .copy {
+      position: relative; z-index: 2;
+      flex: 1 1 0; min-width: 0; max-width: 760px;
+      animation: rise 1s cubic-bezier(0.16,1,0.3,1) both;
     }
-    @keyframes fade-up {
-      from { opacity: 0; transform: translateY(36px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes rise { from{opacity:0;transform:translateY(26px)} to{opacity:1;transform:translateY(0)} }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 14px;
+      font-size: clamp(12px, 1vw, 17px); font-weight: 700;
+      letter-spacing: 0.34em; text-transform: uppercase;
+      color: var(--accent-soft); margin-bottom: clamp(18px, 2.6vh, 30px);
     }
-    @keyframes bounce-r {
-      0%,100% { transform: translateX(-50%); }
-      50%      { transform: translateX(calc(-50% + 10px)); }
+    .eyebrow::before { content:''; width: clamp(28px,3vw,48px); height: 2px; background: linear-gradient(90deg, var(--accent), transparent); }
+
+    .title {
+      font-size: clamp(64px, 9.5vw, 168px);
+      font-weight: 900; letter-spacing: -0.04em; line-height: 0.86;
+      margin: 0; text-transform: uppercase;
+      background: linear-gradient(165deg, #ffffff 30%, #7cc4ff 75%, #4f8ef7 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      text-shadow: 0 0 90px rgba(65,183,255,0.4);
+    }
+
+    .rule { width: clamp(60px, 8vw, 120px); height: 4px; border-radius: 4px;
+      margin: clamp(22px,3vh,34px) 0; background: linear-gradient(90deg, var(--accent), rgba(124,92,246,0.8)); }
+
+    .tagline {
+      font-size: clamp(18px, 1.9vw, 32px); font-weight: 300;
+      line-height: 1.4; color: #d4def0; max-width: 620px; margin: 0;
+    }
+    .tagline b { color: #fff; font-weight: 600; }
+
+    .start {
+      display: inline-flex; align-items: center; gap: 12px;
+      margin-top: clamp(30px, 4.5vh, 56px);
+      font-size: clamp(14px, 1.2vw, 19px); font-weight: 700;
+      letter-spacing: 0.08em; color: var(--accent-soft);
+      text-decoration: none; padding: 12px 22px;
+      border: 1px solid rgba(65,183,255,0.4); border-radius: 999px;
+      background: rgba(65,183,255,0.07);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .start:hover { background: rgba(65,183,255,0.16); border-color: rgba(65,183,255,0.7); transform: translateY(-2px); }
+    .start .arr { font-size: 1.25em; animation: nudge 1.8s ease-in-out infinite; }
+    @keyframes nudge { 0%,100%{transform:translateX(0)} 50%{transform:translateX(6px)} }
+
+    /* ── Right: framed poster ── */
+    .poster-wrap {
+      position: relative; z-index: 2; flex: 0 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      animation: poster-in 1.2s 0.15s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes poster-in { from{opacity:0;transform:translateY(30px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+    .poster-glow {
+      position: absolute; inset: -8% -8%;
+      background: radial-gradient(closest-side, rgba(65,183,255,0.45), transparent 75%);
+      filter: blur(20px); z-index: -1;
+      animation: pulse 5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:0.7} 50%{opacity:1} }
+    .poster {
+      height: min(80vh, 680px); width: auto; display: block;
+      border-radius: 16px;
+      border: 1px solid rgba(120,190,255,0.3);
+      box-shadow: 0 50px 120px -24px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.04) inset;
+      animation: float 7s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+    @media (max-aspect-ratio: 1/1) {
+      .stage { flex-direction: column-reverse; justify-content: center; gap: clamp(24px,4vh,40px); padding: clamp(60px,8vh,90px) 7vw; text-align: center; }
+      .copy { max-width: 640px; }
+      .eyebrow { justify-content: center; }
+      .eyebrow::before { display: none; }
+      .rule { margin-left: auto; margin-right: auto; }
+      .tagline { margin-left: auto; margin-right: auto; }
+      .poster { height: min(46vh, 440px); }
     }
   </style>
 </head>
 <body>
 
-  <div class="title-container">
-    <h1>THE AI ERA<br>Chi controlla l'Intelligenza Artificiale controlla il futuro</h1>
+  <div class="stage">
+    <div class="orbs"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+
+    <div class="copy">
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 class="title">THE&nbsp;AI&nbsp;ERA</h1>
+      <div class="rule"></div>
+      <p class="tagline" id="tagline"></p>
+      <a class="start" id="start" href="video.html"><span id="start-txt"></span><span class="arr">&#8594;</span></a>
+    </div>
+
+    <div class="poster-wrap">
+      <div class="poster-glow"></div>
+      <img class="poster" src="Mattia-THE-AI-ERA.png" alt="The AI Era" />
+    </div>
   </div>
 
-  <img class="title-image" src="Mattia-THE-AI-ERA.png" alt="The AI Era" />
-
-  <div class="slide-hint">→</div>
-
-  <!-- Navigation -->
-  <div id="nav-dots">
-    <button class="nav-dot active"></button>
-    <button class="nav-dot"></button>
-    <button class="nav-dot"></button>
-    <button class="nav-dot"></button>
-    <button class="nav-dot"></button>
-    <button class="nav-dot"></button>
-    <button class="nav-dot"></button>
-    <button class="nav-dot"></button>
-    <button class="nav-dot"></button>
-    <button class="nav-dot"></button>
-  </div>
+  <div id="nav-dots"></div>
   <a class="nav-arrow hidden" id="nav-prev">&#8592;</a>
   <a class="nav-arrow" id="nav-next" href="video.html">&#8594;</a>
 
-  <!-- Lang toggle -->
   <div id="lang-toggle">
     <button class="lang-btn" data-lang="it">IT</button>
     <button class="lang-btn" data-lang="en">EN</button>
@@ -75,13 +144,32 @@
 
   <script src="js/common.js"></script>
   <script>
-    function onLangChange(l) {
-      document.title = l === 'it' ? "Geopolitica della AI" : "AI Geopolitics";
+    const TXT = {
+      it: {
+        doc: 'Geopolitica della AI',
+        eyebrow: 'Geopolitica dell\'Intelligenza Artificiale',
+        tagline: 'Chi controlla l\'intelligenza artificiale <b>controlla il futuro.</b>',
+        start: 'Inizia'
+      },
+      en: {
+        doc: 'AI Geopolitics',
+        eyebrow: 'The Geopolitics of Artificial Intelligence',
+        tagline: 'Whoever controls artificial intelligence <b>controls the future.</b>',
+        start: 'Start'
+      }
+    };
+    function renderTexts() {
+      const t = TXT[lang];
+      document.title = t.doc;
+      document.getElementById('eyebrow').textContent = t.eyebrow;
+      document.getElementById('tagline').innerHTML = t.tagline;
+      document.getElementById('start-txt').textContent = t.start;
     }
+    function onLangChange() { renderTexts(); }
 
     initLangToggle();
+    renderTexts();
     initNav();
-    onLangChange(lang);
   </script>
 </body>
 </html>
