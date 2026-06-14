@@ -47,6 +47,7 @@
       if (!f) return;
       f.addEventListener('load', function () {
         try { f.contentWindow.postMessage({ type: 'op-setlang', lang: lang }, '*'); } catch (e) {}
+        if (sec === sections[i]) focusActiveIframe();
       });
       f.src = f.getAttribute('data-src');
       f.removeAttribute('data-src');
@@ -73,6 +74,13 @@
       position(true);
     }
 
+    function focusActiveIframe() {
+      var f = sections[i] && sections[i].querySelector('iframe');
+      if (f && !f.hasAttribute('data-src')) {
+        try { f.contentWindow.focus({ preventScroll: true }); } catch (e) { try { f.contentWindow.focus(); } catch (e2) {} }
+      }
+    }
+
     function activate(prev) {
       var sec = sections[i];
       setAccent(sec);
@@ -82,6 +90,10 @@
       updateChrome();
       var f = sec.querySelector('iframe');
       if (f && !f.hasAttribute('data-src')) { try { f.contentWindow.postMessage({ type: 'op-setlang', lang: lang }, '*'); } catch (e) {} }
+      // Route keyboard to the active iframe (so embedded slides — incl.
+      // step-reveal ones — receive presenter keys). Native sections keep
+      // focus on the shell.
+      setTimeout(focusActiveIframe, 60);
       try { history.replaceState(null, '', '#' + slugOf(sec)); } catch (e) {}
     }
 

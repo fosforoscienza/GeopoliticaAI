@@ -273,6 +273,9 @@ async function loadSchede(folder) {
   // Forward navigation keys to the parent shell (capture phase, so the slide's
   // own keyboard handlers never fire while embedded).
   window.addEventListener('keydown', (e) => {
+    // Slides that drive their own step-by-step navigation (e.g. progressive
+    // reveals) opt out of key-forwarding and talk to the shell themselves.
+    if (window.__opSelfNav) return;
     const tag = (e.target && e.target.tagName) || '';
     if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
     const k = e.key, c = e.code;

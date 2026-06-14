@@ -2809,91 +2809,7 @@
 </section>
 
       <section class="op-sec" id="op-tom-brad" data-slug="tom-brad" data-accent="#41b7ff"><iframe data-src="tom-brad.html" loading="lazy" title="tom-brad"></iframe></section>
-      <!-- tre-fattori -->
-<style>
-  #op-tre-fattori {
-    position: relative; width: 100%; height: 100%; overflow: hidden; box-sizing: border-box;
-    display: flex; align-items: center; gap: clamp(28px, 4vw, 80px);
-    padding: clamp(36px, 5vh, 70px) clamp(44px, 6vw, 110px);
-    background:
-      radial-gradient(60% 70% at 80% 50%, rgba(65,183,255,0.12), transparent 65%),
-      radial-gradient(50% 60% at 12% 30%, rgba(139,92,246,0.10), transparent 65%),
-      #05080f;
-  }
-  #op-tre-fattori .copy { flex: 1 1 0; min-width: 0; max-width: 980px; z-index: 2; }
-  #op-tre-fattori .eyebrow {
-    display: inline-flex; align-items: center; gap: 14px;
-    font-size: clamp(14px, 1.5vw, 22px); font-weight: 700;
-    letter-spacing: 0.3em; text-transform: uppercase; color: #8fd2ff;
-    margin-bottom: clamp(14px, 2vh, 24px);
-  }
-  #op-tre-fattori .eyebrow::before { content:''; width: clamp(28px,3vw,52px); height: 2px; background: linear-gradient(90deg,#41b7ff,transparent); }
-  #op-tre-fattori .title {
-    font-size: clamp(64px, 9vw, 158px);
-    font-weight: 900; letter-spacing: -0.03em; line-height: 0.9; margin: 0;
-    text-transform: uppercase;
-    background: linear-gradient(95deg, #41b7ff 0%, #8b5cf6 100%);
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent; color: transparent;
-    text-shadow: 0 0 80px rgba(65,183,255,0.3);
-  }
-  #op-tre-fattori .factors { list-style: none; padding: 0; margin: clamp(28px,4vh,52px) 0 0; }
-  #op-tre-fattori .factor {
-    display: flex; align-items: baseline; gap: clamp(16px,1.6vw,28px);
-    padding: clamp(14px,2vh,22px) 0; border-top: 1px solid rgba(255,255,255,0.1);
-  }
-  #op-tre-fattori .factor .n {
-    flex: 0 0 auto; font-size: clamp(36px, 4vw, 72px); font-weight: 900;
-    line-height: 1; letter-spacing: -0.02em; color: transparent;
-  }
-  #op-tre-fattori .factor.f1 .n { -webkit-text-stroke: 2px #f59e0b; }
-  #op-tre-fattori .factor.f2 .n { -webkit-text-stroke: 2px #f0654f; }
-  #op-tre-fattori .factor.f3 .n { -webkit-text-stroke: 2px #34d399; }
-  #op-tre-fattori .factor .body { min-width: 0; }
-  #op-tre-fattori .factor .lbl {
-    font-size: clamp(30px, 3.6vw, 64px); font-weight: 800; line-height: 1;
-    color: #fff; letter-spacing: -0.01em; text-transform: uppercase;
-  }
-  #op-tre-fattori .factor .desc {
-    font-size: clamp(18px, 1.9vw, 30px); font-weight: 300; line-height: 1.35;
-    color: #aebccd; margin-top: clamp(4px,0.8vh,10px);
-  }
-  #op-tre-fattori .art { flex: 0 0 auto; position: relative; z-index: 2; }
-  #op-tre-fattori .art::before {
-    content:''; position:absolute; inset:-10% -14%;
-    background: radial-gradient(closest-side, rgba(65,183,255,0.35), transparent 72%);
-    filter: blur(18px); z-index:-1; animation: tre-fattori-pulse 5s ease-in-out infinite;
-  }
-  @keyframes tre-fattori-pulse { 0%,100%{opacity:.65} 50%{opacity:1} }
-  #op-tre-fattori .art img {
-    height: min(82vh, 720px); width: auto; display: block;
-    border-radius: 18px; border: 1px solid rgba(120,190,255,0.28);
-    box-shadow: 0 50px 110px -26px rgba(0,0,0,0.85);
-    animation: tre-fattori-float 7s ease-in-out infinite;
-  }
-  @keyframes tre-fattori-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-
-  @media (max-aspect-ratio: 1/1) {
-    #op-tre-fattori { flex-direction: column; justify-content: center; gap: clamp(20px,3vh,32px); padding: clamp(40px,6vh,70px) 7vw; }
-    #op-tre-fattori .copy { order: 2; max-width: 680px; }
-    #op-tre-fattori .art { order: 1; }
-    #op-tre-fattori .art img { height: min(34vh, 320px); }
-    #op-tre-fattori .title { font-size: clamp(54px,12vw,92px); }
-  }
-</style>
-<section class="op-sec" id="op-tre-fattori" data-accent="#41b7ff">
-  <div class="copy">
-    <div class="eyebrow" data-reveal data-it="Perché qui, perché ora" data-en="Why here, why now">Perché qui, perché ora</div>
-    <h1 class="title" data-reveal data-it="Tre Fattori" data-en="Three Factors">Tre Fattori</h1>
-    <ul class="factors">
-      <li class="factor f1" data-reveal><span class="n">01</span><div class="body"><div class="lbl" data-it="Hardware" data-en="Hardware">Hardware</div><div class="desc" data-it="Nuova potenza di calcolo: le GPU." data-en="New compute power: GPUs.">Nuova potenza di calcolo: le GPU.</div></div></li>
-      <li class="factor f2" data-reveal><span class="n">02</span><div class="body"><div class="lbl" data-it="Reti neurali" data-en="Neural networks">Reti neurali</div><div class="desc" data-it="Algoritmi sempre migliori." data-en="Ever-better algorithms.">Algoritmi sempre migliori.</div></div></li>
-      <li class="factor f3" data-reveal><span class="n">03</span><div class="body"><div class="lbl" data-it="Dati" data-en="Data">Dati</div><div class="desc" data-it="Enormi quantità di dati." data-en="Enormous amounts of data.">Enormi quantità di dati.</div></div></li>
-    </ul>
-  </div>
-  <div class="art" data-reveal><img src="img/pilastri.png" alt="Tre pilastri" /></div>
-</section>
-
+      <section class="op-sec" id="op-tre-fattori" data-slug="tre-fattori" data-accent="#41b7ff"><iframe data-src="tre-fattori.html" loading="lazy" title="tre-fattori"></iframe></section>
       <!-- confronto-ai -->
 <style>
 #op-confronto-ai{
@@ -3110,6 +3026,7 @@
       if (!f) return;
       f.addEventListener('load', function () {
         try { f.contentWindow.postMessage({ type: 'op-setlang', lang: lang }, '*'); } catch (e) {}
+        if (sec === sections[i]) focusActiveIframe();
       });
       f.src = f.getAttribute('data-src');
       f.removeAttribute('data-src');
@@ -3136,6 +3053,13 @@
       position(true);
     }
 
+    function focusActiveIframe() {
+      var f = sections[i] && sections[i].querySelector('iframe');
+      if (f && !f.hasAttribute('data-src')) {
+        try { f.contentWindow.focus({ preventScroll: true }); } catch (e) { try { f.contentWindow.focus(); } catch (e2) {} }
+      }
+    }
+
     function activate(prev) {
       var sec = sections[i];
       setAccent(sec);
@@ -3145,6 +3069,10 @@
       updateChrome();
       var f = sec.querySelector('iframe');
       if (f && !f.hasAttribute('data-src')) { try { f.contentWindow.postMessage({ type: 'op-setlang', lang: lang }, '*'); } catch (e) {} }
+      // Route keyboard to the active iframe (so embedded slides — incl.
+      // step-reveal ones — receive presenter keys). Native sections keep
+      // focus on the shell.
+      setTimeout(focusActiveIframe, 60);
       try { history.replaceState(null, '', '#' + slugOf(sec)); } catch (e) {}
     }
 

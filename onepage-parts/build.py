@@ -13,7 +13,9 @@ ORDER = ["index","video","scrittura","fotografia","pechino-1","pechino-2","pechi
 
 # slide interattive/pesanti tenute in iframe (slug -> accento per i dot)
 IFRAME = {"video":"#41b7ff","fotografia":"#41b7ff","timeline":"#41b7ff","paesi":"#41b7ff",
-    "leader":"#4f8ef7","alba-transformer":"#41b7ff","tom-brad":"#41b7ff"}
+    "leader":"#4f8ef7","alba-transformer":"#41b7ff","tom-brad":"#41b7ff",
+    # step-reveal slides run their own JS, so they stay as iframes
+    "tre-fattori":"#41b7ff"}
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
