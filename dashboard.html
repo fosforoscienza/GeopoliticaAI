@@ -12,12 +12,11 @@
       padding: 36px 24px 80px; box-sizing: border-box;
       overflow-y: auto;
     }
-    .dash-container { max-width: 1200px; margin: 0 auto; }
+    .dash-container { max-width: 1320px; margin: 0 auto; }
 
     .dash-header {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px;
-      gap: 16px; flex-wrap: wrap;
+      margin-bottom: 12px; gap: 16px; flex-wrap: wrap;
     }
     .dash-header h1 {
       font-size: clamp(24px, 2.6vw, 36px);
@@ -25,14 +24,12 @@
     }
     .dash-back {
       color: rgba(255,255,255,0.55); text-decoration: none;
-      font-size: 14px; font-weight: 500;
-      transition: color 0.18s;
+      font-size: 14px; font-weight: 500; transition: color 0.18s;
     }
     .dash-back:hover { color: #41b7ff; }
     .dash-help {
       color: rgba(255,255,255,0.45); font-size: 13px;
-      margin-bottom: 28px;
-      line-height: 1.55;
+      margin-bottom: 24px; line-height: 1.55;
     }
     kbd {
       background: rgba(255,255,255,0.08);
@@ -44,8 +41,8 @@
 
     .dash-actions {
       display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;
-      position: sticky; top: -1px; z-index: 5;
-      padding: 16px 0;
+      align-items: center;
+      position: sticky; top: -1px; z-index: 5; padding: 16px 0;
       background: linear-gradient(to bottom, #040e1a 70%, rgba(4,14,26,0.95));
     }
     .dash-btn {
@@ -54,30 +51,104 @@
       background: rgba(255,255,255,0.04);
       color: rgba(255,255,255,0.8);
       font-size: 13px; font-weight: 600; letter-spacing: 0.05em;
-      cursor: pointer; transition: all 0.18s;
-      font-family: inherit;
+      cursor: pointer; transition: all 0.18s; font-family: inherit;
     }
     .dash-btn:hover {
       background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.25);
-      color: #fff;
+      border-color: rgba(255,255,255,0.25); color: #fff;
     }
     .dash-btn.primary {
       background: rgba(65,183,255,0.18);
-      border-color: rgba(65,183,255,0.5);
-      color: #41b7ff;
+      border-color: rgba(65,183,255,0.5); color: #41b7ff;
     }
-    .dash-btn.primary:hover {
-      background: rgba(65,183,255,0.28);
-      color: #7cd0ff;
-    }
+    .dash-btn.primary:hover { background: rgba(65,183,255,0.28); color: #7cd0ff; }
     .dash-btn.danger { color: #f87171; }
     .dash-btn.danger:hover { color: #fca5a5; border-color: rgba(248,113,113,0.4); }
 
+    /* View switch */
+    .view-switch { display: inline-flex; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; overflow: hidden; margin-right: auto; }
+    .view-switch button {
+      padding: 10px 16px; border: none; background: transparent;
+      color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 700;
+      letter-spacing: 0.04em; cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; gap: 7px; transition: all 0.15s;
+    }
+    .view-switch button.active { background: rgba(65,183,255,0.2); color: #7cd0ff; }
+    .view-switch button:not(.active):hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+    /* ═══════════ GRID (card) view ═══════════ */
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 224px);
+      gap: 16px; justify-content: start;
+    }
+    .dash-card {
+      position: relative; width: 224px;
+      border-radius: 12px; overflow: hidden;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      cursor: grab; user-select: none;
+      transition: border 0.15s, box-shadow 0.15s, opacity 0.15s, transform 0.12s;
+    }
+    .dash-card:hover { border-color: rgba(255,255,255,0.28); transform: translateY(-2px); }
+    .dash-card.dragging { opacity: 0.35; cursor: grabbing; border-color: rgba(65,183,255,0.6); }
+    .dash-card.drop-left  { box-shadow: -3px 0 0 0 #41b7ff inset; }
+    .dash-card.drop-right { box-shadow: 3px 0 0 0 #41b7ff inset; }
+    .dash-card.is-hidden { opacity: 0.42; }
+    .dash-card.is-hidden:hover { opacity: 0.7; }
+
+    .card-thumb {
+      position: relative; width: 224px; height: 126px;
+      overflow: hidden; background: #0a1929;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .card-thumb iframe {
+      position: absolute; top: 0; left: 0;
+      width: 1600px; height: 900px;
+      transform: scale(0.14); transform-origin: top left;
+      border: none; pointer-events: none;
+    }
+    .card-pos {
+      position: absolute; top: 8px; left: 8px; z-index: 2;
+      min-width: 22px; height: 22px; padding: 0 6px;
+      border-radius: 6px; background: rgba(4,14,26,0.82);
+      border: 1px solid rgba(65,183,255,0.5);
+      color: #7cd0ff; font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .card-eye {
+      position: absolute; top: 8px; right: 8px; z-index: 2;
+      width: 26px; height: 26px; border-radius: 6px;
+      background: rgba(4,14,26,0.82); border: 1px solid rgba(255,255,255,0.18);
+      color: #fff; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; padding: 0; backdrop-filter: blur(4px);
+    }
+    .card-eye:hover { background: rgba(65,183,255,0.3); border-color: rgba(65,183,255,0.6); }
+    .card-hidden-badge {
+      position: absolute; bottom: 8px; left: 8px; z-index: 2;
+      font-size: 10px; font-weight: 800; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #fbbf24;
+      background: rgba(4,14,26,0.82); padding: 3px 8px; border-radius: 5px;
+      border: 1px solid rgba(251,191,36,0.4);
+    }
+    .card-name {
+      padding: 10px 12px; font-size: 13px; font-weight: 600;
+      color: #f0f5fb; line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-file {
+      padding: 0 12px 11px; font-size: 10.5px;
+      color: rgba(255,255,255,0.38);
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* ═══════════ LIST view ═══════════ */
     .dash-list { display: grid; gap: 10px; }
     .dash-item {
-      display: grid;
-      grid-template-columns: 28px 200px 1fr auto;
+      display: grid; grid-template-columns: 28px 200px 1fr auto;
       gap: 18px; align-items: center;
       padding: 12px 16px; border-radius: 10px;
       background: rgba(255,255,255,0.04);
@@ -85,120 +156,55 @@
       cursor: grab; user-select: none;
       transition: background 0.18s, border 0.18s, opacity 0.18s, transform 0.18s;
     }
-    .dash-item:hover {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.2);
-    }
-    .dash-item.dragging {
-      opacity: 0.4; cursor: grabbing;
-      border-color: rgba(65,183,255,0.5);
-    }
-    .dash-item.drop-above {
-      box-shadow: 0 -3px 0 0 #41b7ff inset;
-    }
-    .dash-item.drop-below {
-      box-shadow: 0 3px 0 0 #41b7ff inset;
-    }
-    .dash-item.hidden-slide {
-      opacity: 0.45;
-    }
-
-    .dash-handle {
-      display: flex; flex-direction: column;
-      gap: 4px; align-items: center;
-    }
+    .dash-item:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.2); }
+    .dash-item.dragging { opacity: 0.4; cursor: grabbing; border-color: rgba(65,183,255,0.5); }
+    .dash-item.drop-above { box-shadow: 0 -3px 0 0 #41b7ff inset; }
+    .dash-item.drop-below { box-shadow: 0 3px 0 0 #41b7ff inset; }
+    .dash-item.hidden-slide { opacity: 0.45; }
+    .dash-handle { display: flex; flex-direction: column; gap: 4px; align-items: center; }
     .move-btn {
-      width: 28px; height: 28px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.75);
-      cursor: pointer; font-size: 15px;
+      width: 28px; height: 28px; border-radius: 6px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.75); cursor: pointer; font-size: 15px;
       display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, color 0.15s;
-      padding: 0;
+      transition: background 0.15s, color 0.15s; padding: 0;
     }
     .move-btn:hover:not(:disabled) { background: rgba(255,255,255,0.15); color: #fff; }
     .move-btn:disabled { opacity: 0.18; cursor: default; }
     .dash-thumb {
-      width: 200px; height: 112px;
-      position: relative; overflow: hidden;
-      border-radius: 6px;
-      background: #0a1929;
-      border: 1px solid rgba(255,255,255,0.08);
+      width: 200px; height: 112px; position: relative; overflow: hidden;
+      border-radius: 6px; background: #0a1929; border: 1px solid rgba(255,255,255,0.08);
     }
     .dash-thumb iframe {
-      position: absolute; top: 0; left: 0;
-      width: 1600px; height: 900px;
-      transform: scale(0.125);
-      transform-origin: top left;
-      border: none;
-      pointer-events: none;
-    }
-    .dash-thumb.empty {
-      display: flex; align-items: center; justify-content: center;
-      color: rgba(255,255,255,0.25); font-size: 11px;
-      letter-spacing: 0.1em; text-transform: uppercase;
+      position: absolute; top: 0; left: 0; width: 1600px; height: 900px;
+      transform: scale(0.125); transform-origin: top left;
+      border: none; pointer-events: none;
     }
     .dash-meta-block { min-width: 0; }
     .dash-name-input {
-      font-size: clamp(16px, 1.3vw, 19px); font-weight: 700;
-      letter-spacing: -0.005em;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid transparent;
-      color: #fff;
-      width: 100%;
-      outline: none;
-      padding: 2px 0;
-      transition: border-color 0.15s;
-      font-family: inherit;
+      font-size: clamp(16px, 1.3vw, 19px); font-weight: 700; letter-spacing: -0.005em;
+      background: transparent; border: none; border-bottom: 1px solid transparent;
+      color: #fff; width: 100%; outline: none; padding: 2px 0;
+      transition: border-color 0.15s; font-family: inherit;
     }
     .dash-name-input:hover { border-bottom-color: rgba(255,255,255,0.2); }
     .dash-name-input:focus { border-bottom-color: #41b7ff; }
-    .dash-file {
-      font-size: 11px; color: rgba(255,255,255,0.4);
-      margin-top: 4px; font-family: ui-monospace, SFMono-Regular, monospace;
-    }
-    .dash-position {
-      display: inline-block;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: rgba(65,183,255,0.7);
-      margin-top: 6px;
-    }
-
-    .dash-toggle {
-      display: flex; align-items: center; gap: 10px;
-      cursor: pointer; padding: 8px 12px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.03);
-    }
-    .dash-toggle input[type=checkbox] {
-      width: 18px; height: 18px;
-      cursor: pointer; accent-color: #41b7ff;
-    }
-    .dash-toggle-label {
-      font-size: 12px; font-weight: 600;
-      color: rgba(255,255,255,0.6);
-      letter-spacing: 0.04em;
-    }
+    .dash-file { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px; font-family: ui-monospace, SFMono-Regular, monospace; }
+    .dash-position { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(65,183,255,0.7); margin-top: 6px; }
+    .dash-toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 8px 12px; border-radius: 6px; background: rgba(255,255,255,0.03); }
+    .dash-toggle input[type=checkbox] { width: 18px; height: 18px; cursor: pointer; accent-color: #41b7ff; }
+    .dash-toggle-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; }
 
     .dash-status {
-      margin-top: 28px;
-      font-size: 14px; min-height: 22px;
-      color: rgba(255,255,255,0.55);
-      transition: color 0.18s;
+      margin-top: 28px; font-size: 14px; min-height: 22px;
+      color: rgba(255,255,255,0.55); transition: color 0.18s;
     }
     .dash-status.success { color: #4ade80; }
     .dash-status.error   { color: #f87171; }
     .dash-status.warning { color: #fbbf24; }
 
     @media (max-width: 720px) {
-      .dash-item {
-        grid-template-columns: 24px 1fr;
-        gap: 12px;
-      }
+      .dash-item { grid-template-columns: 24px 1fr; gap: 12px; }
       .dash-thumb { display: none; }
       .dash-toggle { grid-column: 2; justify-self: start; }
     }
@@ -211,18 +217,24 @@
       <a class="dash-back" href="index.html">← Torna alla presentazione</a>
     </header>
     <p class="dash-help">
-      Usa ↑ ↓ per riordinare (o trascina su desktop). Deseleziona la casella per nascondere una slide dalla sequenza.
-      Le modifiche vengono salvate automaticamente. Premi <kbd>O</kbd> da qualsiasi slide per tornare qui.
+      <b>Griglia</b>: trascina le card per riordinare velocemente; clicca l'occhio per nascondere/mostrare.
+      <b>Lista</b>: usa ↑ ↓ o trascina, e rinomina le slide.
+      Tutto è salvato automaticamente. Premi <kbd>O</kbd> da qualsiasi slide per tornare qui.
     </p>
 
     <div class="dash-actions">
+      <div class="view-switch" id="view-switch">
+        <button data-view="grid" id="view-grid">▦ Griglia</button>
+        <button data-view="list" id="view-list">≣ Lista</button>
+      </div>
       <button class="dash-btn" id="dash-export">Esporta JSON</button>
       <button class="dash-btn" id="dash-import">Importa JSON</button>
       <input type="file" id="dash-file" accept=".json" hidden />
       <button class="dash-btn danger" id="dash-reset">Reset al default</button>
     </div>
 
-    <div class="dash-list" id="dash-list"></div>
+    <div class="dash-grid" id="dash-grid" hidden></div>
+    <div class="dash-list" id="dash-list" hidden></div>
 
     <div class="dash-status" id="dash-status">Pronto.</div>
   </div>
@@ -238,9 +250,15 @@
       'pechino-2.html':    'Pechino 2',
       'pechino-3.html':    'Pechino 3',
       'timeline.html':     'Timeline AI',
+      'napa-valley.html':  'Napa Valley',
+      'musk-page.html':    'Musk & Larry Page',
+      'musk-page-2.html':  'Musk vs Page — Due visioni',
+      'musk-altman.html':  'Musk & Sam Altman',
       'paesi.html':        'Mappa paesi',
       'leader.html':       'Leader & CEO',
       'thiel.html':        'Peter Thiel',
+      'palantir-intro.html':   'Palantír — Foto',
+      'palantir-intro-2.html': 'Palantír — Cos\'è',
       'palantir.html':     'Palantir',
       'llm-occidentali.html': 'LLM Occidentali',
       'llm-asiatici.html':    'LLM Asiatici',
@@ -258,14 +276,31 @@
       'confronto-ai.html':      'Confronto AI'
     };
 
+    const VIEW_KEY = 'geopolitica-dash-view';
+    let viewMode = localStorage.getItem(VIEW_KEY) || 'grid';
+
+    // Insert new default slides at their natural position (matches common.js).
+    function mergeNewDefaults(order) {
+      DEFAULT_PAGES.forEach((p, i) => {
+        if (order.includes(p)) return;
+        let at = order.length;
+        for (let j = i - 1; j >= 0; j--) {
+          const idx = order.indexOf(DEFAULT_PAGES[j]);
+          if (idx !== -1) { at = idx + 1; break; }
+        }
+        order.splice(at, 0, p);
+      });
+      return order;
+    }
+
     function loadConfig() {
       try {
         const raw = localStorage.getItem(SLIDES_CONFIG_KEY);
         if (!raw) return { order: DEFAULT_PAGES.slice(), hidden: [], names: {} };
         const cfg = JSON.parse(raw);
         const known = new Set(DEFAULT_PAGES);
-        const order = Array.isArray(cfg.order) ? cfg.order.filter(p => known.has(p)) : [];
-        DEFAULT_PAGES.forEach(p => { if (!order.includes(p)) order.push(p); });
+        let order = Array.isArray(cfg.order) ? cfg.order.filter(p => known.has(p)) : [];
+        order = mergeNewDefaults(order);
         const hidden = Array.isArray(cfg.hidden) ? cfg.hidden.filter(p => known.has(p)) : [];
         const names = (cfg.names && typeof cfg.names === 'object') ? cfg.names : {};
         return { order, hidden, names };
@@ -284,30 +319,65 @@
         status.textContent = 'Salvato automaticamente.';
         status.className = 'dash-status success';
         clearTimeout(saveTimer);
-        saveTimer = setTimeout(() => {
-          status.textContent = 'Pronto.';
-          status.className = 'dash-status';
-        }, 1500);
+        saveTimer = setTimeout(() => { status.textContent = 'Pronto.'; status.className = 'dash-status'; }, 1500);
       } catch (e) {
         status.textContent = 'Errore salvataggio: ' + e.message;
         status.className = 'dash-status error';
       }
     }
+    function setDirty() { autoSave(); }
 
-    function setDirty() {
-      autoSave();
+    function nameOf(page) { return state.names[page] || SLIDE_NAMES[page] || page; }
+    function isHidden(page) { return state.hidden.includes(page); }
+    function toggleHidden(page) {
+      if (isHidden(page)) state.hidden = state.hidden.filter(p => p !== page);
+      else state.hidden.push(page);
     }
 
-    function render() {
+    // ═══════════ GRID render ═══════════
+    function renderGrid() {
+      const grid = document.getElementById('dash-grid');
+      grid.innerHTML = '';
+      state.order.forEach((page, i) => {
+        const hidden = isHidden(page);
+        const card = document.createElement('div');
+        card.className = 'dash-card' + (hidden ? ' is-hidden' : '');
+        card.draggable = true;
+        card.dataset.page = page;
+        card.innerHTML = `
+          <div class="card-thumb">
+            <div class="card-pos">${i + 1}</div>
+            <button class="card-eye" title="${hidden ? 'Mostra' : 'Nascondi'}">${hidden ? '🚫' : '👁'}</button>
+            ${hidden ? '<div class="card-hidden-badge">Nascosta</div>' : ''}
+            <iframe src="${page}" loading="lazy" scrolling="no" aria-hidden="true" tabindex="-1"></iframe>
+          </div>
+          <div class="card-name">${nameOf(page)}</div>
+          <div class="card-file">${page}</div>
+        `;
+        const eye = card.querySelector('.card-eye');
+        eye.draggable = false;
+        eye.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleHidden(page);
+          renderGrid();
+          setDirty();
+        });
+        eye.addEventListener('mousedown', (e) => e.stopPropagation());
+        grid.appendChild(card);
+      });
+      setupDnD(grid, 'dash-card', 'x');
+    }
+
+    // ═══════════ LIST render ═══════════
+    function renderList() {
       const list = document.getElementById('dash-list');
       list.innerHTML = '';
       state.order.forEach((page, i) => {
-        const hidden = state.hidden.includes(page);
+        const hidden = isHidden(page);
         const item = document.createElement('div');
         item.className = 'dash-item' + (hidden ? ' hidden-slide' : '');
         item.draggable = true;
         item.dataset.page = page;
-
         const name = SLIDE_NAMES[page] || page;
         item.innerHTML = `
           <div class="dash-handle">
@@ -328,27 +398,21 @@
           </label>
         `;
         const nameInput = item.querySelector('.dash-name-input');
-        nameInput.value = state.names[page] || name;
+        nameInput.value = nameOf(page);
         nameInput.placeholder = name;
+        nameInput.draggable = false;
         nameInput.addEventListener('input', () => {
           const v = nameInput.value.trim();
-          if (v && v !== name) state.names[page] = v;
-          else delete state.names[page];
-          setDirty(true);
+          if (v && v !== name) state.names[page] = v; else delete state.names[page];
+          setDirty();
         });
         nameInput.addEventListener('keydown', e => e.stopPropagation());
+        nameInput.addEventListener('mousedown', e => e.stopPropagation());
         item.querySelector('.dash-file').textContent = page;
+
         const cb = item.querySelector('input[type=checkbox]');
         cb.checked = !hidden;
-        cb.addEventListener('change', () => {
-          if (cb.checked) {
-            state.hidden = state.hidden.filter(p => p !== page);
-          } else if (!state.hidden.includes(page)) {
-            state.hidden.push(page);
-          }
-          render();
-          setDirty(true);
-        });
+        cb.addEventListener('change', () => { toggleHidden(page); renderList(); setDirty(); });
 
         const upBtn = item.querySelector('.move-btn.up');
         const dnBtn = item.querySelector('.move-btn.dn');
@@ -359,69 +423,87 @@
           const idx = state.order.indexOf(page);
           if (idx <= 0) return;
           [state.order[idx - 1], state.order[idx]] = [state.order[idx], state.order[idx - 1]];
-          render(); setDirty(true);
+          renderList(); setDirty();
         });
         dnBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           const idx = state.order.indexOf(page);
           if (idx >= state.order.length - 1) return;
           [state.order[idx + 1], state.order[idx]] = [state.order[idx], state.order[idx + 1]];
-          render(); setDirty(true);
+          renderList(); setDirty();
         });
 
         list.appendChild(item);
       });
-      setupDragDrop();
+      setupDnD(list, 'dash-item', 'y');
     }
 
-    function setupDragDrop() {
-      const list = document.getElementById('dash-list');
+    // ═══════════ Shared drag & drop ═══════════
+    // axis 'x' → left/right insertion (grid); 'y' → above/below (list)
+    function setupDnD(container, itemClass, axis) {
       let dragged = null;
+      const before = axis === 'x' ? 'drop-left'  : 'drop-above';
+      const after  = axis === 'x' ? 'drop-right' : 'drop-below';
 
-      list.querySelectorAll('.dash-item').forEach(item => {
+      container.querySelectorAll('.' + itemClass).forEach(item => {
         item.addEventListener('dragstart', (e) => {
           dragged = item;
           item.classList.add('dragging');
           e.dataTransfer.effectAllowed = 'move';
-          // Required for Firefox
           try { e.dataTransfer.setData('text/plain', item.dataset.page); } catch (_) {}
         });
         item.addEventListener('dragend', () => {
           item.classList.remove('dragging');
-          list.querySelectorAll('.dash-item').forEach(el => {
-            el.classList.remove('drop-above', 'drop-below');
-          });
+          container.querySelectorAll('.' + itemClass).forEach(el => el.classList.remove(before, after));
           dragged = null;
-          state.order = [...list.children].map(el => el.dataset.page);
+          state.order = [...container.children].map(el => el.dataset.page);
           render();
-          setDirty(true);
+          setDirty();
         });
         item.addEventListener('dragover', (e) => {
           if (!dragged || dragged === item) return;
           e.preventDefault();
           const rect = item.getBoundingClientRect();
-          const midY = rect.top + rect.height / 2;
-          item.classList.toggle('drop-above', e.clientY < midY);
-          item.classList.toggle('drop-below', e.clientY >= midY);
+          const mid = axis === 'x' ? rect.left + rect.width / 2 : rect.top + rect.height / 2;
+          const pos = axis === 'x' ? e.clientX : e.clientY;
+          item.classList.toggle(before, pos < mid);
+          item.classList.toggle(after,  pos >= mid);
         });
-        item.addEventListener('dragleave', () => {
-          item.classList.remove('drop-above', 'drop-below');
-        });
+        item.addEventListener('dragleave', () => item.classList.remove(before, after));
         item.addEventListener('drop', (e) => {
           if (!dragged || dragged === item) return;
           e.preventDefault();
           const rect = item.getBoundingClientRect();
-          const midY = rect.top + rect.height / 2;
-          if (e.clientY < midY) {
-            list.insertBefore(dragged, item);
-          } else {
-            list.insertBefore(dragged, item.nextSibling);
-          }
+          const mid = axis === 'x' ? rect.left + rect.width / 2 : rect.top + rect.height / 2;
+          const pos = axis === 'x' ? e.clientX : e.clientY;
+          if (pos < mid) container.insertBefore(dragged, item);
+          else container.insertBefore(dragged, item.nextSibling);
         });
       });
     }
 
-    // === Buttons ===
+    // ═══════════ View switch ═══════════
+    function render() {
+      const grid = document.getElementById('dash-grid');
+      const list = document.getElementById('dash-list');
+      document.getElementById('view-grid').classList.toggle('active', viewMode === 'grid');
+      document.getElementById('view-list').classList.toggle('active', viewMode === 'list');
+      if (viewMode === 'grid') {
+        grid.hidden = false; list.hidden = true; renderGrid();
+      } else {
+        list.hidden = false; grid.hidden = true; renderList();
+      }
+    }
+
+    document.getElementById('view-switch').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-view]');
+      if (!btn) return;
+      viewMode = btn.dataset.view;
+      localStorage.setItem(VIEW_KEY, viewMode);
+      render();
+    });
+
+    // ═══════════ Buttons ═══════════
     document.getElementById('dash-reset').addEventListener('click', () => {
       if (!confirm('Reset all’ordine predefinito? Le modifiche locali andranno perse.')) return;
       localStorage.removeItem(SLIDES_CONFIG_KEY);
@@ -451,12 +533,12 @@
       const file = e.target.files[0];
       if (!file) return;
       try {
-        const text  = await file.text();
-        const cfg   = JSON.parse(text);
+        const text = await file.text();
+        const cfg  = JSON.parse(text);
         if (!Array.isArray(cfg.order)) throw new Error('campo "order" mancante o non valido');
         const known = new Set(DEFAULT_PAGES);
-        const order = cfg.order.filter(p => known.has(p));
-        DEFAULT_PAGES.forEach(p => { if (!order.includes(p)) order.push(p); });
+        let order = cfg.order.filter(p => known.has(p));
+        order = mergeNewDefaults(order);
         const hidden = Array.isArray(cfg.hidden) ? cfg.hidden.filter(p => known.has(p)) : [];
         const names = (cfg.names && typeof cfg.names === 'object') ? cfg.names : {};
         state = { order, hidden, names };
