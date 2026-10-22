@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La settimana — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --accent: #41b7ff; --accent-soft: #8fd2ff; --hot: #fbbf24; }
+    html, body { background: #02060f !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; }
+
+    .stage {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(55% 60% at 85% 10%, rgba(65,183,255,0.14), transparent 65%),
+        radial-gradient(50% 60% at 8% 90%, rgba(124,92,246,0.12), transparent 65%),
+        #02060f;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: clamp(24px, 4vh, 54px) clamp(36px, 5vw, 96px) clamp(56px, 8vh, 84px);
+      box-sizing: border-box;
+    }
+
+    .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px;
+      margin-bottom: clamp(14px, 2.4vh, 30px); animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes rise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 14px;
+      font-size: clamp(12px, 1.1vw, 18px); font-weight: 700;
+      letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent-soft);
+      margin-bottom: clamp(8px, 1.2vh, 14px);
+    }
+    .eyebrow::before { content:''; width: clamp(28px,3vw,48px); height: 2px; background: linear-gradient(90deg, var(--accent), transparent); }
+    .title {
+      font-size: clamp(36px, 4.6vw, 84px); font-weight: 900; letter-spacing: -0.03em; line-height: 0.92;
+      margin: 0; text-transform: uppercase;
+      background: linear-gradient(165deg, #ffffff 30%, #7cc4ff 75%, #4f8ef7 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .hint { font-size: clamp(11px, 0.9vw, 15px); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); white-space: nowrap; }
+
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(8px, 1vw, 16px); }
+    .news {
+      position: relative; text-align: left; cursor: pointer; font: inherit; color: inherit;
+      display: flex; flex-direction: column; gap: clamp(6px, 1vh, 12px);
+      min-height: clamp(110px, 19vh, 210px);
+      padding: clamp(12px, 1.6vh, 20px) clamp(14px, 1.2vw, 20px);
+      background: rgba(13,33,55,0.78); border: 1px solid rgba(120,190,255,0.2); border-radius: 14px;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      animation: rise 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .news:hover { border-color: rgba(65,183,255,0.7); background: rgba(20,48,80,0.9); transform: translateY(-3px); }
+    .news.hot { border-color: rgba(251,191,36,0.75); background: rgba(52,38,8,0.55); }
+    .news .meta { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      font-size: clamp(10px, 0.82vw, 14px); font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-soft); }
+    .news.hot .meta { color: var(--hot); }
+    .news .tag { flex: 0 0 auto; padding: 3px 8px; border-radius: 5px; background: rgba(65,183,255,0.16); color: #dbeeff; letter-spacing: 0.08em; }
+    .news.hot .tag { background: rgba(251,191,36,0.2); color: #fde68a; }
+    .news .t { font-size: clamp(14px, 1.32vw, 24px); font-weight: 700; line-height: 1.2; color: #fff; }
+    .news .n { position: absolute; right: clamp(12px,1vw,18px); bottom: clamp(8px,1vh,14px);
+      font-size: clamp(18px, 1.8vw, 32px); font-weight: 900; color: rgba(255,255,255,0.12); }
+
+    /* dettaglio */
+    #news-card {
+      position: relative; width: 100%; max-width: 760px; border-radius: 22px;
+      background: #0d2137; border: 1px solid #1a3550; padding: clamp(26px,4vh,40px) clamp(26px,3vw,42px);
+      transform: translateY(20px) scale(0.97); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .modal-backdrop.open #news-card { transform: none; }
+    #news-card .meta { font-size: 14px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 14px; }
+    #news-card h2 { font-size: clamp(24px, 2.4vw, 36px); font-weight: 900; line-height: 1.12; margin: 0 0 16px; color: #fff; }
+    #news-card p { font-size: clamp(16px, 1.3vw, 21px); line-height: 1.5; color: #dbe5f3; margin: 0 0 14px; font-weight: 300; }
+    #news-card .src { font-size: 14px; color: #a9b8cc; margin: 18px 0 0; font-weight: 400; }
+    #news-card .src a { color: var(--accent-soft); }
+
+    @media (max-aspect-ratio: 1/1) {
+      .stage { justify-content: flex-start; overflow-y: auto; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .head { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stage">
+    <div class="head">
+      <div>
+        <div class="eyebrow" id="eyebrow"></div>
+        <h1 class="title" id="title"></h1>
+      </div>
+      <div class="hint" id="hint"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="modal-backdrop" id="news-modal" onclick="backdropClose(event,'news-modal')">
+    <div id="news-card">
+      <button class="modal-close-btn" onclick="closeModal('news-modal')">&times;</button>
+      <div class="meta" id="nm-meta"></div>
+      <h2 id="nm-title"></h2>
+      <p id="nm-ctx"></p>
+      <p id="nm-more"></p>
+      <p class="src" id="nm-src"></p>
+    </div>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="#">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="#">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: { eyebrow: '15 – 22 ottobre 2026', title: 'La settimana dell\'IA', hint: 'Clic su una notizia per i dettagli', source: 'Fonte' },
+      en: { eyebrow: 'October 15 – 22, 2026', title: 'The week in AI', hint: 'Click a story for details', source: 'Source' }
+    };
+
+    // 12 notizie, dalla più rilevante. hot: true = evidenziata.
+    // date/area/tema servono all'etichetta; t = titolo; ctx = contesto; more = dettagli.
+    const NEWS = [
+      { hot: true,
+        it: { date: '3–14 ott', area: 'Globale', theme: 'Software',
+          t: 'Reverse engineering con l\'IA: un solo sviluppatore clona Adobe e Office',
+          ctx: 'Brandon Thomas (Atlanta) pubblica ArtCraft: dieci app open source scritte con l\'IA che imitano Photoshop, Premiere, Word, Excel e PowerPoint.',
+          more: 'Sette app al posto di Adobe (PhotoCraft, FilmCraft, LightCraft, EffectCraft, DesignCraft, VectorCraft, PrintCraft), poi WordCraft, GridCraft e DeckCraft. Licenza MIT/Apache. Thomas parla di metodo "clean-room" senza codice copiato; il giurista Andres Guadamuz (Univ. Sussex) osserva che non è verificabile. Lo stesso autore le definisce "super early alpha". Al 14 ottobre nessuna reazione di Adobe o Microsoft. Uscita poco prima della settimana in esame.' },
+        en: { date: 'Oct 3–14', area: 'Global', theme: 'Software',
+          t: 'AI-driven reverse engineering: one developer clones Adobe and Office',
+          ctx: 'Brandon Thomas (Atlanta) releases ArtCraft: ten open-source, AI-written apps imitating Photoshop, Premiere, Word, Excel and PowerPoint.',
+          more: 'Seven Adobe replacements (PhotoCraft, FilmCraft, LightCraft, EffectCraft, DesignCraft, VectorCraft, PrintCraft), then WordCraft, GridCraft and DeckCraft. MIT/Apache licensed. Thomas claims a "clean-room" approach with no copied code; legal scholar Andres Guadamuz (Univ. of Sussex) notes this cannot be verified. The author himself calls them "super early alpha". No response from Adobe or Microsoft as of Oct 14.' },
+        src: [{ name: 'Al Jazeera', url: 'https://www.aljazeera.com/news/2026/10/14/how-ai-apps-are-offering-free-substitutes-for-big-tech-software' },
+              { name: 'Futurism', url: 'https://futurism.com/artificial-intelligence/creator-free-adobe-suite-microsoft-office' }] },
+      { it: { date: '16 ott', area: 'Cina', theme: 'Chip',
+          t: 'Pechino propone controlli all\'export su chip, modelli e agenti IA',
+          ctx: 'Una bozza elenca 40 tecnologie strategiche, 23 legate all\'IA. Consultazione pubblica fino al 15 novembre.',
+          more: 'Coperti chip IA, grandi modelli linguistici, agenti e cluster di calcolo, oltre a solare e biotech; anche trasferimenti di proprietà intellettuale e cambi di controllo. L\'obbligo di registrazione vale già dal 16 ottobre. Arriva poche settimane dopo la tregua commerciale USA-Cina di settembre.' },
+        en: { date: 'Oct 16', area: 'China', theme: 'Chips',
+          t: 'Beijing proposes export controls on AI chips, models and agents',
+          ctx: 'A draft lists 40 strategic technologies, 23 of them AI-related. Public consultation until November 15.',
+          more: 'Covers AI chips, large language models, agents and compute clusters, plus solar and biotech; also IP transfers and changes of control. Registration is already mandatory from Oct 16. It comes weeks after the September US-China trade truce.' },
+        src: [{ name: 'Bloomberg', url: 'https://www.bloomberg.com/news/articles/2026-10-16/china-proposes-export-controls-on-ai-models-chips-and-agents' },
+              { name: 'The National', url: 'https://www.thenationalnews.com/future/technology/2026/10/16/china-targets-ai-technology-exports-with-new-controls-as-us-trade-truce-frays/' }] },
+      { it: { date: '21 ott', area: 'Cina', theme: 'Cyber',
+          t: 'Microsoft: hacker legati a Pechino attaccano con agenti IA',
+          ctx: 'Il gruppo Storm-0940 usa un framework agentico dopo aver violato ConnectWise: tentati accessi a oltre 2.250 tenant.',
+          more: 'Microsoft definisce l\'attore "China-state aligned". Fino a 2.900 tentativi di accesso al minuto; in alcuni casi meno di 3 ore dal primo attacco all\'accesso privilegiato. La maggior parte dei tentativi è fallita, ma alcune organizzazioni hanno subito accessi persistenti al cloud.' },
+        en: { date: 'Oct 21', area: 'China', theme: 'Cyber',
+          t: 'Microsoft: China-aligned hackers attack with AI agents',
+          ctx: 'Storm-0940 uses an agentic framework after breaching ConnectWise, targeting over 2,250 tenants.',
+          more: 'Microsoft calls the actor "China-state aligned". Up to 2,900 sign-in attempts per minute; in some cases under 3 hours from first attack to privileged access. Most attempts failed, but some organizations suffered persistent cloud access.' },
+        src: [{ name: 'Microsoft Security Blog', url: 'https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/' }] },
+      { it: { date: '22 ott', area: 'Russia', theme: 'Guerra',
+          t: 'Droni ucraini colpiscono i data center dell\'IA russa',
+          ctx: 'Colpiti siti di Yandex, l\'hub IA di Sber e un centro di VK. Per gli esperti è un arretramento di anni.',
+          more: 'Yandex colpita l\'8, 9 e 11 ottobre: il sito di Sasovo ospitava supercomputer con GPU Nvidia A100. Sber colpita il 14 ottobre (Balakovo), VK intorno al 18. Mikhail Klimarev: «Questo mette di fatto la Russia molto indietro nella corsa all\'IA». Con le sanzioni sostituire i chip è difficile.' },
+        en: { date: 'Oct 22', area: 'Russia', theme: 'War',
+          t: 'Ukrainian drones hit Russia\'s AI data centers',
+          ctx: 'Yandex sites, Sber\'s AI hub and a VK center were hit. Experts speak of years of setback.',
+          more: 'Yandex was hit on Oct 8, 9 and 11; the Sasovo site hosted Nvidia A100 supercomputers. Sber was hit on Oct 14 (Balakovo), VK around Oct 18. Mikhail Klimarev: "This effectively sets Russia far back in the AI race." Sanctions make chips hard to replace.' },
+        src: [{ name: 'AP', url: 'https://abcnews.com/International/wireStory/ukraines-strikes-russian-data-centers-disrupt-key-services-137466595' }] },
+      { it: { date: '22 ott', area: 'Golfo', theme: 'Chip',
+          t: 'L\'Arabia Saudita espande con Nvidia il calcolo IA di Humain',
+          ctx: '84 MW e circa 27.000 GPU in due fasi; parte della capacità è per un cliente americano non nominato.',
+          more: 'Fase 1: 14 MW, circa 6.000 GPU Blackwell dal quarto trimestre 2026. Fase 2: 70 MW, circa 21.000 GPU Vera Rubin da metà 2027, di cui 50 MW per il cliente USA, ancora soggetta ad accordi finali. Le forniture dipendono dalle licenze d\'export americane.' },
+        en: { date: 'Oct 22', area: 'Gulf', theme: 'Chips',
+          t: 'Saudi Arabia expands Humain\'s AI compute with Nvidia',
+          ctx: '84 MW and about 27,000 GPUs in two phases; part of the capacity is for an unnamed US customer.',
+          more: 'Phase 1: 14 MW, about 6,000 Blackwell GPUs from Q4 2026. Phase 2: 70 MW, about 21,000 Vera Rubin GPUs from mid-2027, 50 MW of it for the US customer, still subject to final agreements. Deliveries depend on US export licenses.' },
+        src: [{ name: 'The National', url: 'https://www.thenationalnews.com/future/technology/2026/10/22/saudi-arabias-humain-expands-nvidia-deal-with-84mw-ai-computing-plan/' }] },
+      { it: { date: '21 ott', area: 'UE', theme: 'Sovranità',
+          t: 'Nvidia a Berlino vende all\'Europa la "IA sovrana"',
+          ctx: 'Al GTC Berlin Jensen Huang rivendica circa 10 miliardi di dollari investiti in Europa in un anno e lancia modelli open.',
+          more: 'Offerta: chip più modelli open-weight (Nemotron, Cosmos, GR00T) e "AI factory" in container. Huang ammette che i modelli Nvidia non sono alla frontiera sul linguaggio. Le cifre sugli investimenti variano tra le testate.' },
+        en: { date: 'Oct 21', area: 'EU', theme: 'Sovereignty',
+          t: 'In Berlin, Nvidia sells Europe "sovereign AI"',
+          ctx: 'At GTC Berlin Jensen Huang claims about $10B invested in Europe in a year and launches open models.',
+          more: 'The pitch: chips plus open-weight models (Nemotron, Cosmos, GR00T) and containerized "AI factories". Huang admits Nvidia\'s models are not at the language frontier. Investment figures vary across outlets.' },
+        src: [{ name: 'Axios', url: 'https://www.axios.com/2026/10/21/nvidia-ceo-jensen-huang-europe-sovereign-ai-tour-bubble' },
+              { name: 'HPCwire', url: 'https://hpcwire.com/2026/10/21/nvidia-embraces-european-sovereignty-at-gtc-berlin' }] },
+      { it: { date: '16–20 ott', area: 'USA', theme: 'Regole',
+          t: 'Anthropic propone al Congresso una legge sulla sicurezza IA',
+          ctx: 'Un giudice potrebbe bloccare un modello che rischia di causare oltre 50 morti o più di un miliardo di danni.',
+          more: 'Rischi coperti: armi biologiche, perdita di controllo del modello, cyberattacchi. Valutatori indipendenti registrati presso il Dipartimento del Commercio, con 72 ore per segnalare. Anthropic ha confermato a Politico che la bozza è sua.' },
+        en: { date: 'Oct 16–20', area: 'USA', theme: 'Rules',
+          t: 'Anthropic pitches an AI safety bill to Congress',
+          ctx: 'A judge could block a model at risk of causing over 50 deaths or more than $1B in damage.',
+          more: 'Risks covered: bioweapons, loss of control, cyberattacks. Independent evaluators registered with the Commerce Department, with 72 hours to report. Anthropic confirmed to Politico the draft is theirs.' },
+        src: [{ name: 'TechCrunch', url: 'https://techcrunch.com/2026/10/20/anthropic-pitches-ai-safety-bill-that-may-block-a-model-if-50-people-could-be-killed/' }] },
+      { it: { date: '23 ott', area: 'Italia', theme: 'Regole',
+          t: 'Italia: entra in vigore il decreto che attua l\'AI Act',
+          ctx: 'Il D.Lgs. 179/2026 affida la vigilanza ad ACN e AgID. Sanzioni fino a 35 milioni o al 7% del fatturato.',
+          more: 'Pubblicato in Gazzetta l\'8 ottobre, in vigore dal 23. 54 articoli, attuativo della legge 132/2025. ACN è autorità di vigilanza del mercato e punto di contatto con l\'UE, AgID autorità di notifica. Art. 41: le decisioni sul lavoro restano alle persone.' },
+        en: { date: 'Oct 23', area: 'Italy', theme: 'Rules',
+          t: 'Italy: the decree implementing the AI Act takes effect',
+          ctx: 'Legislative Decree 179/2026 gives oversight to ACN and AgID. Fines up to €35M or 7% of turnover.',
+          more: 'Published in the Official Gazette on Oct 8, in force from Oct 23. 54 articles, implementing Law 132/2025. ACN is the market surveillance authority and EU contact point, AgID the notifying authority. Art. 41: decisions about work stay with people.' },
+        src: [{ name: 'Byte.it', url: 'https://www.byte.it/dal-23-ottobre-entra-in-vigore-il-decreto-sullia-in-italia-autorita-ispezioni-e-sanzioni-fino-al-7-del-fatturato/' },
+              { name: 'Gazzetta Ufficiale (rif.)', url: 'https://www.quotidianosicurezza.it/normativa/leggi/decreto-7-ottobre-2026-179-gu-234-8-ottobre-2026.htm' }] },
+      { it: { date: '15 ott', area: 'Taiwan', theme: 'Chip',
+          t: 'TSMC, ricavi record nel trimestre trainati dall\'IA',
+          ctx: '46,7 miliardi di dollari (+41%). L\'high-performance computing vale il 68% delle vendite.',
+          more: 'Utile netto +68,7%. Previsioni per il quarto trimestre: 52,3–54,3 miliardi di dollari; crescita 2026 stimata intorno al 44%. C.C. Wei definisce la domanda IA "extremely robust". Il titolo è sceso per i margini, pesati dai 2 nm e dalle fabbriche all\'estero.' },
+        en: { date: 'Oct 15', area: 'Taiwan', theme: 'Chips',
+          t: 'TSMC posts record quarterly revenue driven by AI',
+          ctx: '$46.7B (+41%). High-performance computing is 68% of sales.',
+          more: 'Net income +68.7%. Q4 guidance: $52.3–54.3B; 2026 growth seen around 44%. C.C. Wei calls AI demand "extremely robust". Shares fell on margins, weighed by 2nm ramp and overseas fabs.' },
+        src: [{ name: 'Futurum', url: 'https://futurumgroup.com/insights/tsmc-q3-fy-2026-earnings-beat-and-raise-on-ai-and-hpc-demand/' },
+              { name: 'Earnings call', url: 'https://www.fool.com/earnings/call-transcripts/2026/10/15/tsmc-tsm-q3-2026-earnings-call-transcript/' }] },
+      { it: { date: '19–20 ott', area: 'Globale', theme: 'Cyber',
+          t: 'Agenti IA e 5.000 dollari: un hacker viola decine di siti',
+          ctx: 'Un attore di lingua cinese usa un tool open source: circa 96 attacchi riusciti su 1.100, a circa 50 dollari l\'uno.',
+          more: 'Tra le vittime Deere, SharkNinja e Cummins; bersagli e-commerce e pagamenti in USA, Giappone e Australia. Motivo probabilmente economico, non statale. Notizia Reuters su rapporto NorForge.' },
+        en: { date: 'Oct 19–20', area: 'Global', theme: 'Cyber',
+          t: 'AI agents and $5,000: one hacker breaches dozens of sites',
+          ctx: 'A Chinese-speaking actor uses an open-source tool: about 96 successful attacks out of 1,100, at about $50 each.',
+          more: 'Victims include Deere, SharkNinja and Cummins; e-commerce and payment targets in the US, Japan and Australia. Likely financially motivated, not state-backed. Reuters report on NorForge research.' },
+        src: [{ name: 'Reuters via GIGAZINE', url: 'https://gigazine.net/gsc_news/en/20261020-chinese-hacker-ai-agents-break-websites/' }] },
+      { it: { date: '18–19 ott', area: 'UK', theme: 'Energia',
+          t: 'Microsoft lascia un data center IA nel Regno Unito: manca la rete',
+          ctx: 'Il sito Nscale da 50 MW in Essex non avrà abbastanza elettricità prima dei primi anni 2030.',
+          more: 'Erano previste oltre 23.000 GPU GB300 per Azure dal 2027. Microsoft: «Questa decisione riguarda un singolo sito», la partnership con Nscale resta. Pesa sulla quotazione di Nscale negli USA.' },
+        en: { date: 'Oct 18–19', area: 'UK', theme: 'Energy',
+          t: 'Microsoft quits a UK AI data center: not enough grid',
+          ctx: 'Nscale\'s 50 MW Essex site won\'t get enough power before the early 2030s.',
+          more: 'Over 23,000 GB300 GPUs for Azure were planned from 2027. Microsoft: "This decision relates to a single site"; the Nscale partnership stands. It weighs on Nscale\'s US IPO.' },
+        src: [{ name: 'Data Centre Review', url: 'https://datacentrereview.com/2026/10/microsoft-pulls-out-of-nscales-essex-ai-data-centre-amid-grid-delays/' }] },
+      { it: { date: '14–22 ott', area: 'India', theme: 'Energia',
+          t: 'India: proteste contro i data center, il governo prepara regole',
+          ctx: 'A Mumbai e Visakhapatnam si protesta contro i progetti di Amazon e Google per acqua ed energia.',
+          more: 'Il viceministro IT Jitin Prasada ha annunciato una policy sui data center per evitare rincari in bolletta, senza dettagli né date. NITI Aayog ha pubblicato linee guida non vincolanti per gli Stati.' },
+        en: { date: 'Oct 14–22', area: 'India', theme: 'Energy',
+          t: 'India: protests against data centers, government drafts rules',
+          ctx: 'Protests in Mumbai and Visakhapatnam against Amazon and Google projects over water and power.',
+          more: 'IT minister of state Jitin Prasada announced a data center policy to avoid higher power bills, with no details or dates. NITI Aayog issued non-binding guidelines for states.' },
+        src: [{ name: 'Business Standard', url: 'https://www.business-standard.com/amp/industry/news/govt-to-roll-out-data-centre-policy-as-concerns-grow-over-power-use-126101400508_1.html' },
+              { name: 'CNBC', url: 'https://www.cnbc.com/2026/10/22/india-data-center-google-amazon.html' }] }
+    ];
+
+    function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+
+    function renderTexts() {
+      const t = TXT[lang];
+      document.getElementById('eyebrow').textContent = t.eyebrow;
+      document.getElementById('title').textContent = t.title;
+      document.getElementById('hint').textContent = t.hint;
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      NEWS.forEach((n, i) => {
+        const L = n[lang];
+        const b = el('button', 'news' + (n.hot ? ' hot' : ''));
+        b.style.animationDelay = (0.08 + i * 0.04) + 's';
+        const meta = el('div', 'meta');
+        meta.appendChild(el('span', null, L.date + ' · ' + L.area));
+        meta.appendChild(el('span', 'tag', L.theme));
+        b.appendChild(meta);
+        b.appendChild(el('div', 't', L.t));
+        b.appendChild(el('span', 'n', String(i + 1).padStart(2, '0')));
+        b.addEventListener('click', () => openNews(i));
+        grid.appendChild(b);
+      });
+    }
+
+    function openNews(i) {
+      const n = NEWS[i], L = n[lang];
+      document.getElementById('nm-meta').textContent = L.date + ' · ' + L.area + ' · ' + L.theme;
+      document.getElementById('nm-title').textContent = L.t;
+      document.getElementById('nm-ctx').textContent = L.ctx;
+      document.getElementById('nm-more').textContent = L.more || '';
+      const src = document.getElementById('nm-src');
+      src.innerHTML = '';
+      src.append(TXT[lang].source + ': ');
+      n.src.forEach((s, k) => {
+        if (k) src.append(' · ');
+        const a = el('a', null); a.href = s.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = s.name;
+        src.appendChild(a);
+      });
+      openModal('news-modal');
+    }
+
+    function onLangChange() { renderTexts(); }
+    initLangToggle();
+    renderTexts();
+    initNav();
+  </script>
+</body>
+</html>

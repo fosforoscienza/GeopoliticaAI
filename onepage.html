@@ -210,6 +210,7 @@
 </section>
 
       <section class="op-sec" id="op-video" data-slug="video" data-accent="#41b7ff"><iframe data-src="video.html" loading="lazy" title="video"></iframe></section>
+      <section class="op-sec" id="op-news-settimana" data-slug="news-settimana" data-accent="#fbbf24"><iframe data-src="news-settimana.html" loading="lazy" title="news-settimana"></iframe></section>
       <!-- scrittura -->
 <style>
   #op-scrittura {
@@ -2980,6 +2981,7 @@
     </div><!-- /#op-track -->
   </main><!-- /#op-viewport -->
 
+  <script src="js/remote.js"></script>
   <script>
   (function () {
     var track = document.getElementById('op-track');
@@ -2988,7 +2990,7 @@
     var i = 0, animating = false, started = false;
 
     var LABELS = [
-      {it:'Inizio',en:'Intro'},{it:'Video',en:'Video'},{it:'Scrittura',en:'Writing'},{it:'Fotografia',en:'Photography'},
+      {it:'Inizio',en:'Intro'},{it:'Video',en:'Video'},{it:'La settimana',en:'The week'},{it:'Scrittura',en:'Writing'},{it:'Fotografia',en:'Photography'},
       {it:'Pechino',en:'Beijing'},{it:'Pechino',en:'Beijing'},{it:'Pechino',en:'Beijing'},{it:'Timeline',en:'Timeline'},
       {it:'Napa Valley',en:'Napa Valley'},{it:'Musk & Page',en:'Musk & Page'},{it:'Due visioni',en:'Two visions'},{it:'Musk & Altman',en:'Musk & Altman'},
       {it:'Mappa paesi',en:'Country map'},{it:'Leader & CEO',en:'Leaders & CEOs'},{it:'Trump vs Amodei',en:'Trump vs Amodei'},
@@ -3074,6 +3076,7 @@
       // focus on the shell.
       setTimeout(focusActiveIframe, 60);
       try { history.replaceState(null, '', '#' + slugOf(sec)); } catch (e) {}
+      if (window.SlideRemote) SlideRemote.changed();
     }
 
     function goTo(t) {
@@ -3190,6 +3193,29 @@
     setVH();
     setLang(lang);
     activate(-1);
+
+    // Telecomando da cellulare: le slide in iframe ricevono il tasto (così quelle
+    // a rivelazione progressiva fanno i loro passi), le native avanzano qui.
+    function remoteKey(dir) {
+      var f = sections[i].querySelector('iframe');
+      if (f && !f.hasAttribute('data-src')) {
+        try {
+          var d = f.contentWindow.document;
+          var k = dir === 'next' ? 'PageDown' : 'PageUp';
+          (d.activeElement || d).dispatchEvent(new f.contentWindow.KeyboardEvent('keydown', { key: k, code: k, bubbles: true, cancelable: true }));
+          return;
+        } catch (e) {}
+      }
+      if (dir === 'next') next(); else prev();
+    }
+    if (window.SlideRemote) SlideRemote.start({
+      next: function () { remoteKey('next'); },
+      prev: function () { remoteKey('prev'); },
+      state: function () {
+        var lab = LABELS[i] ? (lang === 'it' ? LABELS[i].it : LABELS[i].en) : slugOf(sections[i]);
+        return { title: lab, pos: (i + 1) + ' / ' + n };
+      }
+    });
   })();
   </script>
 </body>

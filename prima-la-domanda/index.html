@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prima la domanda</title>
+  <link rel="stylesheet" href="vendor/reveal/reset.css" />
+  <link rel="stylesheet" href="vendor/reveal/reveal.css" />
+  <style>
+    /* ════════════════════════════════════════════════════
+       Tema — stessa grafica di "The AI Era" (css/style.css, index.html),
+       con contrasti alzati per proiettori scarsi.
+       Canvas fisso 1920×1080: reveal.js scala tutto.
+    ════════════════════════════════════════════════════ */
+    :root {
+      --bg: #02060f;
+      --ink: #ffffff;
+      --ink-2: #dbe5f3;
+      --accent: #41b7ff;
+      --accent-soft: #8fd2ff;
+      --violet: #8b5cf6;
+      --amber: #fbbf24;
+      --mono: 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', monospace;
+    }
+    html, body { background: var(--bg); }
+    .reveal-viewport {
+      background:
+        radial-gradient(50% 60% at 82% 40%, rgba(65,183,255,0.14), transparent 65%),
+        radial-gradient(50% 60% at 10% 75%, rgba(124,92,246,0.11), transparent 65%),
+        var(--bg);
+    }
+    .reveal {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides > section {
+      height: 100%;
+      padding: 110px 150px !important;
+      box-sizing: border-box;
+    }
+    .reveal .slides > section.stack-v { display: flex !important; flex-direction: column; justify-content: center; }
+    .reveal .slides > section[data-era] { padding: 0 !important; }
+
+    /* ── elementi comuni ── */
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 22px;
+      font-size: 30px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--accent-soft); margin-bottom: 44px;
+    }
+    .eyebrow::before { content: ''; width: 64px; height: 3px; background: linear-gradient(90deg, var(--accent), transparent); }
+    .rule { width: 140px; height: 6px; border-radius: 6px; margin: 48px 0; background: linear-gradient(90deg, var(--accent), var(--violet)); }
+    .grad {
+      background: linear-gradient(100deg, #ffffff 0%, #8fd2ff 55%, #a78bfa 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+
+    /* ── frase singola ── */
+    .say { font-size: 96px; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; margin: 0; max-width: 1560px; }
+    .say.l { font-size: 120px; line-height: 1.02; }
+    .say.m { font-size: 80px; }
+    .sub { font-size: 50px; font-weight: 400; line-height: 1.3; color: var(--ink-2); margin: 40px 0 0; max-width: 1450px; }
+    .sub b { color: var(--ink); font-weight: 700; }
+
+    /* ── slide-domanda: sfondo pieno + grande "?" ── */
+    .reveal section.q { overflow: hidden; }
+    .q-mark {
+      position: absolute; right: -40px; top: 50%; transform: translateY(-52%);
+      font-size: 1200px; font-weight: 900; line-height: 1;
+      color: transparent; -webkit-text-stroke: 10px rgba(255,255,255,0.22);
+      pointer-events: none; user-select: none;
+    }
+    .q .eyebrow { color: #ffffff; }
+    .q .eyebrow::before { background: #ffffff; }
+    .q-text {
+      position: relative; font-size: 108px; font-weight: 800; line-height: 1.06;
+      letter-spacing: -0.02em; margin: 0; max-width: 1380px; color: #fff;
+      text-shadow: 0 4px 40px rgba(0,0,0,0.25);
+    }
+    .q-text.s { font-size: 92px; }
+    .q-foot { position: absolute; left: 150px; bottom: 70px; font-size: 26px; font-weight: 600; letter-spacing: 0.06em; color: rgba(255,255,255,0.85); }
+
+    /* ── titolo mossa ── */
+    .move-n {
+      font-size: 300px; font-weight: 900; line-height: 0.8; letter-spacing: -0.04em;
+      color: rgba(65,183,255,0.42); margin-bottom: 40px;
+    }
+    .move-t {
+      font-size: 130px; font-weight: 900; line-height: 0.95; letter-spacing: -0.03em;
+      text-transform: uppercase; margin: 0;
+      background: linear-gradient(95deg, #41b7ff 0%, #a78bfa 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+
+    /* ── prompt ── */
+    .prompt-wrap { position: relative; }
+    .prompt {
+      font-family: var(--mono); font-size: 38px; line-height: 1.5; white-space: pre-wrap;
+      color: #f4f8ff; background: #07152a;
+      border: 2px solid rgba(65,183,255,0.55); border-left: 12px solid var(--accent);
+      border-radius: 18px; padding: 48px 60px; margin: 0; max-width: 1620px;
+    }
+    .prompt.s { font-size: 32px; padding: 38px 52px; }
+    .prompt .ph { color: var(--amber); font-weight: 700; }
+    .prompt-label { font-size: 30px; font-weight: 700; color: var(--accent-soft); margin: 34px 0 14px; letter-spacing: 0.04em; }
+    .prompt-label:first-child { margin-top: 0; }
+    .copy-btn {
+      position: absolute; top: 18px; right: 18px; z-index: 3;
+      font: 700 22px/1 'Segoe UI', system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #fff; background: rgba(65,183,255,0.25); border: 2px solid rgba(65,183,255,0.7);
+      border-radius: 10px; padding: 14px 22px; cursor: pointer;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .prompt-wrap:hover .copy-btn, .is-receiver .copy-btn { opacity: 1; }
+    .copy-btn.ok { background: rgba(52,211,153,0.3); border-color: #34d399; }
+
+    /* ── in classe ── */
+    .classe-head { display: flex; align-items: center; justify-content: space-between; gap: 40px; margin-bottom: 50px; }
+    .classe-h { font-size: 110px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 1; margin: 0; }
+    .badge {
+      flex: 0 0 auto; font-size: 34px; font-weight: 800; letter-spacing: 0.04em;
+      color: #02060f; background: var(--amber); border-radius: 999px; padding: 16px 34px;
+    }
+    .items { list-style: none; margin: 0; padding: 0; counter-reset: it; }
+    .items li {
+      counter-increment: it; position: relative;
+      font-size: 52px; font-weight: 500; line-height: 1.25; color: var(--ink);
+      padding: 30px 0 30px 110px; border-top: 2px solid rgba(255,255,255,0.16);
+    }
+    .items li::before {
+      content: counter(it, decimal-leading-zero); position: absolute; left: 0; top: 30px;
+      font-size: 52px; font-weight: 900; color: var(--accent);
+    }
+
+    /* ── elenco a passi (QFT, consegna laboratorio, ponte) ── */
+    .steps { list-style: none; margin: 0; padding: 0; counter-reset: st; }
+    .steps li {
+      counter-increment: st; display: flex; align-items: baseline; gap: 40px;
+      font-size: 56px; font-weight: 700; line-height: 1.2; padding: 24px 0;
+      border-top: 2px solid rgba(255,255,255,0.16);
+    }
+    .steps li::before {
+      content: counter(st); flex: 0 0 80px;
+      font-size: 72px; font-weight: 900; line-height: 1;
+      color: var(--accent);
+    }
+    .steps li small { display: block; font-size: 38px; font-weight: 400; color: var(--ink-2); margin-top: 10px; }
+    .steps.compact li { font-size: 52px; padding: 18px 0; }
+
+    /* ── tre livelli ── */
+    .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; margin-top: 20px; }
+    .level {
+      background: rgba(13,33,55,0.85); border: 2px solid rgba(65,183,255,0.35);
+      border-radius: 24px; padding: 44px 40px;
+    }
+    .level .lv { font-size: 28px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 26px; }
+    .level .lq { font-size: 42px; font-weight: 600; line-height: 1.28; }
+    .level:nth-child(2) { border-color: rgba(139,92,246,0.55); }
+    .level:nth-child(2) .lv { color: #c4b5fd; }
+    .level:nth-child(3) { border-color: rgba(251,191,36,0.6); }
+    .level:nth-child(3) .lv { color: var(--amber); }
+
+    /* ── griglia di valutazione ── */
+    .rubric { width: 100%; border-collapse: separate; border-spacing: 10px; margin: 0 -10px; font-size: 33px; line-height: 1.22; }
+    .rubric th { font-size: 28px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-soft); text-align: left; padding: 6px 20px; }
+    .rubric td { background: rgba(13,33,55,0.9); border-radius: 12px; padding: 18px 20px; vertical-align: top; color: var(--ink); }
+    .rubric td:first-child { background: transparent; font-weight: 800; font-size: 36px; padding-left: 0; width: 20%; }
+
+    /* ── studio / confronto ── */
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; margin-top: 10px; }
+    .card {
+      background: rgba(13,33,55,0.9); border: 2px solid rgba(255,255,255,0.18);
+      border-radius: 24px; padding: 46px 50px;
+    }
+    .card h3 { font-size: 46px; font-weight: 900; margin: 0 0 24px; text-transform: uppercase; letter-spacing: -0.01em; }
+    .card p { font-size: 40px; line-height: 1.3; margin: 0; color: var(--ink); }
+    .card p + p { margin-top: 18px; }
+    .card .big { font-size: 64px; font-weight: 900; color: var(--accent); }
+    .card.warn { border-color: rgba(248,113,113,0.7); }
+    .card.warn h3 { color: #fca5a5; }
+    .card.ok { border-color: rgba(52,211,153,0.7); }
+    .card.ok h3 { color: #6ee7b7; }
+    .source { position: absolute; left: 150px; bottom: 60px; font-size: 24px; color: var(--ink-2); }
+
+    /* ── domanda riscritta ── */
+    .before { font-size: 50px; font-weight: 500; color: var(--ink-2); text-decoration: line-through; text-decoration-thickness: 4px; text-decoration-color: rgba(248,113,113,0.85); margin: 0 0 50px; }
+
+    /* ── timer ── */
+    .timer-slide { text-align: center; cursor: pointer; }
+    .timer-slide .eyebrow { justify-content: center; }
+    .timer-slide .eyebrow::before { display: none; }
+    .timer-val {
+      font-size: 460px; font-weight: 900; line-height: 1; letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      background: linear-gradient(165deg, #ffffff 30%, #7cc4ff 75%, #4f8ef7 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .timer-val.done { background: none; -webkit-text-fill-color: var(--amber); color: var(--amber); }
+    .timer-hint { font-size: 36px; font-weight: 600; color: var(--ink-2); margin-top: 30px; }
+    .timer-bar { height: 14px; border-radius: 14px; background: rgba(255,255,255,0.14); margin: 60px auto 0; max-width: 1300px; overflow: hidden; }
+    .timer-bar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent), var(--violet)); transform-origin: left; transition: transform 1s linear; }
+
+    /* ── ultima slide ── */
+    .contacts { position: absolute; left: 150px; bottom: 64px; font-size: 26px; font-weight: 600; color: rgba(255,255,255,0.85); letter-spacing: 0.04em; }
+
+    /* ── barra di avanzamento ── */
+    .reveal .progress { height: 6px; color: var(--accent); }
+
+    /* ── slide incorporate da "The AI Era" ── */
+    .era-tag {
+      position: absolute; left: 24px; bottom: 20px; z-index: 5;
+      font: 700 16px/1 'Segoe UI', system-ui, sans-serif; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); pointer-events: none;
+    }
+
+    /* ════════════════════════════════════════════════════
+       Dashboard (tasto D): ordine, slide nascoste, slide dell'altra conferenza
+    ════════════════════════════════════════════════════ */
+    #dash {
+      position: fixed; inset: 0; z-index: 1000; display: none;
+      background: #040e1a; color: #f0f5fb; overflow: auto;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    #dash.open { display: block; }
+    .d-wrap { max-width: 1500px; margin: 0 auto; padding: 32px 28px 80px; display: grid; grid-template-columns: minmax(0, 1fr) 470px; gap: 28px; align-items: start; }
+    .d-top { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .d-top h1 { font-size: 24px; font-weight: 900; letter-spacing: -0.01em; margin: 0 auto 0 0; text-transform: uppercase; }
+    .d-top h1 span { color: #41b7ff; }
+    .d-help { grid-column: 1 / -1; font-size: 14px; color: #a9b8cc; margin: -8px 0 0; }
+    .d-btn {
+      padding: 9px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.05); color: #dbe5f3; font: 600 14px/1 inherit; cursor: pointer;
+    }
+    .d-btn:hover { border-color: rgba(65,183,255,0.6); color: #fff; }
+    .d-btn.primary { background: rgba(65,183,255,0.2); border-color: rgba(65,183,255,0.6); color: #fff; }
+    .d-btn.danger:hover { border-color: rgba(248,113,113,0.6); color: #fca5a5; }
+    .d-status { font-size: 13px; color: #6ee7b7; min-width: 90px; }
+    .d-col h2 { font-size: 13px; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase; color: #8fd2ff; margin: 0 0 12px; }
+    .d-list { display: flex; flex-direction: column; gap: 6px; }
+    .d-row {
+      display: grid; grid-template-columns: 34px 30px minmax(0, 1fr) auto; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 10px; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08); cursor: grab;
+    }
+    .d-row.sel { border-color: #41b7ff; background: rgba(65,183,255,0.1); }
+    .d-row.off { opacity: 0.45; }
+    .d-row.dragging { opacity: 0.3; }
+    .d-row.sec { margin-top: 10px; }
+    .d-pos { font-size: 13px; font-weight: 800; color: #8fd2ff; text-align: right; font-variant-numeric: tabular-nums; }
+    .d-kind { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; font-size: 11px; font-weight: 900; }
+    .d-kind.pld { background: rgba(65,183,255,0.2); color: #8fd2ff; }
+    .d-kind.pld.q { background: #3b5bdb; color: #fff; }
+    .d-kind.era { background: rgba(251,191,36,0.22); color: #fbbf24; }
+    .d-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .d-name small { font-weight: 400; color: #8a9bb3; margin-left: 8px; }
+    .d-acts { display: flex; gap: 4px; }
+    .d-acts button {
+      width: 30px; height: 30px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.04); color: #dbe5f3; font-size: 14px; cursor: pointer;
+    }
+    .d-acts button:hover { border-color: #41b7ff; color: #fff; }
+    .d-note { grid-column: 3 / -1; }
+    .d-note textarea {
+      width: 100%; min-height: 54px; resize: vertical; box-sizing: border-box;
+      background: #0a1929; color: #dbe5f3; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+      font: 13px/1.4 'Segoe UI', system-ui, sans-serif; padding: 8px 10px;
+    }
+    .d-lib { position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow: auto; padding-right: 4px; }
+    .d-lib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .d-card { border-radius: 10px; overflow: hidden; background: #0a1929; border: 1px solid rgba(255,255,255,0.1); }
+    .d-thumb { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #02060f; }
+    .d-thumb iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 720px; border: 0; transform: scale(0.1734); transform-origin: 0 0; pointer-events: none; }
+    .d-card-b { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 7px 8px; }
+    .d-card-b span { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .d-card-b button { flex: 0 0 auto; font: 700 12px/1 inherit; padding: 6px 9px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(251,191,36,0.6); background: rgba(251,191,36,0.15); color: #fde68a; }
+    .d-card-b button:hover { background: rgba(251,191,36,0.3); }
+    .d-used { font-size: 11px; color: #fbbf24; padding: 0 8px 7px; }
+    #dash-file { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="reveal">
+  <div class="slides" id="slides"></div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     SLIDE DEL TALK
+     Ogni slide ha data-id (stabile, usato dal dashboard) e data-title.
+     L'ordine qui sotto è l'ordine di default.
+     Le slide-domanda hanno class="q".
+═════════════════════════════════════════════════════ -->
+<template id="talk">
+
+  <!-- ───────── 1. APERTURA (0–5') ───────── -->
+  <section data-id="apertura-q" data-title="Domanda d'apertura" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+    <div class="q-mark">?</div>
+    <div class="eyebrow">Prima la domanda</div>
+    <p class="q-text">Quali sono le cause della Prima guerra mondiale?</p>
+    <div class="q-foot">Usare l'IA per stimolare il pensiero critico</div>
+    <aside class="notes">
+      <p><b>[0'] SEZIONE 1 — Apertura.</b> Niente presentazioni: si parte dalla domanda.</p>
+      <p>"Avete 30 secondi. Immaginate la risposta perfetta che vorreste leggere in una verifica." Silenzio vero, contalo.</p>
+      <p>Variante per le medie (se la sala è soprattutto di I grado): "Perché quasi tutte le grandi città italiane sono nate vicino a un fiume o al mare?"</p>
+      <p>Poi apri il chatbot e fai la domanda in diretta (slide successiva). Riserva: screenshot/apertura-*.png</p>
+    </aside>
+  </section>
+
+  <section data-id="apertura-demo" data-title="Demo: la domanda all'IA" class="stack-v">
+    <div class="eyebrow">In diretta</div>
+    <div class="prompt-wrap"><pre class="prompt">Quali sono le cause della Prima guerra mondiale? Rispondi come uno studente di quinta superiore in una verifica scritta, in circa 200 parole.</pre></div>
+    <aside class="notes">
+      <p>[1'] Incolla il prompt. Lascia scorrere la risposta senza commentare.</p>
+      <p>Fai notare il tempo: pochi secondi. Ordinata, corretta, con le parole giuste ("alleanze", "nazionalismi", "Sarajevo").</p>
+      <p>"Questa risposta prenderebbe un buon voto?" Raccogli due alzate di mano.</p>
+    </aside>
+  </section>
+
+  <section data-id="apertura-consegna" data-title="Cosa ha imparato lo studente?" class="stack-v">
+    <p class="say l">Cosa ha imparato lo studente che l'ha <span class="grad">consegnata?</span></p>
+    <aside class="notes">
+      <p>[3'] Pausa. Non rispondere tu.</p>
+      <p>Il punto non è "lo studente ha copiato". Il punto è che la domanda permetteva di copiare.</p>
+    </aside>
+  </section>
+
+  <section data-id="apertura-tesi" data-title="Tesi" class="stack-v">
+    <p class="say">Se una macchina la risolve in tre secondi, la domanda sta misurando <span class="grad">la cosa sbagliata.</span></p>
+    <div class="rule"></div>
+    <aside class="notes">
+      <p>[4'] La tesi del talk. Dilla lentamente.</p>
+      <p>Misurava la capacità di ricordare e mettere in fila. Utile, ma ora è gratis. Oggi vediamo come scrivere domande che misurano il pensiero, e come usare l'IA per allenarlo invece di sostituirlo.</p>
+    </aside>
+  </section>
+
+  <!-- ───────── 2. IL CAMBIO DI SCARSITÀ (5–12') ───────── -->
+  <section data-id="scarsita-q" data-title="Domanda: cosa vale ancora?" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+    <div class="q-mark">?</div>
+    <div class="eyebrow">2 · Il cambio di scarsità</div>
+    <p class="q-text">Se le risposte costano zero, che cosa vale ancora?</p>
+    <aside class="notes">
+      <p><b>[5'] SEZIONE 2 — Il cambio di scarsità.</b></p>
+      <p>Lascia rispondere la sala per 20-30 secondi. Raccogli le parole che escono (giudizio, verifica, scegliere, domandare...).</p>
+    </aside>
+  </section>
+
+  <section data-id="scarsita-frase" data-title="Risposte abbondanti" class="stack-v">
+    <p class="say l">Le risposte sono diventate abbondanti.</p>
+    <p class="say l grad" style="margin-top:30px">Le buone domande no.</p>
+    <aside class="notes">
+      <p>[6'] Quando una cosa diventa abbondante, il valore si sposta su ciò che resta scarso.</p>
+      <p>Una buona domanda richiede di sapere già qualcosa, di accorgersi di cosa manca, di scegliere dove guardare.</p>
+    </aside>
+  </section>
+
+  <section data-id="socrate" data-title="Socrate e la maieutica" class="stack-v">
+    <div class="eyebrow">Atene, V secolo a.C.</div>
+    <p class="say">Socrate non dava risposte. <span class="grad">Insegnava a domandare.</span></p>
+    <p class="sub"><b>Maieutica:</b> l'arte della levatrice. Aiutare l'altro a far nascere un pensiero che è suo.</p>
+    <aside class="notes">
+      <p>[7'] Nel Teeteto (149a–151d) Socrate si paragona alla madre, che era levatrice: non partorisce idee, aiuta gli altri a partorire le proprie e a capire se sono vere o false.</p>
+      <p>È esattamente quello che chiederemo all'IA nella mossa 2.</p>
+      <p>Collegamento possibile con "The AI Era": la slide "Scrittura — Platone" (Fedro) si può inserire qui dal dashboard (tasto D).</p>
+    </aside>
+  </section>
+
+  <section data-id="bastani" data-title="Lo studio in Turchia (Bastani et al.)" class="stack-v">
+    <div class="eyebrow">Uno studio sul campo</div>
+    <div class="compare">
+      <div class="card warn">
+        <h3>GPT libero</h3>
+        <p>Con l'IA, in esercitazione: <span class="big">+48%</span></p>
+        <p>All'esame, senza IA: <span class="big" style="color:#fca5a5">−17%</span></p>
+      </div>
+      <div class="card ok">
+        <h3>GPT che non dà soluzioni</h3>
+        <p>Con l'IA, in esercitazione: <span class="big">+127%</span></p>
+        <p>All'esame, senza IA: <b>nessun calo</b> (e nessun guadagno).</p>
+      </div>
+    </div>
+    <div class="source">Bastani et al., PNAS 122 (26), 2025 · quasi 1.000 studenti di matematica delle superiori, Turchia · confronto con chi non ha usato l'IA</div>
+    <aside class="notes">
+      <p>[8'] Il dato più citato e più frainteso. Le percentuali sono variazioni dei voti rispetto al gruppo di controllo senza IA.</p>
+      <p>GPT Base (accesso libero a GPT-4): +48% durante le esercitazioni, −17% all'esame senza IA. GPT Tutor (con prompt che impedisce di dare la soluzione e guida passo passo): +127% in esercitazione; all'esame il calo è "essenzialmente eliminato", ma non c'è un effetto positivo.</p>
+      <p>Messaggio: non "l'IA fa male", ma "l'IA senza paletti fa fare il lavoro a lei".</p>
+      <p>Fonte: H. Bastani, O. Bastani, A. Sungu, H. Ge, Ö. Kabakcı, R. Mariman, "Generative AI without guardrails can harm learning: Evidence from high school mathematics", PNAS 122(26), e2422633122, 25 giugno 2025. DOI 10.1073/pnas.2422633122. Versione precedente: working paper SSRN 4895486 (2024), "Generative AI Can Harm Learning".</p>
+      <p>Nota: la Turchia non compare nell'abstract; il luogo è riportato da Knowledge at Wharton (27/08/2024). Le percentuali sono verificate sul testo PNAS.</p>
+    </aside>
+  </section>
+
+  <section data-id="qft" data-title="Question Formulation Technique" class="stack-v">
+    <div class="eyebrow">Question Formulation Technique</div>
+    <ol class="steps">
+      <li class="fragment"><span>Il docente dà uno stimolo, non una domanda.</span></li>
+      <li class="fragment"><span>Gli studenti producono domande.<small>Tante, senza discuterle, senza rispondere, scritte come vengono.</small></span></li>
+      <li class="fragment"><span>Le migliorano.<small>Trasformano le chiuse in aperte e viceversa.</small></span></li>
+      <li class="fragment"><span>Scelgono le tre più importanti.</span></li>
+    </ol>
+    <aside class="notes">
+      <p>[9'] Right Question Institute, Dan Rothstein e Luz Santana. Libro: <i>Make Just One Change: Teach Students to Ask Their Own Questions</i>, Harvard Education Press, 2011. Sito: rightquestion.org</p>
+      <p>Le quattro regole del passo 2: fare più domande possibili; non fermarsi a discuterle, giudicarle o rispondere; scriverle esattamente come vengono; trasformare le affermazioni in domande.</p>
+      <p>Il protocollo completo chiude con "prossimi passi" e una riflessione su cosa si è imparato. Qui ne mostro l'ossatura.</p>
+      <p>La useremo nella mossa 3. Ogni passo è un clic.</p>
+    </aside>
+  </section>
+
+  <section data-id="scarsita-chiusura" data-title="Conta chi fa le domande" class="stack-v">
+    <p class="say">L'IA non è buona o cattiva per l'apprendimento.</p>
+    <p class="say grad" style="margin-top:36px">Conta chi fa le domande.</p>
+    <aside class="notes">
+      <p>[11'] Chiusura della sezione. Se le domande le fa lo studente, l'IA è una palestra. Se le fa solo la verifica, l'IA è una scorciatoia.</p>
+      <p>Ora: cinque mosse concrete, con demo dal vivo.</p>
+    </aside>
+  </section>
+
+  <!-- ───────── 3. CINQUE MOSSE (12–30') ───────── -->
+  <section data-id="mosse-q" data-title="Domanda: cosa fa lo studente?" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+    <div class="q-mark">?</div>
+    <div class="eyebrow">3 · Cinque mosse didattiche</div>
+    <p class="q-text">Che cosa fa lo studente, mentre l'IA lavora?</p>
+    <aside class="notes">
+      <p><b>[12'] SEZIONE 3 — Cinque mosse, con demo dal vivo.</b> Tre slide per mossa: titolo, prompt, in classe.</p>
+      <p>Domanda criterio per tutte le mosse: in questa attività, chi sta pensando?</p>
+      <p>Se il tempo stringe: le mosse 3 e 4 sono saltabili. Alla slide "Cinque mosse" (dopo la mossa 2) premi <b>X</b> per andare direttamente alla mossa 5.</p>
+    </aside>
+  </section>
+
+  <!-- Mossa 1 -->
+  <section data-id="m1-titolo" data-title="Mossa 1 — L'IA che sbaglia apposta" class="stack-v">
+    <div class="move-n">01</div>
+    <h2 class="move-t">L'IA che sbaglia apposta</h2>
+    <p class="sub">Gli studenti diventano <b>cacciatori d'errore.</b></p>
+    <aside class="notes">
+      <p>[12'30"] Ribalta il rapporto: l'IA non è l'oracolo, è il testo da correggere. Per trovare un errore plausibile bisogna sapere davvero.</p>
+    </aside>
+  </section>
+
+  <section data-id="m1-prompt" data-title="Mossa 1 — Prompt" class="stack-v">
+    <div class="eyebrow">Mossa 1 · Prompt</div>
+    <div class="prompt-wrap"><button class="copy-btn">Copia</button><pre class="prompt">Scrivi un testo di 200 parole sulle cause della Prima guerra mondiale, adatto a studenti di terza media. Inserisci esattamente tre errori fattuali plausibili, senza segnalarli. Alla fine, dopo una riga vuota, scrivi "SOLUZIONI" e l'elenco dei tre errori con la correzione.</pre></div>
+    <aside class="notes">
+      <p>[13'] DEMO DAL VIVO. Incolla il prompt. Quando arriva la risposta, scorri solo il testo: nascondi le SOLUZIONI.</p>
+      <p>Chiedi alla sala: "Chi trova un errore?" Un minuto. Poi mostra le soluzioni.</p>
+      <p>Attenzione: a volte il modello sbaglia anche dove non doveva, o mette errori troppo evidenti. Se succede, usalo: è la prova che serve un lettore competente.</p>
+      <p>Riserva: screenshot/mossa1-*.png</p>
+    </aside>
+  </section>
+
+  <section data-id="m1-classe" data-title="Mossa 1 — In classe" class="stack-v">
+    <div class="classe-head"><h2 class="classe-h">In classe</h2><span class="badge">Dalla prima media</span></div>
+    <ol class="items">
+      <li>Il docente genera il testo prima della lezione e tiene per sé le soluzioni.</li>
+      <li>A coppie: trovare gli errori e dimostrare perché sono errori, con una fonte.</li>
+      <li>Variante: non dite quanti errori ci sono.</li>
+    </ol>
+    <aside class="notes">
+      <p>[15'] Funziona con qualunque materia: un procedimento di matematica con un passaggio sbagliato, una traduzione, una relazione di laboratorio.</p>
+      <p>La variante senza numero di errori è più difficile e più realistica: costringe a verificare tutto.</p>
+    </aside>
+  </section>
+
+  <!-- Mossa 2 -->
+  <section data-id="m2-titolo" data-title="Mossa 2 — L'IA socratica" class="stack-v">
+    <div class="move-n">02</div>
+    <h2 class="move-t">L'IA socratica</h2>
+    <p class="sub">Le vietiamo di dare la risposta. <b>Può solo fare domande.</b></p>
+    <aside class="notes">
+      <p>[16'] È il "tutor con i paletti" dello studio di prima, costruito con un solo prompt.</p>
+    </aside>
+  </section>
+
+  <section data-id="m2-senza" data-title="Mossa 2 — Senza vincolo" class="stack-v">
+    <div class="eyebrow">Mossa 2 · Prima, senza vincolo</div>
+    <div class="prompt-wrap"><button class="copy-btn">Copia</button><pre class="prompt">Un prodotto costa 80 €. Viene scontato del 25% e poi aumentato del 25%. Torna a costare 80 €?</pre></div>
+    <aside class="notes">
+      <p>[16'30"] DEMO 1/2. Nuova chat, nessuna istruzione. Incolla solo il problema.</p>
+      <p>Risposta attesa: no, 80 → 60 → 75 €. Il modello risolve tutto, con i passaggi. Lo studente ha solo letto.</p>
+    </aside>
+  </section>
+
+  <section data-id="m2-prompt" data-title="Mossa 2 — Prompt socratico" class="stack-v">
+    <div class="eyebrow">Mossa 2 · Poi, con il vincolo</div>
+    <div class="prompt-wrap"><button class="copy-btn">Copia</button><pre class="prompt s">Sei un tutor socratico. Lo studente ti presenterà un problema. Non dare mai la risposta né i passaggi risolutivi. Fai una sola domanda alla volta per aiutarlo a ragionare. Se ti chiede la soluzione, rispondi con una domanda che lo riporti al punto in cui si è bloccato.</pre></div>
+    <aside class="notes">
+      <p>[17'30"] DEMO 2/2. Nuova chat: incolla prima questo prompt, poi lo stesso problema.</p>
+      <p>Rispondi tu come uno studente: sbaglia di proposito ("Sì, torna a 80"). Poi prova a chiedere "Dimmi la soluzione".</p>
+      <p>Se il modello cede e dà la risposta, non nasconderlo: è un limite reale e un buon argomento di discussione.</p>
+      <p>Riserva: screenshot/mossa2-*.png</p>
+    </aside>
+  </section>
+
+  <section data-id="m2-classe" data-title="Mossa 2 — In classe" class="stack-v">
+    <div class="classe-head"><h2 class="classe-h">In classe</h2><span class="badge">Medie e superiori</span></div>
+    <ol class="items">
+      <li>Mostrate le due versioni e chiedete: quale vi ha fatto pensare?</li>
+      <li>Lo studente consegna la conversazione, non il risultato.</li>
+      <li>Se l'IA cede e dà la soluzione, chiedete perché è successo.</li>
+    </ol>
+    <aside class="notes">
+      <p>[19'] Il prompt socratico si può scrivere insieme alla classe: decidere le regole del tutor è già un esercizio di metacognizione.</p>
+    </aside>
+  </section>
+
+  <!-- Ponte: da qui si può saltare alla mossa 5 (tasto X) -->
+  <section data-id="ponte" data-title="Ponte — Cinque mosse (X salta a mossa 5)" class="stack-v">
+    <div class="eyebrow">Cinque mosse</div>
+    <ol class="steps compact">
+      <li>L'IA che sbaglia apposta</li>
+      <li>L'IA socratica</li>
+      <li>Prima le nostre domande</li>
+      <li>L'avvocato del diavolo</li>
+      <li>Consegnare la conversazione</li>
+    </ol>
+    <aside class="notes">
+      <p>[20'] SLIDE-PONTE. Riepilogo delle cinque mosse.</p>
+      <p><b>In ritardo? Premi X</b>: salti alla mossa 5. Frase di raccordo: "La 3 e la 4 le trovate nei materiali: lavorano su domande della classe e su tesi da confutare. Mi fermo sull'ultima, che cambia la valutazione."</p>
+      <p>In orario: vai avanti normalmente (mosse 3 e 4, saltabili).</p>
+    </aside>
+  </section>
+
+  <!-- Mossa 3 (saltabile) -->
+  <section data-id="m3-titolo" data-title="Mossa 3 — Prima le nostre domande (saltabile)" class="stack-v">
+    <div class="move-n">03</div>
+    <h2 class="move-t">Prima le nostre domande</h2>
+    <p class="sub">Dieci domande della classe. Poi dieci della macchina. <b>Poi il confronto.</b></p>
+    <aside class="notes">
+      <p>[20'30"] SALTABILE. È la QFT con un secondo tempo: la macchina arriva dopo, come termine di paragone.</p>
+    </aside>
+  </section>
+
+  <section data-id="m3-prompt" data-title="Mossa 3 — Prompt (saltabile)" class="stack-v">
+    <div class="eyebrow">Mossa 3 · Prompt</div>
+    <div class="prompt-wrap"><button class="copy-btn">Copia</button><pre class="prompt">Genera 10 domande che uno studente di 15 anni potrebbe farsi sul tema <span class="ph">[TEMA]</span>. Mescola domande chiuse e aperte, senza numerarle per difficoltà.</pre></div>
+    <aside class="notes">
+      <p>[21'] SALTABILE. DEMO: chiedi un tema alla sala e sostituisci [TEMA].</p>
+      <p>Di solito le domande dell'IA sono corrette ma prevedibili. Le domande della classe sono più storte e più interessanti.</p>
+      <p>Riserva: screenshot/mossa3-*.png</p>
+    </aside>
+  </section>
+
+  <section data-id="m3-classe" data-title="Mossa 3 — In classe (saltabile)" class="stack-v">
+    <div class="classe-head"><h2 class="classe-h">In classe</h2><span class="badge">Medie e superiori</span></div>
+    <ol class="items">
+      <li>Dieci minuti senza IA: la classe scrive le sue domande, con le regole della QFT.</li>
+      <li>Poi generate quelle dell'IA e mettetele accanto: quali mancano a chi?</li>
+      <li>Le domande che l'IA non ha fatto sono il punto di partenza della lezione.</li>
+    </ol>
+    <aside class="notes">
+      <p>[23'] SALTABILE.</p>
+    </aside>
+  </section>
+
+  <!-- Mossa 4 (saltabile) -->
+  <section data-id="m4-titolo" data-title="Mossa 4 — L'avvocato del diavolo (saltabile)" class="stack-v">
+    <div class="move-n">04</div>
+    <h2 class="move-t">L'avvocato del diavolo</h2>
+    <p class="sub">L'IA difende la tesi opposta. <b>Gli studenti la smontano con le prove.</b></p>
+    <aside class="notes">
+      <p>[24'] SALTABILE. L'IA è un avversario instancabile: si può discutere con lei finché si vuole.</p>
+    </aside>
+  </section>
+
+  <section data-id="m4-prompt" data-title="Mossa 4 — Prompt (saltabile)" class="stack-v">
+    <div class="eyebrow">Mossa 4 · Prompt</div>
+    <div class="prompt-wrap"><button class="copy-btn">Copia</button><pre class="prompt s">Sostieni con convinzione questa tesi: "<span class="ph">[TESI]</span>". Presenta tre argomenti. Dopo ogni mia obiezione, difendi la tesi; se però la mia obiezione è fondata, ammettilo esplicitamente e spiega perché.</pre></div>
+    <div class="prompt-label">Tesi per la demo</div>
+    <div class="prompt-wrap"><pre class="prompt s">I social network hanno fatto più bene che male agli adolescenti.</pre></div>
+    <aside class="notes">
+      <p>[24'30"] SALTABILE. DEMO: incolla il prompt con la tesi. Chiedi alla sala un'obiezione e scrivila tu.</p>
+      <p>Il momento da mostrare è quando l'IA ammette che un'obiezione è fondata.</p>
+      <p>Riserva: screenshot/mossa4-*.png</p>
+    </aside>
+  </section>
+
+  <section data-id="m4-classe" data-title="Mossa 4 — In classe (saltabile)" class="stack-v">
+    <div class="classe-head"><h2 class="classe-h">In classe</h2><span class="badge">Soprattutto superiori</span></div>
+    <ol class="items">
+      <li>Prima della conversazione ogni gruppo raccoglie tre prove: dati, fonti, esempi.</li>
+      <li>Ogni volta che l'IA ammette un'obiezione fondata, il gruppo segna un punto.</li>
+      <li>In chiusura: quale argomento dell'IA era il più difficile da smontare?</li>
+    </ol>
+    <aside class="notes">
+      <p>[26'] SALTABILE. Attenzione alla scelta della tesi: deve essere discutibile, non offensiva, e avere prove disponibili da entrambe le parti.</p>
+    </aside>
+  </section>
+
+  <!-- Mossa 5 -->
+  <section data-id="m5-titolo" data-title="Mossa 5 — Consegnare la conversazione" class="stack-v">
+    <div class="move-n">05</div>
+    <h2 class="move-t">Consegnare la conversazione</h2>
+    <p class="sub">Si valuta il processo, <b>non il prodotto.</b></p>
+    <aside class="notes">
+      <p>[27'] Se il prodotto finale si può generare, valutiamo come lo studente ci è arrivato. La conversazione con l'IA diventa un documento da leggere.</p>
+    </aside>
+  </section>
+
+  <section data-id="m5-griglia" data-title="Mossa 5 — Griglia di valutazione" class="stack-v">
+    <div class="eyebrow">Mossa 5 · Griglia</div>
+    <table class="rubric">
+      <thead><tr><th></th><th>Iniziale</th><th>Adeguato</th><th>Avanzato</th></tr></thead>
+      <tbody>
+        <tr><td>Qualità delle domande</td><td>Domande generiche, chiede subito la risposta.</td><td>Domande pertinenti, chiede chiarimenti.</td><td>Riformula, mette alla prova, cambia direzione.</td></tr>
+        <tr><td>Verifica</td><td>Accetta le affermazioni senza controllarle.</td><td>Controlla alcune affermazioni su una fonte.</td><td>Incrocia le fonti e segnala gli errori dell'IA.</td></tr>
+        <tr><td>Rielaborazione</td><td>Il testo finale ricalca quello generato.</td><td>Riorganizza e aggiunge esempi propri.</td><td>Prende posizione e argomenta in modo personale.</td></tr>
+        <tr><td>Dichiarazione</td><td>Uso dell'IA non dichiarato o vago.</td><td>Dichiara dove ha usato l'IA.</td><td>Dichiara come, dove e perché, con i prompt.</td></tr>
+      </tbody>
+    </table>
+    <aside class="notes">
+      <p>[28'] Quattro criteri, tre livelli. Non serve leggerla tutta: indica le righe e passa.</p>
+      <p>La griglia è nei materiali (prompt-demo.md).</p>
+    </aside>
+  </section>
+
+  <section data-id="m5-classe" data-title="Mossa 5 — In classe" class="stack-v">
+    <div class="classe-head"><h2 class="classe-h">In classe</h2><span class="badge">Medie e superiori</span></div>
+    <ol class="items">
+      <li>Lo studente consegna il link o l'esportazione della chat insieme al lavoro.</li>
+      <li>Valutate due o tre passaggi della conversazione, non tutta.</li>
+      <li>Date la griglia prima del compito, non dopo.</li>
+    </ol>
+    <aside class="notes">
+      <p>[29'] Avvisa: leggere tutte le conversazioni di una classe non è sostenibile. Bastano pochi passaggi scelti dallo studente stesso ("indica i tre momenti in cui hai cambiato idea").</p>
+    </aside>
+  </section>
+
+  <!-- ───────── 4. LABORATORIO LAMPO (30–40') ───────── -->
+  <section data-id="lab-q" data-title="Domanda: la verifica resiste?" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+    <div class="q-mark">?</div>
+    <div class="eyebrow">4 · Laboratorio lampo</div>
+    <p class="q-text">La vostra ultima verifica resisterebbe all'IA?</p>
+    <aside class="notes">
+      <p><b>[30'] SEZIONE 4 — Laboratorio lampo: lo stress test della verifica.</b> Dieci minuti, si lavora a coppie con il telefono.</p>
+    </aside>
+  </section>
+
+  <section data-id="lab-consegna" data-title="Laboratorio — Consegna" class="stack-v">
+    <div class="eyebrow">Consegna</div>
+    <ol class="steps">
+      <li>Prendete una domanda vera della vostra materia.</li>
+      <li>Riscrivetela su tre livelli.</li>
+      <li>Datela all'IA.</li>
+      <li>Quale livello resiste?</li>
+    </ol>
+    <aside class="notes">
+      <p>[30'30"] "Vera" significa: una domanda che avete davvero dato in una verifica o in un'interrogazione.</p>
+      <p>"Resiste" significa: l'IA non produce da sola una risposta da voto pieno.</p>
+    </aside>
+  </section>
+
+  <section data-id="lab-livelli" data-title="Laboratorio — Tre livelli" class="stack-v">
+    <div class="eyebrow">Tre livelli · Esempio</div>
+    <div class="levels">
+      <div class="level fragment"><div class="lv">Ricordare</div><div class="lq">Che cos'è una percentuale?</div></div>
+      <div class="level fragment"><div class="lv">Analizzare e valutare</div><div class="lq">Un prezzo scontato del 25% e poi aumentato del 25% torna uguale? Perché?</div></div>
+      <div class="level fragment"><div class="lv">Creare</div><div class="lq">Inventa una situazione reale in cui uno sconto "del 50%" è in realtà meno conveniente di uno del 30%.</div></div>
+    </div>
+    <aside class="notes">
+      <p>[31'] Un livello per clic.</p>
+      <p>Spoiler onesto: l'IA risolve bene anche il secondo livello (lo abbiamo visto nella mossa 2). Sul terzo produce una risposta, ma la si può chiedere a ogni studente con dati della propria vita: lì l'IA deve essere usata, non può sostituire.</p>
+      <p>Il terzo livello "resiste" meglio se chiede scelte personali, dati locali, o la difesa di una posizione.</p>
+    </aside>
+  </section>
+
+  <section data-id="lab-timer" data-title="Laboratorio — Timer 8 minuti" class="timer-slide stack-v" data-timer="480">
+    <div class="eyebrow">Al lavoro</div>
+    <div class="timer-val">8:00</div>
+    <div class="timer-bar"><i></i></div>
+    <div class="timer-hint">Clic per avviare</div>
+    <aside class="notes">
+      <p>[32'] Clic sul timer per avviare, clic di nuovo per mettere in pausa. Doppio clic: azzera.</p>
+      <p>Durante il lavoro gira tra i tavoli e cerca due esempi buoni da far raccontare (uno delle medie, uno delle superiori).</p>
+    </aside>
+  </section>
+
+  <section data-id="lab-raccolta" data-title="Laboratorio — Chi ha trovato una domanda che resiste?" class="stack-v">
+    <p class="say l">Chi ha trovato una domanda <span class="grad">che resiste?</span></p>
+    <aside class="notes">
+      <p>[38'] Due esempi dalla sala, un minuto ciascuno. Chiedi: "Che cosa la fa resistere?"</p>
+    </aside>
+  </section>
+
+  <!-- ───────── 5. LIMITI E REGOLE D'INGAGGIO (40–46') ───────── -->
+  <section data-id="limiti-q" data-title="Domanda: quando l'IA smette di aiutare?" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+    <div class="q-mark">?</div>
+    <div class="eyebrow">5 · Limiti e regole d'ingaggio</div>
+    <p class="q-text">Quando l'IA smette di aiutare?</p>
+    <aside class="notes">
+      <p><b>[40'] SEZIONE 5 — Limiti e regole d'ingaggio.</b> Quattro punti, poco più di un minuto ciascuno.</p>
+    </aside>
+  </section>
+
+  <section data-id="allucinazioni" data-title="Limiti — Allucinazioni" class="stack-v">
+    <div class="eyebrow">Allucinazioni</div>
+    <p class="say">L'IA inventa fatti e fonti con la stessa sicurezza con cui dice il vero.</p>
+    <p class="sub">In classe è un'occasione: <b>ogni citazione va verificata.</b></p>
+    <aside class="notes">
+      <p>[41'] Esercizio rapido: chiedete all'IA tre fonti su un tema di nicchia e fate verificare agli studenti se esistono (titolo, autore, anno, editore).</p>
+      <p>Collegamento con "The AI Era": le slide "Epistemia" e "Pappagallo stocastico" si possono inserire qui dal dashboard (tasto D).</p>
+    </aside>
+  </section>
+
+  <section data-id="delega" data-title="Limiti — Delega cognitiva" class="stack-v">
+    <div class="eyebrow">Delega cognitiva</div>
+    <p class="say">Quando l'IA fa lo sforzo al posto dello studente, <span class="grad">lo studente non impara.</span></p>
+    <p class="sub">La domanda da farsi ogni volta: <b>chi sta pensando?</b></p>
+    <aside class="notes">
+      <p>[42'] È il risultato dello studio in Turchia: con il tutor libero si va meglio durante l'esercizio e peggio da soli.</p>
+      <p>Lo sforzo non è un difetto dell'apprendimento: è il meccanismo.</p>
+    </aside>
+  </section>
+
+  <section data-id="eta" data-title="Limiti — Età, consenso, privacy" class="stack-v">
+    <div class="eyebrow">Età, consenso, privacy</div>
+    <p class="say m">Sotto i 14 anni serve il consenso dei genitori.</p>
+    <p class="sub">Legge 132/2025, art. 4. E prima di tutto: <b>i termini d'uso del servizio</b> e <b>nessun dato personale degli studenti nei prompt.</b></p>
+    <aside class="notes">
+      <p>[43'30"] Legge 23 settembre 2025, n. 132, "Disposizioni e deleghe al Governo in materia di intelligenza artificiale" (GU n. 223 del 25/09/2025, in vigore dal 10/10/2025). Art. 4, comma 4: l'accesso alle tecnologie di IA dei minori di 14 anni e il trattamento dei loro dati richiedono il consenso di chi esercita la responsabilità genitoriale. Tra 14 e 18 anni il minore può dare da sé il consenso al trattamento dei dati, purché le informazioni siano chiare e accessibili.</p>
+      <p>La legge non basta: contano anche i termini d'uso (verificati a ottobre 2026):</p>
+      <p>— ChatGPT: almeno 13 anni (o l'età minima del paese), permesso del genitore sotto i 18.<br>— Gemini: 13 anni con account personale o scolastico; per gli account scolastici deve abilitarlo l'amministratore; in Workspace for Education gli studenti sono trattati come minorenni per impostazione predefinita.<br>— Claude (account consumer): almeno 18 anni.<br>— Microsoft Copilot: almeno 13 anni, con soglie più alte in alcuni paesi; Microsoft indica l'Italia a 18 anni per la gestione autonoma dell'account (sotto, account gestito da un genitore). Da ricontrollare prima del talk: la pagina è in aggiornamento.</p>
+      <p>In pratica: con le medie, l'IA la usa il docente in proiezione. Con le superiori, servizi abilitati dalla scuola e informativa ai genitori. Mai nomi, voti, foto o dati sanitari degli studenti nei prompt.</p>
+      <p>Fonti: normattiva.it (urn:nir:stato:legge:2025-09-23;132); openai.com/policies/eu-terms-of-use; anthropic.com/legal/consumer-terms; support.google.com/gemini/answer/13278668; support.microsoft.com (Microsoft Copilot age limits; list of countries with statutory age limits).</p>
+    </aside>
+  </section>
+
+  <section data-id="mim" data-title="Limiti — Linee guida MIM" class="stack-v">
+    <div class="eyebrow">Linee guida del Ministero</div>
+    <p class="say m">«Promuovendo l'apprendimento critico e creativo <span class="grad">senza sostituire l'impegno, la riflessione e l'autonomia</span> degli individui.»</p>
+    <p class="sub">Linee guida MIM per l'IA nelle scuole, v. 1.0 · D.M. n. 166 del 9 agosto 2025</p>
+    <aside class="notes">
+      <p>[45'] "Linee guida per l'introduzione dell'Intelligenza Artificiale nelle Istituzioni scolastiche", versione 1.0, 2025, adottate con il Decreto Ministeriale n. 166 del 9 agosto 2025 (pubblicato sul sito MIM il 1° settembre 2025). Collegate al servizio IA della piattaforma UNICA.</p>
+      <p>La citazione è dal cap. 2 "Principi di riferimento", principio "Innovazione etica e responsabile" (p. 7). Altro passaggio utile, nel capitolo sull'attuazione: "L'IA, infatti, non dovrebbe sostituire l'interazione umana e l'insegnamento diretto, ma arricchire le metodologie didattiche."</p>
+      <p>È il talk in una riga: lo stesso criterio di "chi sta pensando?".</p>
+      <p>Fonti: mim.gov.it/-/decreto-ministeriale-n-166-del-9-agosto-2025 ; PDF "MIM_Linee guida IA nella Scuola_09_08_2025-signed.pdf" sul sito MIM.</p>
+    </aside>
+  </section>
+
+  <!-- ───────── 6. CHIUSURA (46–50') ───────── -->
+  <section data-id="chiusura-q" data-title="Domanda: come si riscrive?" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+    <div class="q-mark">?</div>
+    <div class="eyebrow">6 · Chiusura</div>
+    <p class="q-text s">Come si riscrive la domanda d'apertura, perché l'IA possa solo aiutare a pensarla?</p>
+    <aside class="notes">
+      <p><b>[46'] SEZIONE 6 — Chiusura.</b> Torna alla domanda del primo minuto.</p>
+    </aside>
+  </section>
+
+  <section data-id="riscritta" data-title="La domanda riscritta" class="stack-v">
+    <p class="before">Quali sono le cause della Prima guerra mondiale?</p>
+    <p class="say m">Quale delle cause della Prima guerra mondiale, se fosse mancata, avrebbe con più probabilità evitato la guerra? <span class="grad">Difendi la tua scelta contro l'IA.</span></p>
+    <aside class="notes">
+      <p>[47'] Stesso contenuto, altra operazione mentale: bisogna conoscere le cause, pesarle, scegliere, argomentare. E l'IA diventa l'avversario della mossa 4, non il ghostwriter.</p>
+    </aside>
+  </section>
+
+  <section data-id="compito" data-title="Il compito per i docenti" class="stack-v">
+    <div class="eyebrow">Per voi</div>
+    <p class="say l">Entro una settimana, portate in classe <span class="grad">una domanda costruita così.</span></p>
+    <aside class="notes">
+      <p>[48'30"] Una sola domanda. Non un progetto, non un'unità didattica.</p>
+    </aside>
+  </section>
+
+  <section data-id="finale" data-title="Ultima domanda" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+    <div class="q-mark">?</div>
+    <p class="q-text">Che cosa chiedereste, se nessuno potesse rispondervi in tre secondi?</p>
+    <div class="contacts">Mattia Crivellini · fosforo.me</div>
+    <aside class="notes">
+      <p>[49'30"] Lascia la domanda a schermo. Non dire "grazie, domande?": la domanda è già lì.</p>
+    </aside>
+  </section>
+
+</template>
+
+<!-- Dashboard -->
+<div id="dash" aria-hidden="true">
+  <div class="d-wrap">
+    <div class="d-top">
+      <h1>Prima la domanda · <span>scaletta</span></h1>
+      <span class="d-status" id="d-status"></span>
+      <button class="d-btn" id="d-export">Esporta</button>
+      <button class="d-btn" id="d-import">Importa</button>
+      <button class="d-btn danger" id="d-reset">Ripristina</button>
+      <button class="d-btn primary" id="d-close">Chiudi e applica (D)</button>
+      <input type="file" id="dash-file" accept="application/json,.json" />
+    </div>
+    <p class="d-help">Trascina per riordinare · 👁 nasconde · ✕ toglie una slide di The AI Era · clic su una riga per selezionarla: "Inserisci" aggiunge la slide dopo quella selezionata. Salvataggio automatico in questo browser; usa Esporta/Importa per portare la scaletta su un altro computer.</p>
+    <div class="d-col">
+      <h2>Scaletta</h2>
+      <div class="d-list" id="d-list"></div>
+    </div>
+    <div class="d-col d-lib">
+      <h2>Slide di The AI Era</h2>
+      <div class="d-lib-grid" id="d-lib"></div>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/reveal/reveal.js"></script>
+<script src="vendor/reveal/plugin/notes.js"></script>
+<script src="../js/remote.js"></script>
+<script>
+  // ════════════════════════════════════════════════════
+  // Slide di "The AI Era" disponibili per l'inserimento.
+  // Rispecchia DEFAULT_PAGES in ../js/common.js (e i nomi di ../dashboard.html).
+  // ════════════════════════════════════════════════════
+  const ERA_SLIDES = [
+    ['index.html', 'Copertina The AI Era'],
+    ['video.html', 'Intro video'],
+    ['news-settimana.html', "La settimana dell'IA — 12 news"],
+    ['scrittura.html', 'Scrittura — Platone'],
+    ['fotografia.html', 'Fotografia — Baudelaire'],
+    ['pechino-1.html', 'Pechino 1'],
+    ['pechino-2.html', 'Pechino 2'],
+    ['pechino-3.html', 'Pechino 3'],
+    ['timeline.html', 'Timeline AI'],
+    ['napa-valley.html', 'Napa Valley'],
+    ['musk-page.html', 'Musk & Larry Page'],
+    ['musk-page-2.html', 'Musk vs Page — Due visioni'],
+    ['musk-altman.html', 'Musk & Sam Altman'],
+    ['paesi.html', 'Mappa paesi'],
+    ['leader.html', 'Leader & CEO'],
+    ['trump-amodei.html', 'Trump vs Amodei — Foto'],
+    ['anthropic-usa-1.html', 'Anthropic vs Pentagono'],
+    ['anthropic-usa-2.html', 'OpenAI & Pentagono'],
+    ['anthropic-usa-3.html', 'No vs Sì — il punto politico'],
+    ['anthropic-usa-4.html', 'Claude vietato agli stranieri'],
+    ['llm-occidentali.html', 'LLM Occidentali'],
+    ['llm-asiatici.html', 'LLM Asiatici'],
+    ['llm-russi.html', 'LLM Russi'],
+    ['thiel.html', 'Peter Thiel'],
+    ['palantir-intro.html', 'Palantír — Foto'],
+    ['palantir-intro-2.html', "Palantír — Cos'è"],
+    ['palantir.html', 'Palantír'],
+    ['paypal-mafia.html', 'PayPal Mafia'],
+    ['paypal-mafia-2.html', 'PayPal Mafia — Cerniere'],
+    ['paypal-mafia-3.html', 'PayPal Mafia — Foto'],
+    ['epistemia.html', 'Epistemia'],
+    ['pappagallo.html', 'Pappagallo Stocastico'],
+    ['alba-transformer.html', "L'alba dei Transformer"],
+    ['fosforo-web.html', 'Fosforo — Sito'],
+    ['fosforo-dashboard.html', 'Fosforo — Dashboard'],
+    ['tom-brad.html', 'Tom & Brad'],
+    ['tre-fattori.html', 'Tre Fattori'],
+    ['confronto-ai.html', 'Confronto AI']
+  ];
+  const ERA_DIR = '../';
+  const ERA_NAME = Object.fromEntries(ERA_SLIDES);
+  // Nomi personalizzati dati nel dashboard di The AI Era, se presenti.
+  try {
+    const n = (JSON.parse(localStorage.getItem('geopolitica-slides-config') || '{}').names) || {};
+    Object.keys(n).forEach(k => { if (ERA_NAME[k] && n[k]) ERA_NAME[k] = n[k]; });
+  } catch (e) {}
+
+  // ════════════════════════════════════════════════════
+  // Scaletta: { order: [voce], hidden: [voce], notes: {voce: testo} }
+  // voce = "pld:<data-id>" per le slide del talk,
+  //        "era:<file>#<n>" per le slide di The AI Era (n distingue i doppioni).
+  // ════════════════════════════════════════════════════
+  const CFG_KEY = 'prima-la-domanda-config';
+  const TALK = [...document.getElementById('talk').content.querySelectorAll('section[data-id]')];
+  const TALK_BY_ID = Object.fromEntries(TALK.map(s => [s.dataset.id, s]));
+  const DEFAULT_ORDER = TALK.map(s => 'pld:' + s.dataset.id);
+
+  function eraFile(entry) { return entry.slice(4).split('#')[0]; }
+  function isKnown(entry) {
+    if (entry.startsWith('pld:')) return !!TALK_BY_ID[entry.slice(4)];
+    if (entry.startsWith('era:')) return !!ERA_NAME[eraFile(entry)];
+    return false;
+  }
+
+  // Le slide nuove del talk entrano nella loro posizione naturale (come common.js).
+  function mergeNewDefaults(order) {
+    DEFAULT_ORDER.forEach((p, i) => {
+      if (order.includes(p)) return;
+      let at = order.length;
+      for (let j = i - 1; j >= 0; j--) {
+        const idx = order.indexOf(DEFAULT_ORDER[j]);
+        if (idx !== -1) { at = idx + 1; break; }
+      }
+      order.splice(at, 0, p);
+    });
+    return order;
+  }
+
+  function loadConfig() {
+    const fresh = { order: DEFAULT_ORDER.slice(), hidden: [], notes: {} };
+    try {
+      const cfg = JSON.parse(localStorage.getItem(CFG_KEY) || 'null');
+      if (!cfg || !Array.isArray(cfg.order)) return fresh;
+      return sanitize(cfg);
+    } catch (e) { return fresh; }
+  }
+  function sanitize(cfg) {
+    const order = mergeNewDefaults([...new Set(cfg.order.filter(isKnown))]);
+    const hidden = (Array.isArray(cfg.hidden) ? cfg.hidden : []).filter(e => order.includes(e));
+    const notes = (cfg.notes && typeof cfg.notes === 'object') ? cfg.notes : {};
+    return { order, hidden, notes };
+  }
+  function saveConfig() {
+    try { localStorage.setItem(CFG_KEY, JSON.stringify(state)); return true; } catch (e) { return false; }
+  }
+  let state = loadConfig();
+
+  function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+  // ════════════════════════════════════════════════════
+  // Costruzione del deck
+  // ════════════════════════════════════════════════════
+  const slidesEl = document.getElementById('slides');
+  state.order.forEach(entry => {
+    if (state.hidden.includes(entry)) return;
+    if (entry.startsWith('pld:')) {
+      slidesEl.appendChild(TALK_BY_ID[entry.slice(4)].cloneNode(true));
+      return;
+    }
+    const file = eraFile(entry);
+    const sec = document.createElement('section');
+    sec.dataset.era = file;
+    sec.dataset.id = entry;
+    sec.setAttribute('data-background-iframe', ERA_DIR + file);
+    sec.setAttribute('data-background-interactive', '');
+    const note = state.notes[entry];
+    sec.innerHTML = '<span class="era-tag">The AI Era</span>' +
+      '<aside class="notes"><p><b>Da The AI Era:</b> ' + escapeHtml(ERA_NAME[file]) + '</p>' +
+      (note ? '<p>' + escapeHtml(note).replace(/\n/g, '<br>') + '</p>' : '') +
+      '<p>Clic sulla slide per interagire; le frecce continuano a far avanzare il talk.</p></aside>';
+    slidesEl.appendChild(sec);
+  });
+  // Ancore per il link diretto (#/m5-titolo) e il salto del ponte.
+  slidesEl.querySelectorAll('section[data-id^="m"], section[data-id="ponte"]').forEach(s => { if (!s.id) s.id = s.dataset.id; });
+
+  const isReceiver = /receiver/.test(location.search);
+  if (isReceiver) document.documentElement.classList.add('is-receiver');
+
+  Reveal.initialize({
+    width: 1920, height: 1080, margin: 0, minScale: 0.1, maxScale: 3,
+    center: false, hash: true, controls: false, progress: true,
+    slideNumber: 'c/t', showSlideNumber: 'speaker',
+    transition: 'fade', backgroundTransition: 'fade', transitionSpeed: 'fast',
+    totalTime: 50 * 60,
+    viewDistance: 2,
+    plugins: [RevealNotes],
+    keyboard: {
+      88: () => { const t = document.getElementById('m5-titolo'); if (t) Reveal.slide(Reveal.getIndices(t).h); }, // X: salta alla mossa 5
+      68: () => toggleDash()                                                                                      // D: dashboard
+    }
+  });
+
+  // ── Slide di The AI Era: i loro common.js, se incorporati, inoltrano
+  //    i tasti di navigazione al genitore con {type:'op-nav'}.
+  window.addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.type !== 'op-nav') return;
+    if (d.dir === 'next') Reveal.next(); else Reveal.prev();
+    if (document.activeElement && document.activeElement.tagName === 'IFRAME') document.activeElement.blur();
+    window.focus();
+  });
+  function syncEraLang() {
+    const bg = Reveal.getSlideBackground(Reveal.getIndices().h);
+    const f = bg && bg.querySelector('iframe');
+    if (!f) return;
+    const send = () => { try { f.contentWindow.postMessage({ type: 'op-setlang', lang: 'it' }, '*'); } catch (e) {} };
+    send(); f.addEventListener('load', send, { once: true });
+  }
+  Reveal.on('ready', syncEraLang);
+  Reveal.on('slidechanged', syncEraLang);
+
+  // ── Telecomando da cellulare (../js/remote.js, pagina ../remote.html) ──
+  if (window.SlideRemote && !isReceiver) {
+    SlideRemote.start({
+      next: () => Reveal.next(),
+      prev: () => Reveal.prev(),
+      state: () => {
+        const s = Reveal.getCurrentSlide();
+        const title = s ? (s.dataset.title || (s.dataset.era ? ERA_NAME[s.dataset.era] : '')) : '';
+        const aside = s && s.querySelector('aside.notes');
+        const notes = aside ? [...aside.querySelectorAll('p')].map(p => p.textContent.trim()).join('\n\n') || aside.textContent.trim() : '';
+        return { title, pos: (Reveal.getIndices().h + 1) + ' / ' + Reveal.getTotalSlides(), notes };
+      }
+    });
+    ['ready', 'slidechanged', 'fragmentshown', 'fragmenthidden'].forEach(ev => Reveal.on(ev, () => SlideRemote.changed()));
+  }
+
+  // ── Copia prompt ──
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('.copy-btn');
+    if (!b) return;
+    e.stopPropagation();
+    const text = b.parentElement.querySelector('.prompt').innerText.trim();
+    const done = () => { b.textContent = 'Copiato'; b.classList.add('ok'); setTimeout(() => { b.textContent = 'Copia'; b.classList.remove('ok'); }, 1600); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done));
+    else fallbackCopy(text, done);
+  });
+  function fallbackCopy(text, done) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    ta.remove();
+  }
+
+  // ── Timer del laboratorio: clic avvia/pausa, doppio clic azzera ──
+  document.querySelectorAll('.timer-slide').forEach(sec => {
+    const total = parseInt(sec.dataset.timer, 10) || 480;
+    const val = sec.querySelector('.timer-val');
+    const bar = sec.querySelector('.timer-bar i');
+    const hint = sec.querySelector('.timer-hint');
+    let left = total, tick = null;
+    const fmt = s => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    function draw() {
+      val.textContent = fmt(left);
+      bar.style.transform = 'scaleX(' + (left / total) + ')';
+      val.classList.toggle('done', left === 0);
+    }
+    function stop() { clearInterval(tick); tick = null; }
+    sec.addEventListener('click', () => {
+      if (tick) { stop(); hint.textContent = 'In pausa · clic per riprendere'; return; }
+      if (left === 0) left = total;
+      hint.textContent = 'Clic per mettere in pausa';
+      tick = setInterval(() => {
+        left = Math.max(0, left - 1); draw();
+        if (left === 0) { stop(); hint.textContent = 'Tempo!'; }
+      }, 1000);
+    });
+    sec.addEventListener('dblclick', () => { stop(); left = total; draw(); hint.textContent = 'Clic per avviare'; });
+    draw();
+  });
+
+  // ════════════════════════════════════════════════════
+  // Dashboard (tasto D)
+  // ════════════════════════════════════════════════════
+  const dash = document.getElementById('dash');
+  const dList = document.getElementById('d-list');
+  const dLib = document.getElementById('d-lib');
+  const dStatus = document.getElementById('d-status');
+  let selected = null;
+  let statusTimer = null;
+
+  function flash(msg) {
+    dStatus.textContent = msg;
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(() => { dStatus.textContent = ''; }, 1500);
+  }
+  function changed() { flash(saveConfig() ? 'Salvato' : 'Errore di salvataggio'); renderList(); renderLib(); }
+
+  function titleOf(entry) {
+    if (entry.startsWith('pld:')) return TALK_BY_ID[entry.slice(4)].dataset.title || entry.slice(4);
+    return ERA_NAME[eraFile(entry)];
+  }
+
+  function toggleDash() {
+    if (dash.classList.contains('open')) {
+      // Ricarica sulla stessa slide (per data-id) così il deck rispecchia la scaletta.
+      const cur = Reveal.getCurrentSlide();
+      const id = cur && cur.dataset.id;
+      location.hash = id && !id.startsWith('era:') ? '#/' + id : '';
+      location.reload();
+      return;
+    }
+    renderList(); renderLib();
+    dash.classList.add('open');
+    dash.setAttribute('aria-hidden', 'false');
+  }
+  document.getElementById('d-close').addEventListener('click', toggleDash);
+  // Con il dashboard aperto reveal.js è in pausa: gestiamo noi D ed Esc.
+  document.addEventListener('keydown', (e) => {
+    if (!dash.classList.contains('open')) return;
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'TEXTAREA' || tag === 'INPUT') return;
+    if (e.key === 'd' || e.key === 'D' || e.key === 'Escape') { e.preventDefault(); toggleDash(); }
+    e.stopPropagation();
+  }, true);
+
+  function renderList() {
+    dList.innerHTML = '';
+    let pos = 0;
+    state.order.forEach((entry, i) => {
+      const era = entry.startsWith('era:');
+      const off = state.hidden.includes(entry);
+      if (!off) pos++;
+      const sec = era ? null : TALK_BY_ID[entry.slice(4)];
+      const isQ = sec && sec.classList.contains('q');
+      const row = document.createElement('div');
+      row.className = 'd-row' + (off ? ' off' : '') + (selected === entry ? ' sel' : '') + (isQ && i > 0 ? ' sec' : '');
+      row.draggable = true;
+      row.dataset.i = i;
+      row.innerHTML =
+        '<span class="d-pos">' + (off ? '–' : pos) + '</span>' +
+        '<span class="d-kind ' + (era ? 'era' : 'pld' + (isQ ? ' q' : '')) + '" title="' + (era ? 'The AI Era' : 'Prima la domanda') + '">' + (era ? 'E' : (isQ ? '?' : 'P')) + '</span>' +
+        '<span class="d-name">' + escapeHtml(titleOf(entry)) + (era ? '<small>The AI Era · ' + escapeHtml(eraFile(entry)) + '</small>' : '') + '</span>' +
+        '<span class="d-acts">' +
+          '<button data-a="up" title="Su">↑</button><button data-a="dn" title="Giù">↓</button>' +
+          '<button data-a="eye" title="' + (off ? 'Mostra' : 'Nascondi') + '">' + (off ? '🚫' : '👁') + '</button>' +
+          (era ? '<button data-a="rm" title="Togli">✕</button>' : '') +
+        '</span>' +
+        (era ? '<div class="d-note"><textarea placeholder="Note del relatore per questa slide">' + escapeHtml(state.notes[entry] || '') + '</textarea></div>' : '');
+      row.addEventListener('click', (e) => {
+        const a = e.target.closest('button') && e.target.closest('button').dataset.a;
+        if (e.target.tagName === 'TEXTAREA') return;
+        if (a === 'up' && i > 0) { state.order.splice(i - 1, 0, state.order.splice(i, 1)[0]); return changed(); }
+        if (a === 'dn' && i < state.order.length - 1) { state.order.splice(i + 1, 0, state.order.splice(i, 1)[0]); return changed(); }
+        if (a === 'eye') { state.hidden = off ? state.hidden.filter(x => x !== entry) : state.hidden.concat(entry); return changed(); }
+        if (a === 'rm') { state.order.splice(i, 1); state.hidden = state.hidden.filter(x => x !== entry); delete state.notes[entry]; if (selected === entry) selected = null; return changed(); }
+        if (!a) { selected = selected === entry ? null : entry; renderList(); }
+      });
+      const ta = row.querySelector('textarea');
+      if (ta) ta.addEventListener('input', () => { if (ta.value.trim()) state.notes[entry] = ta.value; else delete state.notes[entry]; flash(saveConfig() ? 'Salvato' : 'Errore di salvataggio'); });
+      row.addEventListener('dragstart', (e) => { row.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(i)); });
+      row.addEventListener('dragend', () => row.classList.remove('dragging'));
+      row.addEventListener('dragover', (e) => { e.preventDefault(); });
+      row.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const from = parseInt(e.dataTransfer.getData('text/plain'), 10);
+        if (isNaN(from) || from === i) return;
+        const item = state.order.splice(from, 1)[0];
+        state.order.splice(i, 0, item);
+        changed();
+      });
+      dList.appendChild(row);
+    });
+  }
+
+  function renderLib() {
+    if (!dLib.childElementCount) {
+      ERA_SLIDES.forEach(([file]) => {
+        const card = document.createElement('div');
+        card.className = 'd-card';
+        card.dataset.file = file;
+        card.innerHTML =
+          '<div class="d-thumb"><iframe src="' + ERA_DIR + file + '" loading="lazy" scrolling="no" tabindex="-1" aria-hidden="true"></iframe></div>' +
+          '<div class="d-card-b"><span title="' + escapeHtml(ERA_NAME[file]) + '">' + escapeHtml(ERA_NAME[file]) + '</span><button>Inserisci</button></div>' +
+          '<div class="d-used"></div>';
+        card.querySelector('button').addEventListener('click', () => insertEra(file));
+        dLib.appendChild(card);
+      });
+    }
+    dLib.querySelectorAll('.d-card').forEach(card => {
+      const n = state.order.filter(e => e.startsWith('era:') && eraFile(e) === card.dataset.file).length;
+      card.querySelector('.d-used').textContent = n ? 'Nella scaletta' + (n > 1 ? ' (' + n + ' volte)' : '') : '';
+    });
+  }
+
+  function insertEra(file) {
+    let n = 1;
+    while (state.order.includes('era:' + file + '#' + n)) n++;
+    const entry = 'era:' + file + '#' + n;
+    const at = selected ? state.order.indexOf(selected) + 1 : state.order.length;
+    state.order.splice(at, 0, entry);
+    selected = entry;
+    changed();
+    const row = dList.querySelector('.d-row.sel');
+    if (row) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  document.getElementById('d-reset').addEventListener('click', () => {
+    if (!confirm('Ripristinare la scaletta originale? Le slide di The AI Era inserite verranno tolte.')) return;
+    state = { order: DEFAULT_ORDER.slice(), hidden: [], notes: {} };
+    selected = null;
+    changed();
+  });
+  document.getElementById('d-export').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'prima-la-domanda-scaletta.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+  const fileInput = document.getElementById('dash-file');
+  document.getElementById('d-import').addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => {
+    const f = fileInput.files[0];
+    if (!f) return;
+    f.text().then(t => {
+      const cfg = JSON.parse(t);
+      if (!cfg || !Array.isArray(cfg.order)) throw new Error('formato');
+      state = sanitize(cfg); selected = null; changed(); flash('Importata');
+    }).catch(() => flash('File non valido'));
+    fileInput.value = '';
+  });
+</script>
+</body>
+</html>

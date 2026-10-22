@@ -37,7 +37,7 @@ function initLangToggle() {
 // Navigation dots (13 pages by default)
 // ════════════════════════════════════════════════════
 const DEFAULT_PAGES = [
-  'index.html', 'video.html', 'scrittura.html', 'fotografia.html',
+  'index.html', 'video.html', 'news-settimana.html', 'scrittura.html', 'fotografia.html',
   'pechino-1.html', 'pechino-2.html', 'pechino-3.html',
   'timeline.html', 'napa-valley.html', 'musk-page.html', 'musk-page-2.html', 'musk-altman.html', 'paesi.html', 'leader.html',
   'trump-amodei.html', 'anthropic-usa-1.html', 'anthropic-usa-2.html', 'anthropic-usa-3.html', 'anthropic-usa-4.html',
@@ -297,4 +297,26 @@ async function loadSchede(folder) {
       try { setLang(d.lang); } catch (_) {}
     }
   });
+})();
+
+// ════════════════════════════════════════════════════
+// Telecomando da cellulare (js/remote.js): attivo solo nel deck standalone
+// e solo se è stata impostata una stanza (?room=...). Vedi remote.html.
+// ════════════════════════════════════════════════════
+(function loadRemote() {
+  if (window.self !== window.top) return;
+  const me = document.currentScript && document.currentScript.src;
+  if (!me) return;
+  const s = document.createElement('script');
+  s.src = me.replace(/common\.js(\?.*)?$/, 'remote.js');
+  s.onload = () => {
+    if (!window.SlideRemote) return;
+    SlideRemote.start({
+      state: () => {
+        const i = currentPageIndex();
+        return { title: document.title.replace(/\s+—\s+Geopolitica della AI$/, ''), pos: (i + 1) + ' / ' + PAGES.length };
+      }
+    });
+  };
+  document.head.appendChild(s);
 })();

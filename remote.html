@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#02060f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="robots" content="noindex" />
+  <title>Telecomando</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #02060f; color: #f0f5fb; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    body {
+      display: flex; flex-direction: column; gap: 12px;
+      padding: max(14px, env(safe-area-inset-top)) 14px max(14px, env(safe-area-inset-bottom));
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      background: radial-gradient(80% 50% at 80% 0%, rgba(65,183,255,0.16), transparent 70%), #02060f;
+    }
+    .bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #8fd2ff; }
+    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #f87171; margin-right: 8px; vertical-align: middle; transition: background .3s; }
+    .dot.ok { background: #34d399; }
+    #clock { font-variant-numeric: tabular-nums; color: #fff; font-size: 15px; letter-spacing: 0.06em; padding: 6px 10px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+    .now { padding: 14px 16px; border-radius: 14px; background: rgba(13,33,55,0.85); border: 1px solid rgba(120,190,255,0.22); }
+    #pos { font-size: 13px; font-weight: 800; letter-spacing: 0.16em; color: #8fd2ff; }
+    #title { font-size: 21px; font-weight: 800; line-height: 1.2; margin-top: 4px; min-height: 1.2em; }
+    #notes { flex: 1 1 0; min-height: 60px; overflow-y: auto; -webkit-overflow-scrolling: touch; -webkit-user-select: text; user-select: text;
+      font-size: 16px; line-height: 1.45; color: #dbe5f3; white-space: pre-wrap; padding: 2px 4px; }
+    #notes:empty { display: none; }
+    .spacer { flex: 1 1 0; }
+    #notes:not(:empty) + .spacer { display: none; }
+    .btns { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; height: min(42vh, 340px); }
+    button {
+      font: 800 24px/1 inherit; letter-spacing: 0.06em; text-transform: uppercase; color: #fff;
+      border-radius: 20px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06);
+      cursor: pointer; transition: transform .08s, background .15s;
+    }
+    button:active { transform: scale(0.97); }
+    #next { background: linear-gradient(160deg, #1d4ed8, #5b21b6); border-color: rgba(143,210,255,0.5); font-size: 30px; }
+    #next.flash, #prev.flash { background: #34d399; color: #02060f; }
+    .arrow { display: block; font-size: 1.8em; margin-bottom: 10px; }
+    #setup { display: none; flex-direction: column; gap: 14px; margin-top: 10vh; }
+    #setup h1 { font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; }
+    #setup p { color: #dbe5f3; line-height: 1.45; }
+    #setup input { font: 600 20px/1 inherit; padding: 16px; border-radius: 12px; border: 1px solid rgba(143,210,255,0.5); background: #0a1929; color: #fff; }
+    #setup button { height: 64px; background: linear-gradient(160deg, #1d4ed8, #5b21b6); }
+    body.setup > :not(#setup) { display: none; }
+    body.setup #setup { display: flex; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <span><span class="dot" id="dot"></span><span id="status">Connessione…</span></span>
+    <span id="clock" title="Tocca per azzerare">0:00</span>
+  </div>
+  <div class="now">
+    <div id="pos">—</div>
+    <div id="title">In attesa del deck…</div>
+  </div>
+  <div id="notes"></div>
+  <div class="spacer"></div>
+  <div class="btns">
+    <button id="prev"><span class="arrow">←</span>Indietro</button>
+    <button id="next"><span class="arrow">→</span>Avanti</button>
+  </div>
+
+  <form id="setup">
+    <h1>Telecomando</h1>
+    <p>Inserisci il codice della stanza: è quello dopo <b>?room=</b> nel link del deck.</p>
+    <input id="room-in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="codice stanza" />
+    <button type="submit">Collega</button>
+  </form>
+
+  <script>
+    // Manda "next"/"prev" su ntfy.sh/<stanza>-cmd e mostra lo stato che il deck
+    // pubblica su ntfy.sh/<stanza>-state (vedi js/remote.js).
+    const NTFY = 'https://ntfy.sh/';
+    const ROOM_RE = /^[A-Za-z0-9_-]{8,64}$/;
+    const params = new URLSearchParams(location.search || location.hash.slice(1));
+    let room = params.get('room');
+    try {
+      if (room && ROOM_RE.test(room)) localStorage.setItem('slide-remote-room', room);
+      else room = localStorage.getItem('slide-remote-room');
+    } catch (e) {}
+
+    if (!room || !ROOM_RE.test(room)) {
+      document.body.classList.add('setup');
+      document.getElementById('setup').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v = document.getElementById('room-in').value.trim();
+        if (!ROOM_RE.test(v)) return;
+        location.search = '?room=' + encodeURIComponent(v);
+      });
+    } else {
+      start();
+    }
+
+    function start() {
+      const dot = document.getElementById('dot');
+      const status = document.getElementById('status');
+      const $ = id => document.getElementById(id);
+
+      // Stato dal deck
+      const es = new EventSource(NTFY + room + '-state/sse?since=latest');
+      es.onopen = () => { dot.classList.add('ok'); status.textContent = 'Collegato'; send('ping', true); };
+      es.onerror = () => { dot.classList.remove('ok'); status.textContent = 'Riconnessione…'; };
+      es.onmessage = (e) => {
+        let m; try { m = JSON.parse(e.data); } catch (_) { return; }
+        if (m.event !== 'message') return;
+        let s; try { s = JSON.parse(m.message); } catch (_) { return; }
+        $('pos').textContent = s.pos || '—';
+        $('title').textContent = s.title || '';
+        $('notes').textContent = s.notes || '';
+        $('notes').scrollTop = 0;
+      };
+
+      // Comandi
+      function send(cmd, quiet) {
+        return fetch(NTFY + room + '-cmd', { method: 'POST', body: cmd })
+          .then(r => { if (!r.ok) throw new Error(r.status); })
+          .catch(() => { if (!quiet) { status.textContent = 'Comando non inviato'; dot.classList.remove('ok'); } });
+      }
+      function tap(btn, cmd) {
+        if (navigator.vibrate) navigator.vibrate(15);
+        btn.classList.add('flash'); setTimeout(() => btn.classList.remove('flash'), 180);
+        if (!t0) t0 = Date.now();
+        send(cmd);
+      }
+      $('next').addEventListener('click', () => tap($('next'), 'next'));
+      $('prev').addEventListener('click', () => tap($('prev'), 'prev'));
+
+      // Cronometro: parte al primo comando, tocco per azzerare
+      let t0 = 0;
+      setInterval(() => {
+        const s = t0 ? Math.floor((Date.now() - t0) / 1000) : 0;
+        $('clock').textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+      }, 500);
+      $('clock').addEventListener('click', () => { t0 = 0; });
+
+      // Schermo sempre acceso
+      let lock = null;
+      async function keepAwake() { try { lock = await navigator.wakeLock.request('screen'); } catch (e) {} }
+      keepAwake();
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') keepAwake(); });
+    }
+  </script>
+</body>
+</html>
