@@ -8,207 +8,243 @@
   <link rel="stylesheet" href="vendor/reveal/reveal.css" />
   <style>
     /* ════════════════════════════════════════════════════
-       Tema — stessa grafica di "The AI Era" (css/style.css, index.html),
-       con contrasti alzati per proiettori scarsi.
+       Tema — stessa grafica delle slide di "The AI Era" (anthropic-usa-*.html):
+       nero, alone colorato in alto, composizione centrata, card traslucide.
        Canvas fisso 1920×1080: reveal.js scala tutto.
     ════════════════════════════════════════════════════ */
     :root {
-      --bg: #02060f;
       --ink: #ffffff;
-      --ink-2: #dbe5f3;
+      --ink-2: #cbd5e1;
+      --ink-3: #94a3b8;
       --accent: #41b7ff;
       --accent-soft: #8fd2ff;
-      --violet: #8b5cf6;
+      --rgb: 65,183,255;
+      --red: #ef4444;
+      --green-soft: #34d399;
       --amber: #fbbf24;
       --mono: 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', monospace;
     }
-    html, body { background: var(--bg); }
-    .reveal-viewport {
-      background:
-        radial-gradient(50% 60% at 82% 40%, rgba(65,183,255,0.14), transparent 65%),
-        radial-gradient(50% 60% at 10% 75%, rgba(124,92,246,0.11), transparent 65%),
-        var(--bg);
-    }
+    /* Un colore per capitolo, come le sezioni di The AI Era (Anthropic, OpenAI, ...).
+       L'alone di sfondo è impostato dallo script in base alla stessa classe. */
+    .reveal section.c1 { --accent: #cc785c; --accent-soft: #e8a48c; --rgb: 204,120,92; }
+    .reveal section.c2 { --accent: #8b5cf6; --accent-soft: #c4b5fd; --rgb: 139,92,246; }
+    .reveal section.c3 { --accent: #10a37f; --accent-soft: #34d399; --rgb: 16,163,127; }
+    .reveal section.c4 { --accent: #f59e0b; --accent-soft: #fbbf24; --rgb: 245,158,11; }
+    .reveal section.c5 { --accent: #ef4444; --accent-soft: #fca5a5; --rgb: 239,68,68; }
+    .reveal section.c6 { --accent: #41b7ff; --accent-soft: #8fd2ff; --rgb: 65,183,255; }
+
+    html, body, .reveal-viewport { background: #000; }
     .reveal {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       color: var(--ink);
       -webkit-font-smoothing: antialiased;
     }
-    .reveal .slides { text-align: left; }
+    .reveal .slides { text-align: center; }
     .reveal .slides > section {
       height: 100%;
-      padding: 110px 150px !important;
+      padding: 90px 140px !important;
       box-sizing: border-box;
     }
-    .reveal .slides > section.stack-v { display: flex !important; flex-direction: column; justify-content: center; }
+    .reveal .slides > section.stack-v { display: flex !important; flex-direction: column; justify-content: center; align-items: center; }
     .reveal .slides > section[data-era] { padding: 0 !important; }
+
+    /* ── entrata a cascata, come in The AI Era ── */
+    @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    .reveal .slides > section.present > :not(.fragment):not(aside):not(.q-mark):not(.move-n) { animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+    .reveal .slides > section.present > :nth-child(2) { animation-delay: 0.12s !important; }
+    .reveal .slides > section.present > :nth-child(3) { animation-delay: 0.24s !important; }
+    .reveal .slides > section.present > :nth-child(4) { animation-delay: 0.36s !important; }
+    .reveal .slides > section.present > :nth-child(5) { animation-delay: 0.48s !important; }
+    .reveal .slides > section.present .q-mark,
+    .reveal .slides > section.present .move-n { animation: fade 1.4s ease both; }
 
     /* ── elementi comuni ── */
     .eyebrow {
-      display: inline-flex; align-items: center; gap: 22px;
-      font-size: 30px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
-      color: var(--accent-soft); margin-bottom: 44px;
+      display: inline-flex; align-items: center; gap: 18px;
+      font-size: 28px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--accent-soft); margin-bottom: 36px;
     }
-    .eyebrow::before { content: ''; width: 64px; height: 3px; background: linear-gradient(90deg, var(--accent), transparent); }
-    .rule { width: 140px; height: 6px; border-radius: 6px; margin: 48px 0; background: linear-gradient(90deg, var(--accent), var(--violet)); }
-    .grad {
-      background: linear-gradient(100deg, #ffffff 0%, #8fd2ff 55%, #a78bfa 100%);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent; color: transparent;
-    }
+    .eyebrow .num { color: #fff; background: var(--accent); border-radius: 8px; padding: 4px 14px; letter-spacing: 0.1em; }
+    .rule { width: 120px; height: 4px; border-radius: 4px; margin: 48px auto 0; background: var(--accent); }
+    .hl { color: var(--accent-soft); }
 
-    /* ── frase singola ── */
-    .say { font-size: 96px; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; margin: 0; max-width: 1560px; }
-    .say.l { font-size: 120px; line-height: 1.02; }
-    .say.m { font-size: 80px; }
-    .sub { font-size: 50px; font-weight: 400; line-height: 1.3; color: var(--ink-2); margin: 40px 0 0; max-width: 1450px; }
-    .sub b { color: var(--ink); font-weight: 700; }
+    /* ── frase singola (titolo) ── */
+    .say { font-size: 104px; font-weight: 900; line-height: 1.0; letter-spacing: -0.03em; margin: 0 auto; max-width: 1600px; color: #fff; }
+    .say.l { font-size: 124px; line-height: 0.98; }
+    .say.m { font-size: 84px; line-height: 1.04; }
+    .say + .say { margin-top: 34px; }
+    .sub { font-size: 40px; font-weight: 300; line-height: 1.5; color: var(--ink-2); margin: 40px auto 0; max-width: 1400px; }
+    .sub b { color: #fff; font-weight: 600; }
 
-    /* ── slide-domanda: sfondo pieno + grande "?" ── */
+    /* ── slide-domanda: apre ogni capitolo, alone più intenso + grande "?" ── */
     .reveal section.q { overflow: hidden; }
     .q-mark {
-      position: absolute; right: -40px; top: 50%; transform: translateY(-52%);
-      font-size: 1200px; font-weight: 900; line-height: 1;
-      color: transparent; -webkit-text-stroke: 10px rgba(255,255,255,0.22);
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -52%);
+      font-size: 1150px; font-weight: 900; line-height: 1;
+      color: transparent; -webkit-text-stroke: 5px rgba(var(--rgb), 0.28);
       pointer-events: none; user-select: none;
     }
-    .q .eyebrow { color: #ffffff; }
-    .q .eyebrow::before { background: #ffffff; }
     .q-text {
-      position: relative; font-size: 108px; font-weight: 800; line-height: 1.06;
-      letter-spacing: -0.02em; margin: 0; max-width: 1380px; color: #fff;
-      text-shadow: 0 4px 40px rgba(0,0,0,0.25);
+      position: relative; font-size: 112px; font-weight: 900; line-height: 1.0;
+      letter-spacing: -0.03em; margin: 0 auto; max-width: 1500px; color: #fff;
     }
-    .q-text.s { font-size: 92px; }
-    .q-foot { position: absolute; left: 150px; bottom: 70px; font-size: 26px; font-weight: 600; letter-spacing: 0.06em; color: rgba(255,255,255,0.85); }
+    .q-text.s { font-size: 90px; line-height: 1.04; }
+    .q-foot, .contacts {
+      position: absolute; left: 0; right: 0; bottom: 70px;
+      font-size: 24px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--accent-soft);
+    }
 
-    /* ── titolo mossa ── */
+    /* ── titolo mossa: numero gigante in filigrana ── */
     .move-n {
-      font-size: 300px; font-weight: 900; line-height: 0.8; letter-spacing: -0.04em;
-      color: rgba(65,183,255,0.42); margin-bottom: 40px;
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      font-size: 900px; font-weight: 900; line-height: 1; letter-spacing: -0.04em;
+      color: transparent; -webkit-text-stroke: 4px rgba(var(--rgb), 0.2);
+      pointer-events: none; user-select: none;
     }
-    .move-t {
-      font-size: 130px; font-weight: 900; line-height: 0.95; letter-spacing: -0.03em;
-      text-transform: uppercase; margin: 0;
-      background: linear-gradient(95deg, #41b7ff 0%, #a78bfa 100%);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent; color: transparent;
-    }
+    .move-t { position: relative; font-size: 120px; font-weight: 900; line-height: 0.98; letter-spacing: -0.03em; margin: 0 auto; max-width: 1600px; color: #fff; }
 
     /* ── prompt ── */
-    .prompt-wrap { position: relative; }
+    .prompt-wrap { position: relative; width: 100%; max-width: 1580px; text-align: left; }
     .prompt {
-      font-family: var(--mono); font-size: 38px; line-height: 1.5; white-space: pre-wrap;
-      color: #f4f8ff; background: #07152a;
-      border: 2px solid rgba(65,183,255,0.55); border-left: 12px solid var(--accent);
-      border-radius: 18px; padding: 48px 60px; margin: 0; max-width: 1620px;
+      font-family: var(--mono); font-size: 36px; line-height: 1.55; white-space: pre-wrap;
+      color: #f4f8ff; background: rgba(var(--rgb), 0.07);
+      border: 1px solid rgba(var(--rgb), 0.4);
+      border-radius: 18px; padding: 48px 60px; margin: 0;
     }
-    .prompt.s { font-size: 32px; padding: 38px 52px; }
+    .prompt.s { font-size: 31px; padding: 38px 52px; }
     .prompt .ph { color: var(--amber); font-weight: 700; }
-    .prompt-label { font-size: 30px; font-weight: 700; color: var(--accent-soft); margin: 34px 0 14px; letter-spacing: 0.04em; }
-    .prompt-label:first-child { margin-top: 0; }
+    .prompt-label { font-size: 24px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-soft); margin: 34px 0 16px; }
     .copy-btn {
       position: absolute; top: 18px; right: 18px; z-index: 3;
       font: 700 22px/1 'Segoe UI', system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase;
-      color: #fff; background: rgba(65,183,255,0.25); border: 2px solid rgba(65,183,255,0.7);
+      color: #fff; background: rgba(var(--rgb), 0.25); border: 1px solid var(--accent);
       border-radius: 10px; padding: 14px 22px; cursor: pointer;
       opacity: 0; transition: opacity 0.2s;
     }
     .prompt-wrap:hover .copy-btn, .is-receiver .copy-btn { opacity: 1; }
     .copy-btn.ok { background: rgba(52,211,153,0.3); border-color: #34d399; }
 
-    /* ── in classe ── */
-    .classe-head { display: flex; align-items: center; justify-content: space-between; gap: 40px; margin-bottom: 50px; }
-    .classe-h { font-size: 110px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 1; margin: 0; }
+    /* ── in classe: tre card affiancate ── */
+    .classe-head { display: flex; flex-direction: column; align-items: center; gap: 26px; margin-bottom: 52px; }
+    .classe-h { font-size: 104px; font-weight: 900; letter-spacing: -0.03em; line-height: 1; margin: 0; }
     .badge {
-      flex: 0 0 auto; font-size: 34px; font-weight: 800; letter-spacing: 0.04em;
-      color: #02060f; background: var(--amber); border-radius: 999px; padding: 16px 34px;
+      order: -1; font-size: 26px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+      color: #000; background: var(--accent-soft); border-radius: 8px; padding: 6px 16px;
     }
-    .items { list-style: none; margin: 0; padding: 0; counter-reset: it; }
+    .items {
+      list-style: none; margin: 0; padding: 0; counter-reset: it;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; width: 100%; max-width: 1640px;
+    }
     .items li {
       counter-increment: it; position: relative;
-      font-size: 52px; font-weight: 500; line-height: 1.25; color: var(--ink);
-      padding: 30px 0 30px 110px; border-top: 2px solid rgba(255,255,255,0.16);
+      font-size: 36px; font-weight: 600; line-height: 1.35; color: #e8edf2;
+      padding: 40px 34px 44px; border-radius: 16px;
+      background: rgba(var(--rgb), 0.06); border: 1px solid rgba(var(--rgb), 0.32);
     }
     .items li::before {
-      content: counter(it, decimal-leading-zero); position: absolute; left: 0; top: 30px;
-      font-size: 52px; font-weight: 900; color: var(--accent);
+      content: counter(it); display: flex; align-items: center; justify-content: center;
+      width: 64px; height: 64px; margin: 0 auto 26px; border-radius: 50%;
+      background: rgba(var(--rgb), 0.16); border: 1px solid var(--accent);
+      font-size: 32px; font-weight: 900; color: var(--accent-soft);
     }
 
     /* ── elenco a passi (QFT, consegna laboratorio, ponte) ── */
-    .steps { list-style: none; margin: 0; padding: 0; counter-reset: st; }
+    .steps {
+      list-style: none; margin: 0; padding: 0; counter-reset: st;
+      display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 1400px; text-align: left;
+    }
     .steps li {
-      counter-increment: st; display: flex; align-items: baseline; gap: 40px;
-      font-size: 56px; font-weight: 700; line-height: 1.2; padding: 24px 0;
-      border-top: 2px solid rgba(255,255,255,0.16);
+      counter-increment: st; display: flex; align-items: center; gap: 36px;
+      font-size: 46px; font-weight: 700; line-height: 1.2; padding: 26px 40px;
+      background: rgba(var(--rgb), 0.06); border: 1px solid rgba(var(--rgb), 0.3); border-radius: 16px;
     }
     .steps li::before {
-      content: counter(st); flex: 0 0 80px;
-      font-size: 72px; font-weight: 900; line-height: 1;
-      color: var(--accent);
+      content: counter(st); flex: 0 0 72px; height: 72px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(var(--rgb), 0.16); border: 1px solid var(--accent);
+      font-size: 36px; font-weight: 900; color: var(--accent-soft);
     }
-    .steps li small { display: block; font-size: 38px; font-weight: 400; color: var(--ink-2); margin-top: 10px; }
-    .steps.compact li { font-size: 52px; padding: 18px 0; }
+    .steps li small { display: block; font-size: 32px; font-weight: 300; color: var(--ink-2); margin-top: 8px; }
+    .steps.compact { gap: 14px; }
+    .steps.compact li { font-size: 40px; padding: 18px 36px; }
+    .steps.compact li::before { flex-basis: 60px; height: 60px; font-size: 30px; }
+
+    /* stesse entrate a cascata per gli elementi delle griglie */
+    .reveal .slides > section.present .items li,
+    .reveal .slides > section.present .steps li:not(.fragment),
+    .reveal .slides > section.present .compare .card { animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+    .reveal .slides > section.present :is(.items, .steps, .compare) > :nth-child(1) { animation-delay: 0.2s; }
+    .reveal .slides > section.present :is(.items, .steps, .compare) > :nth-child(2) { animation-delay: 0.32s; }
+    .reveal .slides > section.present :is(.items, .steps, .compare) > :nth-child(3) { animation-delay: 0.44s; }
+    .reveal .slides > section.present :is(.items, .steps, .compare) > :nth-child(4) { animation-delay: 0.56s; }
+    .reveal .slides > section.present :is(.items, .steps, .compare) > :nth-child(5) { animation-delay: 0.68s; }
 
     /* ── tre livelli ── */
-    .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; margin-top: 20px; }
+    .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; width: 100%; max-width: 1640px; }
     .level {
-      background: rgba(13,33,55,0.85); border: 2px solid rgba(65,183,255,0.35);
-      border-radius: 24px; padding: 44px 40px;
+      --c: 65,183,255;
+      background: rgba(var(--c), 0.07); border: 1px solid rgba(var(--c), 0.4);
+      border-radius: 16px; padding: 44px 40px;
     }
-    .level .lv { font-size: 28px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 26px; }
-    .level .lq { font-size: 42px; font-weight: 600; line-height: 1.28; }
-    .level:nth-child(2) { border-color: rgba(139,92,246,0.55); }
-    .level:nth-child(2) .lv { color: #c4b5fd; }
-    .level:nth-child(3) { border-color: rgba(251,191,36,0.6); }
-    .level:nth-child(3) .lv { color: var(--amber); }
+    .level:nth-child(2) { --c: 139,92,246; }
+    .level:nth-child(3) { --c: 52,211,153; }
+    .level .lv { font-size: 24px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(var(--c)); margin-bottom: 24px; }
+    .level .lq { font-size: 40px; font-weight: 600; line-height: 1.3; color: #fff; }
 
     /* ── griglia di valutazione ── */
-    .rubric { width: 100%; border-collapse: separate; border-spacing: 10px; margin: 0 -10px; font-size: 33px; line-height: 1.22; }
-    .rubric th { font-size: 28px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-soft); text-align: left; padding: 6px 20px; }
-    .rubric td { background: rgba(13,33,55,0.9); border-radius: 12px; padding: 18px 20px; vertical-align: top; color: var(--ink); }
-    .rubric td:first-child { background: transparent; font-weight: 800; font-size: 36px; padding-left: 0; width: 20%; }
-
-    /* ── studio / confronto ── */
-    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; margin-top: 10px; }
-    .card {
-      background: rgba(13,33,55,0.9); border: 2px solid rgba(255,255,255,0.18);
-      border-radius: 24px; padding: 46px 50px;
+    .rubric { width: 100%; max-width: 1640px; border-collapse: separate; border-spacing: 12px; margin: 0 -12px; font-size: 30px; line-height: 1.25; text-align: left; }
+    .rubric th { font-size: 24px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-soft); padding: 4px 22px; }
+    .rubric td {
+      background: rgba(var(--rgb), 0.06); border: 1px solid rgba(var(--rgb), 0.25);
+      border-radius: 12px; padding: 18px 22px; vertical-align: top; color: #e8edf2;
     }
-    .card h3 { font-size: 46px; font-weight: 900; margin: 0 0 24px; text-transform: uppercase; letter-spacing: -0.01em; }
-    .card p { font-size: 40px; line-height: 1.3; margin: 0; color: var(--ink); }
-    .card p + p { margin-top: 18px; }
-    .card .big { font-size: 64px; font-weight: 900; color: var(--accent); }
-    .card.warn { border-color: rgba(248,113,113,0.7); }
-    .card.warn h3 { color: #fca5a5; }
-    .card.ok { border-color: rgba(52,211,153,0.7); }
-    .card.ok h3 { color: #6ee7b7; }
-    .source { position: absolute; left: 150px; bottom: 60px; font-size: 24px; color: var(--ink-2); }
+    .rubric td:first-child { background: transparent; border-color: transparent; font-weight: 800; font-size: 32px; color: #fff; padding-left: 0; width: 19%; }
+
+    /* ── studio: tre gruppi a confronto ── */
+    .compare { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; width: 100%; max-width: 1680px; margin-top: 10px; }
+    .card {
+      --c: 148,163,184;
+      background: rgba(var(--c), 0.07); border: 1px solid rgba(var(--c), 0.35);
+      border-radius: 16px; padding: 36px 36px 40px; text-align: center;
+    }
+    .card.warn { --c: 239,68,68; }
+    .card.ok { --c: 52,211,153; }
+    .card h3 { font-size: 24px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--c)); margin: 0 0 8px; }
+    .card.base h3 { color: #e2e8f0; }
+    .card .who { font-size: 28px; font-weight: 300; color: var(--ink-2); margin: 0 0 26px; }
+    .card .kv { border-top: 1px solid rgba(255,255,255,0.12); padding: 20px 0 6px; }
+    .card .kv span { display: block; font-size: 26px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink-2); }
+    .card .big { display: block; font-size: 84px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; color: #fff; }
+    .card .big.up { color: var(--green-soft); }
+    .card .big.down { color: #fca5a5; }
+    .card .big small { display: block; font-size: 26px; font-weight: 300; letter-spacing: 0; color: var(--ink-2); }
+    .source {
+      position: absolute; left: 140px; right: 140px; bottom: 50px;
+      padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.12);
+      font-size: 22px; line-height: 1.5; color: var(--ink-3);
+    }
 
     /* ── domanda riscritta ── */
-    .before { font-size: 50px; font-weight: 500; color: var(--ink-2); text-decoration: line-through; text-decoration-thickness: 4px; text-decoration-color: rgba(248,113,113,0.85); margin: 0 0 50px; }
+    .before { font-size: 46px; font-weight: 300; color: var(--ink-2); text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: rgba(239,68,68,0.85); margin: 0 auto 48px; }
 
     /* ── timer ── */
-    .timer-slide { text-align: center; cursor: pointer; }
-    .timer-slide .eyebrow { justify-content: center; }
-    .timer-slide .eyebrow::before { display: none; }
+    .timer-slide { cursor: pointer; }
     .timer-val {
       font-size: 460px; font-weight: 900; line-height: 1; letter-spacing: -0.04em;
       font-variant-numeric: tabular-nums;
-      background: linear-gradient(165deg, #ffffff 30%, #7cc4ff 75%, #4f8ef7 100%);
+      background: linear-gradient(170deg, #ffffff 35%, var(--accent-soft) 100%);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
     }
     .timer-val.done { background: none; -webkit-text-fill-color: var(--amber); color: var(--amber); }
-    .timer-hint { font-size: 36px; font-weight: 600; color: var(--ink-2); margin-top: 30px; }
-    .timer-bar { height: 14px; border-radius: 14px; background: rgba(255,255,255,0.14); margin: 60px auto 0; max-width: 1300px; overflow: hidden; }
-    .timer-bar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent), var(--violet)); transform-origin: left; transition: transform 1s linear; }
-
-    /* ── ultima slide ── */
-    .contacts { position: absolute; left: 150px; bottom: 64px; font-size: 26px; font-weight: 600; color: rgba(255,255,255,0.85); letter-spacing: 0.04em; }
+    .timer-hint { font-size: 32px; font-weight: 300; color: var(--ink-2); margin-top: 30px; }
+    .timer-bar { height: 10px; border-radius: 10px; background: rgba(255,255,255,0.12); margin: 60px auto 0; width: 1300px; overflow: hidden; }
+    .timer-bar i { display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: left; transition: transform 1s linear; }
 
     /* ── barra di avanzamento ── */
-    .reveal .progress { height: 6px; color: var(--accent); }
+    .reveal .progress { height: 5px; color: rgba(255,255,255,0.55); }
 
     /* ── slide incorporate da "The AI Era" ── */
     .era-tag {
@@ -297,9 +333,9 @@
 <template id="talk">
 
   <!-- ───────── 1. APERTURA (0–5') ───────── -->
-  <section data-id="apertura-q" data-title="Domanda d'apertura" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+  <section data-id="apertura-q" data-title="Domanda d'apertura" class="c1 q stack-v">
     <div class="q-mark">?</div>
-    <div class="eyebrow">Prima la domanda</div>
+    <div class="eyebrow"><span class="num">1</span>Prima la domanda</div>
     <p class="q-text">Quali sono le cause della Prima guerra mondiale?</p>
     <div class="q-foot">Usare l'IA per stimolare il pensiero critico</div>
     <aside class="notes">
@@ -310,7 +346,7 @@
     </aside>
   </section>
 
-  <section data-id="apertura-demo" data-title="Demo: la domanda all'IA" class="stack-v">
+  <section data-id="apertura-demo" data-title="Demo: la domanda all'IA" class="c1 stack-v">
     <div class="eyebrow">In diretta</div>
     <div class="prompt-wrap"><pre class="prompt">Quali sono le cause della Prima guerra mondiale? Rispondi come uno studente di quinta superiore in una verifica scritta, in circa 200 parole.</pre></div>
     <aside class="notes">
@@ -320,16 +356,16 @@
     </aside>
   </section>
 
-  <section data-id="apertura-consegna" data-title="Cosa ha imparato lo studente?" class="stack-v">
-    <p class="say l">Cosa ha imparato lo studente che l'ha <span class="grad">consegnata?</span></p>
+  <section data-id="apertura-consegna" data-title="Cosa ha imparato lo studente?" class="c1 stack-v">
+    <p class="say l">Cosa ha imparato lo studente che l'ha <span class="hl">consegnata?</span></p>
     <aside class="notes">
       <p>[3'] Pausa. Non rispondere tu.</p>
       <p>Il punto non è "lo studente ha copiato". Il punto è che la domanda permetteva di copiare.</p>
     </aside>
   </section>
 
-  <section data-id="apertura-tesi" data-title="Tesi" class="stack-v">
-    <p class="say">Se una macchina la risolve in tre secondi, la domanda sta misurando <span class="grad">la cosa sbagliata.</span></p>
+  <section data-id="apertura-tesi" data-title="Tesi" class="c1 stack-v">
+    <p class="say">Se una macchina la risolve in tre secondi, la domanda sta misurando <span class="hl">la cosa sbagliata.</span></p>
     <div class="rule"></div>
     <aside class="notes">
       <p>[4'] La tesi del talk. Dilla lentamente.</p>
@@ -338,9 +374,9 @@
   </section>
 
   <!-- ───────── 2. IL CAMBIO DI SCARSITÀ (5–12') ───────── -->
-  <section data-id="scarsita-q" data-title="Domanda: cosa vale ancora?" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+  <section data-id="scarsita-q" data-title="Domanda: cosa vale ancora?" class="c2 q stack-v">
     <div class="q-mark">?</div>
-    <div class="eyebrow">2 · Il cambio di scarsità</div>
+    <div class="eyebrow"><span class="num">2</span>Il cambio di scarsità</div>
     <p class="q-text">Se le risposte costano zero, che cosa vale ancora?</p>
     <aside class="notes">
       <p><b>[5'] SEZIONE 2 — Il cambio di scarsità.</b></p>
@@ -348,18 +384,18 @@
     </aside>
   </section>
 
-  <section data-id="scarsita-frase" data-title="Risposte abbondanti" class="stack-v">
+  <section data-id="scarsita-frase" data-title="Risposte abbondanti" class="c2 stack-v">
     <p class="say l">Le risposte sono diventate abbondanti.</p>
-    <p class="say l grad" style="margin-top:30px">Le buone domande no.</p>
+    <p class="say l hl">Le buone domande no.</p>
     <aside class="notes">
       <p>[6'] Quando una cosa diventa abbondante, il valore si sposta su ciò che resta scarso.</p>
       <p>Una buona domanda richiede di sapere già qualcosa, di accorgersi di cosa manca, di scegliere dove guardare.</p>
     </aside>
   </section>
 
-  <section data-id="socrate" data-title="Socrate e la maieutica" class="stack-v">
+  <section data-id="socrate" data-title="Socrate e la maieutica" class="c2 stack-v">
     <div class="eyebrow">Atene, V secolo a.C.</div>
-    <p class="say">Socrate non dava risposte. <span class="grad">Insegnava a domandare.</span></p>
+    <p class="say">Socrate non dava risposte. <span class="hl">Insegnava a domandare.</span></p>
     <p class="sub"><b>Maieutica:</b> l'arte della levatrice. Aiutare l'altro a far nascere un pensiero che è suo.</p>
     <aside class="notes">
       <p>[7'] Nel Teeteto (149a–151d) Socrate si paragona alla madre, che era levatrice: non partorisce idee, aiuta gli altri a partorire le proprie e a capire se sono vere o false.</p>
@@ -368,23 +404,32 @@
     </aside>
   </section>
 
-  <section data-id="bastani" data-title="Lo studio in Turchia (Bastani et al.)" class="stack-v">
+  <section data-id="bastani" data-title="Lo studio in Turchia (Bastani et al.)" class="c2 stack-v">
     <div class="eyebrow">Uno studio sul campo</div>
-    <div class="compare">
+    <h2 class="say m">Tre gruppi, <span class="hl">tre risultati</span></h2>
+    <div class="compare" style="margin-top:48px">
+      <div class="card base">
+        <h3>Senza IA · controllo</h3>
+        <p class="who">Solo libro e appunti</p>
+        <div class="kv"><span>In esercitazione</span><b class="big">±0%<small>il riferimento</small></b></div>
+        <div class="kv"><span>All'esame, senza IA</span><b class="big">±0%<small>il riferimento</small></b></div>
+      </div>
       <div class="card warn">
         <h3>GPT libero</h3>
-        <p>Con l'IA, in esercitazione: <span class="big">+48%</span></p>
-        <p>All'esame, senza IA: <span class="big" style="color:#fca5a5">−17%</span></p>
+        <p class="who">Accesso libero a GPT-4</p>
+        <div class="kv"><span>In esercitazione</span><b class="big up">+48%<small>rispetto a chi è senza IA</small></b></div>
+        <div class="kv"><span>All'esame, senza IA</span><b class="big down">−17%<small>rispetto a chi è senza IA</small></b></div>
       </div>
       <div class="card ok">
         <h3>GPT che non dà soluzioni</h3>
-        <p>Con l'IA, in esercitazione: <span class="big">+127%</span></p>
-        <p>All'esame, senza IA: <b>nessun calo</b> (e nessun guadagno).</p>
+        <p class="who">Tutor che guida passo passo</p>
+        <div class="kv"><span>In esercitazione</span><b class="big up">+127%<small>rispetto a chi è senza IA</small></b></div>
+        <div class="kv"><span>All'esame, senza IA</span><b class="big">±0%<small>nessun calo, nessun guadagno</small></b></div>
       </div>
     </div>
     <div class="source">Bastani et al., PNAS 122 (26), 2025 · quasi 1.000 studenti di matematica delle superiori, Turchia · confronto con chi non ha usato l'IA</div>
     <aside class="notes">
-      <p>[8'] Il dato più citato e più frainteso. Le percentuali sono variazioni dei voti rispetto al gruppo di controllo senza IA.</p>
+      <p>[8'] Il dato più citato e più frainteso. Tre gruppi: controllo (niente IA, solo libro e appunti), GPT Base, GPT Tutor. Le percentuali sono variazioni dei voti rispetto al gruppo di controllo, che è quindi lo zero di riferimento.</p>
       <p>GPT Base (accesso libero a GPT-4): +48% durante le esercitazioni, −17% all'esame senza IA. GPT Tutor (con prompt che impedisce di dare la soluzione e guida passo passo): +127% in esercitazione; all'esame il calo è "essenzialmente eliminato", ma non c'è un effetto positivo.</p>
       <p>Messaggio: non "l'IA fa male", ma "l'IA senza paletti fa fare il lavoro a lei".</p>
       <p>Fonte: H. Bastani, O. Bastani, A. Sungu, H. Ge, Ö. Kabakcı, R. Mariman, "Generative AI without guardrails can harm learning: Evidence from high school mathematics", PNAS 122(26), e2422633122, 25 giugno 2025. DOI 10.1073/pnas.2422633122. Versione precedente: working paper SSRN 4895486 (2024), "Generative AI Can Harm Learning".</p>
@@ -392,7 +437,7 @@
     </aside>
   </section>
 
-  <section data-id="qft" data-title="Question Formulation Technique" class="stack-v">
+  <section data-id="qft" data-title="Question Formulation Technique" class="c2 stack-v">
     <div class="eyebrow">Question Formulation Technique</div>
     <ol class="steps">
       <li class="fragment"><span>Il docente dà uno stimolo, non una domanda.</span></li>
@@ -408,9 +453,9 @@
     </aside>
   </section>
 
-  <section data-id="scarsita-chiusura" data-title="Conta chi fa le domande" class="stack-v">
+  <section data-id="scarsita-chiusura" data-title="Conta chi fa le domande" class="c2 stack-v">
     <p class="say">L'IA non è buona o cattiva per l'apprendimento.</p>
-    <p class="say grad" style="margin-top:36px">Conta chi fa le domande.</p>
+    <p class="say hl">Conta chi fa le domande.</p>
     <aside class="notes">
       <p>[11'] Chiusura della sezione. Se le domande le fa lo studente, l'IA è una palestra. Se le fa solo la verifica, l'IA è una scorciatoia.</p>
       <p>Ora: cinque mosse concrete, con demo dal vivo.</p>
@@ -418,9 +463,9 @@
   </section>
 
   <!-- ───────── 3. CINQUE MOSSE (12–30') ───────── -->
-  <section data-id="mosse-q" data-title="Domanda: cosa fa lo studente?" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+  <section data-id="mosse-q" data-title="Domanda: cosa fa lo studente?" class="c3 q stack-v">
     <div class="q-mark">?</div>
-    <div class="eyebrow">3 · Cinque mosse didattiche</div>
+    <div class="eyebrow"><span class="num">3</span>Cinque mosse didattiche</div>
     <p class="q-text">Che cosa fa lo studente, mentre l'IA lavora?</p>
     <aside class="notes">
       <p><b>[12'] SEZIONE 3 — Cinque mosse, con demo dal vivo.</b> Tre slide per mossa: titolo, prompt, in classe.</p>
@@ -430,17 +475,18 @@
   </section>
 
   <!-- Mossa 1 -->
-  <section data-id="m1-titolo" data-title="Mossa 1 — L'IA che sbaglia apposta" class="stack-v">
-    <div class="move-n">01</div>
-    <h2 class="move-t">L'IA che sbaglia apposta</h2>
+  <section data-id="m1-titolo" data-title="Mossa 1 — L'IA che sbaglia apposta" class="c3 stack-v">
+    <div class="move-n">1</div>
+    <div class="eyebrow"><span class="num">1 / 5</span>Cinque mosse</div>
+    <h2 class="move-t">L'IA che <span class="hl">sbaglia apposta</span></h2>
     <p class="sub">Gli studenti diventano <b>cacciatori d'errore.</b></p>
     <aside class="notes">
       <p>[12'30"] Ribalta il rapporto: l'IA non è l'oracolo, è il testo da correggere. Per trovare un errore plausibile bisogna sapere davvero.</p>
     </aside>
   </section>
 
-  <section data-id="m1-prompt" data-title="Mossa 1 — Prompt" class="stack-v">
-    <div class="eyebrow">Mossa 1 · Prompt</div>
+  <section data-id="m1-prompt" data-title="Mossa 1 — Prompt" class="c3 stack-v">
+    <div class="eyebrow"><span class="num">Mossa 1</span>Prompt</div>
     <div class="prompt-wrap"><button class="copy-btn">Copia</button><pre class="prompt">Scrivi un testo di 200 parole sulle cause della Prima guerra mondiale, adatto a studenti di terza media. Inserisci esattamente tre errori fattuali plausibili, senza segnalarli. Alla fine, dopo una riga vuota, scrivi "SOLUZIONI" e l'elenco dei tre errori con la correzione.</pre></div>
     <aside class="notes">
       <p>[13'] DEMO DAL VIVO. Incolla il prompt. Quando arriva la risposta, scorri solo il testo: nascondi le SOLUZIONI.</p>
@@ -450,7 +496,7 @@
     </aside>
   </section>
 
-  <section data-id="m1-classe" data-title="Mossa 1 — In classe" class="stack-v">
+  <section data-id="m1-classe" data-title="Mossa 1 — In classe" class="c3 stack-v">
     <div class="classe-head"><h2 class="classe-h">In classe</h2><span class="badge">Dalla prima media</span></div>
     <ol class="items">
       <li>Il docente genera il testo prima della lezione e tiene per sé le soluzioni.</li>
@@ -464,17 +510,18 @@
   </section>
 
   <!-- Mossa 2 -->
-  <section data-id="m2-titolo" data-title="Mossa 2 — L'IA socratica" class="stack-v">
-    <div class="move-n">02</div>
-    <h2 class="move-t">L'IA socratica</h2>
+  <section data-id="m2-titolo" data-title="Mossa 2 — L'IA socratica" class="c3 stack-v">
+    <div class="move-n">2</div>
+    <div class="eyebrow"><span class="num">2 / 5</span>Cinque mosse</div>
+    <h2 class="move-t">L'IA <span class="hl">socratica</span></h2>
     <p class="sub">Le vietiamo di dare la risposta. <b>Può solo fare domande.</b></p>
     <aside class="notes">
       <p>[16'] È il "tutor con i paletti" dello studio di prima, costruito con un solo prompt.</p>
     </aside>
   </section>
 
-  <section data-id="m2-senza" data-title="Mossa 2 — Senza vincolo" class="stack-v">
-    <div class="eyebrow">Mossa 2 · Prima, senza vincolo</div>
+  <section data-id="m2-senza" data-title="Mossa 2 — Senza vincolo" class="c3 stack-v">
+    <div class="eyebrow"><span class="num">Mossa 2</span>Prima, senza vincolo</div>
     <div class="prompt-wrap"><button class="copy-btn">Copia</button><pre class="prompt">Un prodotto costa 80 €. Viene scontato del 25% e poi aumentato del 25%. Torna a costare 80 €?</pre></div>
     <aside class="notes">
       <p>[16'30"] DEMO 1/2. Nuova chat, nessuna istruzione. Incolla solo il problema.</p>
@@ -482,8 +529,8 @@
     </aside>
   </section>
 
-  <section data-id="m2-prompt" data-title="Mossa 2 — Prompt socratico" class="stack-v">
-    <div class="eyebrow">Mossa 2 · Poi, con il vincolo</div>
+  <section data-id="m2-prompt" data-title="Mossa 2 — Prompt socratico" class="c3 stack-v">
+    <div class="eyebrow"><span class="num">Mossa 2</span>Poi, con il vincolo</div>
     <div class="prompt-wrap"><button class="copy-btn">Copia</button><pre class="prompt s">Sei un tutor socratico. Lo studente ti presenterà un problema. Non dare mai la risposta né i passaggi risolutivi. Fai una sola domanda alla volta per aiutarlo a ragionare. Se ti chiede la soluzione, rispondi con una domanda che lo riporti al punto in cui si è bloccato.</pre></div>
     <aside class="notes">
       <p>[17'30"] DEMO 2/2. Nuova chat: incolla prima questo prompt, poi lo stesso problema.</p>
@@ -493,7 +540,7 @@
     </aside>
   </section>
 
-  <section data-id="m2-classe" data-title="Mossa 2 — In classe" class="stack-v">
+  <section data-id="m2-classe" data-title="Mossa 2 — In classe" class="c3 stack-v">
     <div class="classe-head"><h2 class="classe-h">In classe</h2><span class="badge">Medie e superiori</span></div>
     <ol class="items">
       <li>Mostrate le due versioni e chiedete: quale vi ha fatto pensare?</li>
@@ -506,7 +553,7 @@
   </section>
 
   <!-- Ponte: da qui si può saltare alla mossa 5 (tasto X) -->
-  <section data-id="ponte" data-title="Ponte — Cinque mosse (X salta a mossa 5)" class="stack-v">
+  <section data-id="ponte" data-title="Ponte — Cinque mosse (X salta a mossa 5)" class="c3 stack-v">
     <div class="eyebrow">Cinque mosse</div>
     <ol class="steps compact">
       <li>L'IA che sbaglia apposta</li>
@@ -523,17 +570,18 @@
   </section>
 
   <!-- Mossa 3 (saltabile) -->
-  <section data-id="m3-titolo" data-title="Mossa 3 — Prima le nostre domande (saltabile)" class="stack-v">
-    <div class="move-n">03</div>
-    <h2 class="move-t">Prima le nostre domande</h2>
+  <section data-id="m3-titolo" data-title="Mossa 3 — Prima le nostre domande (saltabile)" class="c3 stack-v">
+    <div class="move-n">3</div>
+    <div class="eyebrow"><span class="num">3 / 5</span>Cinque mosse</div>
+    <h2 class="move-t">Prima <span class="hl">le nostre</span> domande</h2>
     <p class="sub">Dieci domande della classe. Poi dieci della macchina. <b>Poi il confronto.</b></p>
     <aside class="notes">
       <p>[20'30"] SALTABILE. È la QFT con un secondo tempo: la macchina arriva dopo, come termine di paragone.</p>
     </aside>
   </section>
 
-  <section data-id="m3-prompt" data-title="Mossa 3 — Prompt (saltabile)" class="stack-v">
-    <div class="eyebrow">Mossa 3 · Prompt</div>
+  <section data-id="m3-prompt" data-title="Mossa 3 — Prompt (saltabile)" class="c3 stack-v">
+    <div class="eyebrow"><span class="num">Mossa 3</span>Prompt</div>
     <div class="prompt-wrap"><button class="copy-btn">Copia</button><pre class="prompt">Genera 10 domande che uno studente di 15 anni potrebbe farsi sul tema <span class="ph">[TEMA]</span>. Mescola domande chiuse e aperte, senza numerarle per difficoltà.</pre></div>
     <aside class="notes">
       <p>[21'] SALTABILE. DEMO: chiedi un tema alla sala e sostituisci [TEMA].</p>
@@ -542,7 +590,7 @@
     </aside>
   </section>
 
-  <section data-id="m3-classe" data-title="Mossa 3 — In classe (saltabile)" class="stack-v">
+  <section data-id="m3-classe" data-title="Mossa 3 — In classe (saltabile)" class="c3 stack-v">
     <div class="classe-head"><h2 class="classe-h">In classe</h2><span class="badge">Medie e superiori</span></div>
     <ol class="items">
       <li>Dieci minuti senza IA: la classe scrive le sue domande, con le regole della QFT.</li>
@@ -555,17 +603,18 @@
   </section>
 
   <!-- Mossa 4 (saltabile) -->
-  <section data-id="m4-titolo" data-title="Mossa 4 — L'avvocato del diavolo (saltabile)" class="stack-v">
-    <div class="move-n">04</div>
-    <h2 class="move-t">L'avvocato del diavolo</h2>
+  <section data-id="m4-titolo" data-title="Mossa 4 — L'avvocato del diavolo (saltabile)" class="c3 stack-v">
+    <div class="move-n">4</div>
+    <div class="eyebrow"><span class="num">4 / 5</span>Cinque mosse</div>
+    <h2 class="move-t">L'avvocato <span class="hl">del diavolo</span></h2>
     <p class="sub">L'IA difende la tesi opposta. <b>Gli studenti la smontano con le prove.</b></p>
     <aside class="notes">
       <p>[24'] SALTABILE. L'IA è un avversario instancabile: si può discutere con lei finché si vuole.</p>
     </aside>
   </section>
 
-  <section data-id="m4-prompt" data-title="Mossa 4 — Prompt (saltabile)" class="stack-v">
-    <div class="eyebrow">Mossa 4 · Prompt</div>
+  <section data-id="m4-prompt" data-title="Mossa 4 — Prompt (saltabile)" class="c3 stack-v">
+    <div class="eyebrow"><span class="num">Mossa 4</span>Prompt</div>
     <div class="prompt-wrap"><button class="copy-btn">Copia</button><pre class="prompt s">Sostieni con convinzione questa tesi: "<span class="ph">[TESI]</span>". Presenta tre argomenti. Dopo ogni mia obiezione, difendi la tesi; se però la mia obiezione è fondata, ammettilo esplicitamente e spiega perché.</pre></div>
     <div class="prompt-label">Tesi per la demo</div>
     <div class="prompt-wrap"><pre class="prompt s">I social network hanno fatto più bene che male agli adolescenti.</pre></div>
@@ -576,7 +625,7 @@
     </aside>
   </section>
 
-  <section data-id="m4-classe" data-title="Mossa 4 — In classe (saltabile)" class="stack-v">
+  <section data-id="m4-classe" data-title="Mossa 4 — In classe (saltabile)" class="c3 stack-v">
     <div class="classe-head"><h2 class="classe-h">In classe</h2><span class="badge">Soprattutto superiori</span></div>
     <ol class="items">
       <li>Prima della conversazione ogni gruppo raccoglie tre prove: dati, fonti, esempi.</li>
@@ -589,17 +638,18 @@
   </section>
 
   <!-- Mossa 5 -->
-  <section data-id="m5-titolo" data-title="Mossa 5 — Consegnare la conversazione" class="stack-v">
-    <div class="move-n">05</div>
-    <h2 class="move-t">Consegnare la conversazione</h2>
+  <section data-id="m5-titolo" data-title="Mossa 5 — Consegnare la conversazione" class="c3 stack-v">
+    <div class="move-n">5</div>
+    <div class="eyebrow"><span class="num">5 / 5</span>Cinque mosse</div>
+    <h2 class="move-t">Consegnare <span class="hl">la conversazione</span></h2>
     <p class="sub">Si valuta il processo, <b>non il prodotto.</b></p>
     <aside class="notes">
       <p>[27'] Se il prodotto finale si può generare, valutiamo come lo studente ci è arrivato. La conversazione con l'IA diventa un documento da leggere.</p>
     </aside>
   </section>
 
-  <section data-id="m5-griglia" data-title="Mossa 5 — Griglia di valutazione" class="stack-v">
-    <div class="eyebrow">Mossa 5 · Griglia</div>
+  <section data-id="m5-griglia" data-title="Mossa 5 — Griglia di valutazione" class="c3 stack-v">
+    <div class="eyebrow"><span class="num">Mossa 5</span>Griglia</div>
     <table class="rubric">
       <thead><tr><th></th><th>Iniziale</th><th>Adeguato</th><th>Avanzato</th></tr></thead>
       <tbody>
@@ -615,7 +665,7 @@
     </aside>
   </section>
 
-  <section data-id="m5-classe" data-title="Mossa 5 — In classe" class="stack-v">
+  <section data-id="m5-classe" data-title="Mossa 5 — In classe" class="c3 stack-v">
     <div class="classe-head"><h2 class="classe-h">In classe</h2><span class="badge">Medie e superiori</span></div>
     <ol class="items">
       <li>Lo studente consegna il link o l'esportazione della chat insieme al lavoro.</li>
@@ -628,16 +678,16 @@
   </section>
 
   <!-- ───────── 4. LABORATORIO LAMPO (30–40') ───────── -->
-  <section data-id="lab-q" data-title="Domanda: la verifica resiste?" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+  <section data-id="lab-q" data-title="Domanda: la verifica resiste?" class="c4 q stack-v">
     <div class="q-mark">?</div>
-    <div class="eyebrow">4 · Laboratorio lampo</div>
+    <div class="eyebrow"><span class="num">4</span>Laboratorio lampo</div>
     <p class="q-text">La vostra ultima verifica resisterebbe all'IA?</p>
     <aside class="notes">
       <p><b>[30'] SEZIONE 4 — Laboratorio lampo: lo stress test della verifica.</b> Dieci minuti, si lavora a coppie con il telefono.</p>
     </aside>
   </section>
 
-  <section data-id="lab-consegna" data-title="Laboratorio — Consegna" class="stack-v">
+  <section data-id="lab-consegna" data-title="Laboratorio — Consegna" class="c4 stack-v">
     <div class="eyebrow">Consegna</div>
     <ol class="steps">
       <li>Prendete una domanda vera della vostra materia.</li>
@@ -651,7 +701,7 @@
     </aside>
   </section>
 
-  <section data-id="lab-livelli" data-title="Laboratorio — Tre livelli" class="stack-v">
+  <section data-id="lab-livelli" data-title="Laboratorio — Tre livelli" class="c4 stack-v">
     <div class="eyebrow">Tre livelli · Esempio</div>
     <div class="levels">
       <div class="level fragment"><div class="lv">Ricordare</div><div class="lq">Che cos'è una percentuale?</div></div>
@@ -665,7 +715,7 @@
     </aside>
   </section>
 
-  <section data-id="lab-timer" data-title="Laboratorio — Timer 8 minuti" class="timer-slide stack-v" data-timer="480">
+  <section data-id="lab-timer" data-title="Laboratorio — Timer 8 minuti" class="c4 timer-slide stack-v" data-timer="480">
     <div class="eyebrow">Al lavoro</div>
     <div class="timer-val">8:00</div>
     <div class="timer-bar"><i></i></div>
@@ -676,24 +726,24 @@
     </aside>
   </section>
 
-  <section data-id="lab-raccolta" data-title="Laboratorio — Chi ha trovato una domanda che resiste?" class="stack-v">
-    <p class="say l">Chi ha trovato una domanda <span class="grad">che resiste?</span></p>
+  <section data-id="lab-raccolta" data-title="Laboratorio — Chi ha trovato una domanda che resiste?" class="c4 stack-v">
+    <p class="say l">Chi ha trovato una domanda <span class="hl">che resiste?</span></p>
     <aside class="notes">
       <p>[38'] Due esempi dalla sala, un minuto ciascuno. Chiedi: "Che cosa la fa resistere?"</p>
     </aside>
   </section>
 
   <!-- ───────── 5. LIMITI E REGOLE D'INGAGGIO (40–46') ───────── -->
-  <section data-id="limiti-q" data-title="Domanda: quando l'IA smette di aiutare?" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+  <section data-id="limiti-q" data-title="Domanda: quando l'IA smette di aiutare?" class="c5 q stack-v">
     <div class="q-mark">?</div>
-    <div class="eyebrow">5 · Limiti e regole d'ingaggio</div>
+    <div class="eyebrow"><span class="num">5</span>Limiti e regole d'ingaggio</div>
     <p class="q-text">Quando l'IA smette di aiutare?</p>
     <aside class="notes">
       <p><b>[40'] SEZIONE 5 — Limiti e regole d'ingaggio.</b> Quattro punti, poco più di un minuto ciascuno.</p>
     </aside>
   </section>
 
-  <section data-id="allucinazioni" data-title="Limiti — Allucinazioni" class="stack-v">
+  <section data-id="allucinazioni" data-title="Limiti — Allucinazioni" class="c5 stack-v">
     <div class="eyebrow">Allucinazioni</div>
     <p class="say">L'IA inventa fatti e fonti con la stessa sicurezza con cui dice il vero.</p>
     <p class="sub">In classe è un'occasione: <b>ogni citazione va verificata.</b></p>
@@ -703,9 +753,9 @@
     </aside>
   </section>
 
-  <section data-id="delega" data-title="Limiti — Delega cognitiva" class="stack-v">
+  <section data-id="delega" data-title="Limiti — Delega cognitiva" class="c5 stack-v">
     <div class="eyebrow">Delega cognitiva</div>
-    <p class="say">Quando l'IA fa lo sforzo al posto dello studente, <span class="grad">lo studente non impara.</span></p>
+    <p class="say">Quando l'IA fa lo sforzo al posto dello studente, <span class="hl">lo studente non impara.</span></p>
     <p class="sub">La domanda da farsi ogni volta: <b>chi sta pensando?</b></p>
     <aside class="notes">
       <p>[42'] È il risultato dello studio in Turchia: con il tutor libero si va meglio durante l'esercizio e peggio da soli.</p>
@@ -713,7 +763,7 @@
     </aside>
   </section>
 
-  <section data-id="eta" data-title="Limiti — Età, consenso, privacy" class="stack-v">
+  <section data-id="eta" data-title="Limiti — Età, consenso, privacy" class="c5 stack-v">
     <div class="eyebrow">Età, consenso, privacy</div>
     <p class="say m">Sotto i 14 anni serve il consenso dei genitori.</p>
     <p class="sub">Legge 132/2025, art. 4. E prima di tutto: <b>i termini d'uso del servizio</b> e <b>nessun dato personale degli studenti nei prompt.</b></p>
@@ -726,9 +776,9 @@
     </aside>
   </section>
 
-  <section data-id="mim" data-title="Limiti — Linee guida MIM" class="stack-v">
+  <section data-id="mim" data-title="Limiti — Linee guida MIM" class="c5 stack-v">
     <div class="eyebrow">Linee guida del Ministero</div>
-    <p class="say m">«Promuovendo l'apprendimento critico e creativo <span class="grad">senza sostituire l'impegno, la riflessione e l'autonomia</span> degli individui.»</p>
+    <p class="say m">«Promuovendo l'apprendimento critico e creativo <span class="hl">senza sostituire l'impegno, la riflessione e l'autonomia</span> degli individui.»</p>
     <p class="sub">Linee guida MIM per l'IA nelle scuole, v. 1.0 · D.M. n. 166 del 9 agosto 2025</p>
     <aside class="notes">
       <p>[45'] "Linee guida per l'introduzione dell'Intelligenza Artificiale nelle Istituzioni scolastiche", versione 1.0, 2025, adottate con il Decreto Ministeriale n. 166 del 9 agosto 2025 (pubblicato sul sito MIM il 1° settembre 2025). Collegate al servizio IA della piattaforma UNICA.</p>
@@ -739,32 +789,32 @@
   </section>
 
   <!-- ───────── 6. CHIUSURA (46–50') ───────── -->
-  <section data-id="chiusura-q" data-title="Domanda: come si riscrive?" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+  <section data-id="chiusura-q" data-title="Domanda: come si riscrive?" class="c6 q stack-v">
     <div class="q-mark">?</div>
-    <div class="eyebrow">6 · Chiusura</div>
+    <div class="eyebrow"><span class="num">6</span>Chiusura</div>
     <p class="q-text s">Come si riscrive la domanda d'apertura, perché l'IA possa solo aiutare a pensarla?</p>
     <aside class="notes">
       <p><b>[46'] SEZIONE 6 — Chiusura.</b> Torna alla domanda del primo minuto.</p>
     </aside>
   </section>
 
-  <section data-id="riscritta" data-title="La domanda riscritta" class="stack-v">
+  <section data-id="riscritta" data-title="La domanda riscritta" class="c6 stack-v">
     <p class="before">Quali sono le cause della Prima guerra mondiale?</p>
-    <p class="say m">Quale delle cause della Prima guerra mondiale, se fosse mancata, avrebbe con più probabilità evitato la guerra? <span class="grad">Difendi la tua scelta contro l'IA.</span></p>
+    <p class="say m">Quale delle cause della Prima guerra mondiale, se fosse mancata, avrebbe con più probabilità evitato la guerra? <span class="hl">Difendi la tua scelta contro l'IA.</span></p>
     <aside class="notes">
       <p>[47'] Stesso contenuto, altra operazione mentale: bisogna conoscere le cause, pesarle, scegliere, argomentare. E l'IA diventa l'avversario della mossa 4, non il ghostwriter.</p>
     </aside>
   </section>
 
-  <section data-id="compito" data-title="Il compito per i docenti" class="stack-v">
+  <section data-id="compito" data-title="Il compito per i docenti" class="c6 stack-v">
     <div class="eyebrow">Per voi</div>
-    <p class="say l">Entro una settimana, portate in classe <span class="grad">una domanda costruita così.</span></p>
+    <p class="say l">Entro una settimana, portate in classe <span class="hl">una domanda costruita così.</span></p>
     <aside class="notes">
       <p>[48'30"] Una sola domanda. Non un progetto, non un'unità didattica.</p>
     </aside>
   </section>
 
-  <section data-id="finale" data-title="Ultima domanda" class="q stack-v" data-background-gradient="linear-gradient(135deg, #1d4ed8 0%, #5b21b6 100%)">
+  <section data-id="finale" data-title="Ultima domanda" class="c6 q stack-v">
     <div class="q-mark">?</div>
     <p class="q-text">Che cosa chiedereste, se nessuno potesse rispondervi in tre secondi?</p>
     <div class="contacts">Mattia Crivellini · fosforo.me</div>
@@ -929,6 +979,17 @@
       (note ? '<p>' + escapeHtml(note).replace(/\n/g, '<br>') + '</p>' : '') +
       '<p>Clic sulla slide per interagire; le frecce continuano a far avanzare il talk.</p></aside>';
     slidesEl.appendChild(sec);
+  });
+  // Alone colorato del capitolo in cima alla slide, come in The AI Era;
+  // le slide-domanda che aprono un capitolo lo hanno più intenso.
+  const GLOW = { c1: '204,120,92', c2: '139,92,246', c3: '16,163,127', c4: '245,158,11', c5: '239,68,68', c6: '65,183,255' };
+  slidesEl.querySelectorAll('section:not([data-era])').forEach(s => {
+    const c = Object.keys(GLOW).find(k => s.classList.contains(k));
+    if (!c) return;
+    const g = GLOW[c];
+    s.setAttribute('data-background-gradient', s.classList.contains('q')
+      ? 'radial-gradient(70% 85% at 50% 0%, rgba(' + g + ',0.34), transparent 62%), radial-gradient(60% 50% at 50% 100%, rgba(' + g + ',0.12), transparent 70%)'
+      : 'radial-gradient(60% 75% at 50% 4%, rgba(' + g + ',0.16), transparent 60%)');
   });
   // Ancore per il link diretto (#/m5-titolo) e il salto del ponte.
   slidesEl.querySelectorAll('section[data-id^="m"], section[data-id="ponte"]').forEach(s => { if (!s.id) s.id = s.dataset.id; });
