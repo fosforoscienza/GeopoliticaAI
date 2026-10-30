@@ -4,7 +4,7 @@ Le slide native usano <slug>.section.html; le slide interattive (mappa "iframe")
 vengono incorporate via <iframe>. Esegui:  python3 onepage-parts/build.py"""
 import os
 
-ORDER = ["index","video","scrittura","fotografia","pechino-1","pechino-2","pechino-3",
+ORDER = ["saturday-night-science","index","video","scrittura","fotografia","pechino-1","pechino-2","pechino-3",
     "dartmouth-1956","dartmouth-1956-2","timeline","napa-valley","musk-page","musk-page-2","musk-altman","paesi","leader",
     "trump-amodei","anthropic-usa-1","anthropic-usa-2","anthropic-usa-3","anthropic-usa-4",
     "llm-occidentali","llm-asiatici","llm-russi","thiel","palantir-intro","palantir-intro-2",
@@ -12,7 +12,7 @@ ORDER = ["index","video","scrittura","fotografia","pechino-1","pechino-2","pechi
     "alba-transformer","fosforo-web","fosforo-dashboard","tom-brad","tre-fattori","confronto-ai"]
 
 # slide interattive/pesanti tenute in iframe (slug -> accento per i dot)
-IFRAME = {"video":"#41b7ff","fotografia":"#41b7ff","timeline":"#41b7ff","paesi":"#41b7ff",
+IFRAME = {"saturday-night-science":"#41b7ff","video":"#41b7ff","fotografia":"#41b7ff","timeline":"#41b7ff","paesi":"#41b7ff",
     "leader":"#4f8ef7","alba-transformer":"#41b7ff","tom-brad":"#41b7ff",
     # step-reveal slides run their own JS, so they stay as iframes
     "tre-fattori":"#41b7ff"}
