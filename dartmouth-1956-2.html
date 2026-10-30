@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La nascita dell'AI — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --accent: #f59e0b; --accent-soft: #fbbf24; }
+    html, body { background: #000 !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; }
+
+    .stage {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(60% 80% at 50% 0%, rgba(245,158,11,0.15), transparent 60%),
+        radial-gradient(40% 50% at 50% 100%, rgba(245,158,11,0.09), transparent 70%),
+        #000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: clamp(28px, 5vh, 60px) clamp(36px, 6vw, 100px);
+      box-sizing: border-box;
+    }
+
+    /* ---------- Intestazione ---------- */
+    .head {
+      text-align: center; margin-bottom: clamp(22px, 3.4vh, 44px);
+      animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes rise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    .eyebrow {
+      font-size: clamp(14px, 1.2vw, 19px);
+      font-weight: 700; letter-spacing: 0.34em;
+      text-transform: uppercase; color: var(--accent-soft);
+      margin-bottom: clamp(12px, 1.8vh, 20px);
+    }
+    .name {
+      font-size: clamp(60px, 8.32vw, 139px);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 0.9;
+      margin: 0; text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 28%, #fcd34d 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      text-shadow: 0 0 80px rgba(245,158,11,0.35);
+    }
+    .lead {
+      font-size: clamp(19px, 1.83vw, 29px);
+      line-height: 1.55; color: #e2e8f0; font-weight: 300;
+      max-width: 1156px; margin: clamp(16px,2.4vh,26px) auto 0;
+    }
+    .lead b { color: #fff; font-weight: 600; }
+    .lead .accent { color: var(--accent-soft); font-weight: 600; font-style: italic; }
+
+    /* ---------- Tre blocchi ---------- */
+    .cols {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: clamp(22px, 3.2vw, 64px);
+      max-width: 1416px; width: 100%;
+      margin-bottom: clamp(22px, 3.4vh, 44px);
+    }
+    .col {
+      position: relative; padding-top: clamp(40px, 5vh, 60px);
+      animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .col:nth-child(1){ animation-delay: .15s }
+    .col:nth-child(2){ animation-delay: .28s }
+    .col:nth-child(3){ animation-delay: .41s }
+    .col .num {
+      position: absolute; top: 0; left: 0;
+      font-size: clamp(38px, 4.28vw, 66px); font-weight: 900;
+      line-height: 1; color: transparent;
+      -webkit-text-stroke: 1.6px rgba(245,158,11,0.75);
+      letter-spacing: -0.02em;
+    }
+    .col h3 {
+      font-size: clamp(21px, 1.89vw, 33px); font-weight: 800;
+      color: #fff; margin: 0 0 clamp(8px,1.2vh,12px); letter-spacing: 0.01em;
+    }
+    .col h3::after {
+      content: ''; display: block; width: 40px; height: 3px;
+      margin-top: 10px; border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+    .col p {
+      font-size: clamp(16px, 1.39vw, 23px); line-height: 1.55;
+      color: #94a3b8; margin: 0;
+    }
+    .col p b { color: #cbd5e1; font-weight: 600; }
+
+    /* ---------- Chiusura ---------- */
+    .closing {
+      max-width: 1180px; text-align: center;
+      font-size: clamp(20px, 1.95vw, 33px);
+      font-style: italic; line-height: 1.5; color: rgba(255,255,255,0.86);
+      padding-top: clamp(20px, 3vh, 34px);
+      border-top: 1px solid rgba(245,158,11,0.28);
+      animation: rise 0.9s 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .closing b { color: var(--accent-soft); font-style: normal; font-weight: 600; }
+
+    @media (max-aspect-ratio: 1/1) {
+      .stage { justify-content: flex-start; overflow-y: auto; padding-top: clamp(40px,7vh,70px); padding-bottom: clamp(90px,13vh,120px); }
+      .cols { grid-template-columns: 1fr; gap: clamp(18px,2.6vh,28px); max-width: 732px; }
+      .col { padding-top: clamp(34px,5vh,48px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stage">
+    <div class="head">
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 class="name" id="name"></h1>
+      <p class="lead" id="lead"></p>
+    </div>
+
+    <div class="cols">
+      <div class="col"><span class="num">01</span><h3 id="h1"></h3><p id="p1"></p></div>
+      <div class="col"><span class="num">02</span><h3 id="h2"></h3><p id="p2"></p></div>
+      <div class="col"><span class="num">03</span><h3 id="h3"></h3><p id="p3"></p></div>
+    </div>
+
+    <p class="closing" id="closing"></p>
+  </div>
+
+  <div id="nav-dots"></div>
+  <a class="nav-arrow" id="nav-prev" href="dartmouth-1956.html">&#8592;</a>
+  <a class="nav-arrow" id="nav-next" href="timeline.html">&#8594;</a>
+
+  <div id="lang-toggle">
+    <button class="lang-btn" data-lang="it">IT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    const TXT = {
+      it: {
+        eyebrow: 'Dartmouth College · Estate 1956',
+        name: 'La nascita dell\'AI',
+        lead: 'Nell\'estate del 1956 un gruppo di scienziati si riunisce a <b>Dartmouth</b> con un\'ipotesi audace: <span class="accent">«ogni aspetto dell\'apprendimento e dell\'intelligenza può essere descritto così precisamente che una macchina potrà simularlo»</span>.',
+        h1: 'La proposta', p1: 'Il 31 agosto 1955 <b>McCarthy, Minsky, Rochester e Shannon</b> chiedono 13.500 $ alla Rockefeller Foundation per «uno studio di 2 mesi, 10 uomini». Ne ottengono 7.500 — e nasce l\'espressione <b>«Artificial Intelligence»</b>.',
+        h2: 'I pionieri', p2: 'Per otto settimane i ricercatori si alternano a Hanover. <b>Newell e Simon</b> presentano il Logic Theorist, il primo programma di AI: dimostra da solo 38 teoremi dei <i>Principia Mathematica</i>.',
+        h3: 'La promessa', p3: 'Linguaggio, reti neurali, auto-miglioramento, creatività: i temi di quell\'estate sono <b>gli stessi di ChatGPT e Claude</b>. Pensavano bastasse un\'estate: ci sono voluti settant\'anni.',
+        closing: 'Da una parola scritta su una richiesta di fondi da 7.500 dollari alla <b>tecnologia per cui oggi si sfidano le superpotenze</b>.'
+      },
+      en: {
+        eyebrow: 'Dartmouth College · Summer 1956',
+        name: 'The birth of AI',
+        lead: 'In the summer of 1956 a group of scientists gathers at <b>Dartmouth</b> on a bold conjecture: <span class="accent">“every aspect of learning or any other feature of intelligence can in principle be so precisely described that a machine can be made to simulate it”</span>.',
+        h1: 'The proposal', p1: 'On August 31, 1955 <b>McCarthy, Minsky, Rochester and Shannon</b> ask the Rockefeller Foundation for $13,500 for “a 2 month, 10 man study”. They get $7,500 — and the phrase <b>“Artificial Intelligence”</b> is born.',
+        h2: 'The pioneers', p2: 'For eight weeks researchers come and go in Hanover. <b>Newell and Simon</b> present the Logic Theorist, the first AI program: on its own it proves 38 theorems of <i>Principia Mathematica</i>.',
+        h3: 'The promise', p3: 'Language, neural nets, self-improvement, creativity: the topics of that summer are <b>the same as ChatGPT and Claude</b>. They thought one summer would do: it took seventy years.',
+        closing: 'From a word on a $7,500 grant request to <b>the technology the superpowers now compete over</b>.'
+      }
+    };
+
+    function set(id, html){ document.getElementById(id).innerHTML = html; }
+    function renderTexts() {
+      const t = TXT[lang];
+      ['eyebrow','name','lead','h1','p1','h2','p2','h3','p3','closing'].forEach(k => set(k, t[k]));
+    }
+    function onLangChange() { renderTexts(); }
+
+    initLangToggle();
+    renderTexts();
+    initNav();
+  </script>
+</body>
+</html>

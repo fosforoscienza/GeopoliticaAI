@@ -1,0 +1,174 @@
+<style>
+  #op-dartmouth-1956-2 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(28px, 5vh, 60px) clamp(36px, 6vw, 100px);
+    background:
+      radial-gradient(60% 80% at 50% 0%, rgba(245,158,11,0.16), transparent 60%),
+      radial-gradient(40% 50% at 50% 100%, rgba(245,158,11,0.10), transparent 70%),
+      #000;
+    overflow: hidden;
+  }
+
+  /* ---------- Intestazione ---------- */
+  #op-dartmouth-1956-2 .head {
+    text-align: center;
+    margin-bottom: clamp(22px, 3.4vh, 44px);
+  }
+
+  #op-dartmouth-1956-2 .eyebrow {
+    font-size: clamp(14px, 1.2vw, 19px);
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: #fbbf24;
+    margin-bottom: clamp(12px, 1.8vh, 20px);
+  }
+  #op-dartmouth-1956-2 .name {
+    font-size: clamp(60px, 8.32vw, 139px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+    margin: 0;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 28%, #fcd34d 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    text-shadow: 0 0 80px rgba(245,158,11,0.4);
+  }
+  #op-dartmouth-1956-2 .lead {
+    font-size: clamp(19px, 1.83vw, 29px);
+    line-height: 1.55;
+    color: #e2e8f0;
+    font-weight: 300;
+    max-width: 1156px;
+    margin: clamp(16px,2.4vh,26px) auto 0;
+  }
+  #op-dartmouth-1956-2 .lead b { color: #fff; font-weight: 600; }
+  #op-dartmouth-1956-2 .lead .accent { color: #fbbf24; font-weight: 600; font-style: italic; }
+
+  /* ---------- Tre blocchi ---------- */
+  #op-dartmouth-1956-2 .cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(22px, 3.2vw, 64px);
+    max-width: 1416px;
+    width: 100%;
+    margin-bottom: clamp(22px, 3.4vh, 44px);
+  }
+  #op-dartmouth-1956-2 .col {
+    position: relative;
+    padding-top: clamp(40px, 5vh, 60px);
+  }
+  #op-dartmouth-1956-2 .col .num {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: clamp(38px, 4.28vw, 66px);
+    font-weight: 900;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.6px rgba(245,158,11,0.75);
+    letter-spacing: -0.02em;
+  }
+  #op-dartmouth-1956-2 .col h3 {
+    font-size: clamp(21px, 1.89vw, 33px);
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 clamp(8px,1.2vh,12px);
+    letter-spacing: 0.01em;
+  }
+  #op-dartmouth-1956-2 .col h3::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    margin-top: 10px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #f59e0b, transparent);
+  }
+  #op-dartmouth-1956-2 .col p {
+    font-size: clamp(16px, 1.39vw, 23px);
+    line-height: 1.55;
+    color: #94a3b8;
+    margin: 0;
+  }
+  #op-dartmouth-1956-2 .col p b { color: #cbd5e1; font-weight: 600; }
+
+  /* ---------- Chiusura ---------- */
+  #op-dartmouth-1956-2 .closing {
+    max-width: 1180px;
+    text-align: center;
+    font-size: clamp(20px, 1.95vw, 33px);
+    font-style: italic;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.86);
+    padding-top: clamp(20px, 3vh, 34px);
+    border-top: 1px solid rgba(245,158,11,0.28);
+  }
+  #op-dartmouth-1956-2 .closing b { color: #fbbf24; font-style: normal; font-weight: 600; }
+
+  @media (max-aspect-ratio: 1/1) {
+    #op-dartmouth-1956-2 {
+      justify-content: flex-start;
+      overflow-y: auto;
+      padding-top: clamp(40px,7vh,70px);
+      padding-bottom: clamp(90px,13vh,120px);
+    }
+    #op-dartmouth-1956-2 .cols {
+      grid-template-columns: 1fr;
+      gap: clamp(18px,2.6vh,28px);
+      max-width: 732px;
+    }
+    #op-dartmouth-1956-2 .col {
+      padding-top: clamp(34px,5vh,48px);
+    }
+  }
+</style>
+
+<section class="op-sec" id="op-dartmouth-1956-2" data-accent="#f59e0b">
+  <div class="head">
+    <div class="eyebrow" data-reveal
+      data-it="Dartmouth College · Estate 1956"
+      data-en="Dartmouth College · Summer 1956">Dartmouth College · Estate 1956</div>
+    <h1 class="name" data-reveal
+      data-it="La nascita dell&#x27;AI"
+      data-en="The birth of AI">La nascita dell'AI</h1>
+    <p class="lead" data-reveal
+      data-it="Nell&#x27;estate del 1956 un gruppo di scienziati si riunisce a &lt;b&gt;Dartmouth&lt;/b&gt; con un&#x27;ipotesi audace: &lt;span class=&quot;accent&quot;&gt;«ogni aspetto dell&#x27;apprendimento e dell&#x27;intelligenza può essere descritto così precisamente che una macchina potrà simularlo»&lt;/span&gt;."
+      data-en="In the summer of 1956 a group of scientists gathers at &lt;b&gt;Dartmouth&lt;/b&gt; on a bold conjecture: &lt;span class=&quot;accent&quot;&gt;“every aspect of learning or any other feature of intelligence can in principle be so precisely described that a machine can be made to simulate it”&lt;/span&gt;.">Nell'estate del 1956 un gruppo di scienziati si riunisce a <b>Dartmouth</b> con un'ipotesi audace: <span class="accent">«ogni aspetto dell'apprendimento e dell'intelligenza può essere descritto così precisamente che una macchina potrà simularlo»</span>.</p>
+  </div>
+
+  <div class="cols">
+    <div class="col" data-reveal>
+      <span class="num">01</span>
+      <h3 data-it="La proposta" data-en="The proposal">La proposta</h3>
+      <p data-it="Il 31 agosto 1955 &lt;b&gt;McCarthy, Minsky, Rochester e Shannon&lt;/b&gt; chiedono 13.500 $ alla Rockefeller Foundation per «uno studio di 2 mesi, 10 uomini». Ne ottengono 7.500 — e nasce l&#x27;espressione &lt;b&gt;«Artificial Intelligence»&lt;/b&gt;."
+      data-en="On August 31, 1955 &lt;b&gt;McCarthy, Minsky, Rochester and Shannon&lt;/b&gt; ask the Rockefeller Foundation for $13,500 for “a 2 month, 10 man study”. They get $7,500 — and the phrase &lt;b&gt;“Artificial Intelligence”&lt;/b&gt; is born.">Il 31 agosto 1955 <b>McCarthy, Minsky, Rochester e Shannon</b> chiedono 13.500 $ alla Rockefeller Foundation per «uno studio di 2 mesi, 10 uomini». Ne ottengono 7.500 — e nasce l'espressione <b>«Artificial Intelligence»</b>.</p>
+    </div>
+    <div class="col" data-reveal>
+      <span class="num">02</span>
+      <h3 data-it="I pionieri" data-en="The pioneers">I pionieri</h3>
+      <p data-it="Per otto settimane i ricercatori si alternano a Hanover. &lt;b&gt;Newell e Simon&lt;/b&gt; presentano il Logic Theorist, il primo programma di AI: dimostra da solo 38 teoremi dei &lt;i&gt;Principia Mathematica&lt;/i&gt;."
+      data-en="For eight weeks researchers come and go in Hanover. &lt;b&gt;Newell and Simon&lt;/b&gt; present the Logic Theorist, the first AI program: on its own it proves 38 theorems of &lt;i&gt;Principia Mathematica&lt;/i&gt;.">Per otto settimane i ricercatori si alternano a Hanover. <b>Newell e Simon</b> presentano il Logic Theorist, il primo programma di AI: dimostra da solo 38 teoremi dei <i>Principia Mathematica</i>.</p>
+    </div>
+    <div class="col" data-reveal>
+      <span class="num">03</span>
+      <h3 data-it="La promessa" data-en="The promise">La promessa</h3>
+      <p data-it="Linguaggio, reti neurali, auto-miglioramento, creatività: i temi di quell&#x27;estate sono &lt;b&gt;gli stessi di ChatGPT e Claude&lt;/b&gt;. Pensavano bastasse un&#x27;estate: ci sono voluti settant&#x27;anni."
+      data-en="Language, neural nets, self-improvement, creativity: the topics of that summer are &lt;b&gt;the same as ChatGPT and Claude&lt;/b&gt;. They thought one summer would do: it took seventy years.">Linguaggio, reti neurali, auto-miglioramento, creatività: i temi di quell'estate sono <b>gli stessi di ChatGPT e Claude</b>. Pensavano bastasse un'estate: ci sono voluti settant'anni.</p>
+    </div>
+  </div>
+
+  <p class="closing" data-reveal
+    data-it="Da una parola scritta su una richiesta di fondi da 7.500 dollari alla &lt;b&gt;tecnologia per cui oggi si sfidano le superpotenze&lt;/b&gt;."
+      data-en="From a word on a $7,500 grant request to &lt;b&gt;the technology the superpowers now compete over&lt;/b&gt;.">Da una parola scritta su una richiesta di fondi da 7.500 dollari alla <b>tecnologia per cui oggi si sfidano le superpotenze</b>.</p>
+</section>

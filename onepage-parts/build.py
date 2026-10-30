@@ -5,7 +5,7 @@ vengono incorporate via <iframe>. Esegui:  python3 onepage-parts/build.py"""
 import os
 
 ORDER = ["index","video","scrittura","fotografia","pechino-1","pechino-2","pechino-3",
-    "timeline","napa-valley","musk-page","musk-page-2","musk-altman","paesi","leader",
+    "dartmouth-1956","dartmouth-1956-2","timeline","napa-valley","musk-page","musk-page-2","musk-altman","paesi","leader",
     "trump-amodei","anthropic-usa-1","anthropic-usa-2","anthropic-usa-3","anthropic-usa-4",
     "llm-occidentali","llm-asiatici","llm-russi","thiel","palantir-intro","palantir-intro-2",
     "palantir","paypal-mafia","paypal-mafia-2","paypal-mafia-3","epistemia","pappagallo",
