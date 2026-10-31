@@ -333,7 +333,7 @@
     // ── Suoni lanciati dalla console (es. Star Wars). Il file si carica qui,
     //    nel pannello audio, e resta in questo browser. Escono solo dal jack. ──
     const snd = new Audio(); snd.preload = 'auto';
-    let soundNow = null, soundsLoaded = [], soundURL = null, fadeTimer = null;
+    let soundNow = null, soundsLoaded = [], soundURL = null, fadeTimer = null, cutTimer = null;
     function refreshSounds() {
       return SNS.sounds.list().then(list => {
         soundsLoaded = list.map(x => x.id);
@@ -353,7 +353,7 @@
       }).catch(() => {});
     }
     function stopSound(now) {
-      clearInterval(fadeTimer);
+      clearInterval(fadeTimer); clearTimeout(cutTimer);
       if (now || snd.paused) { snd.pause(); soundNow = null; report(); return; }
       fadeTimer = setInterval(() => {                      // dissolvenza di 1,2 s
         snd.volume = Math.max(0, snd.volume - 0.08);
@@ -371,11 +371,31 @@
         soundURL = URL.createObjectURL(rec.blob);
         snd.src = soundURL; snd.volume = 1; snd.currentTime = 0;
         soundNow = id;
-        snd.play().then(report).catch(() => { soundNow = null; tap.classList.add('show'); report(); });
+        snd.play().then(() => {
+          report();
+          // solo l'attacco del brano: dopo «max» secondi sfuma da solo
+          const def = SNS.SOUNDS.find(x => x.id === id);
+          clearTimeout(cutTimer);
+          if (def && def.max) cutTimer = setTimeout(() => { if (soundNow === id) stopSound(); }, def.max * 1000);
+        }).catch(() => { soundNow = null; tap.classList.add('show'); report(); });
       });
     }
     snd.addEventListener('ended', () => { soundNow = null; report(); });
     refreshSounds();
+
+    // Un file audio trascinato sulla finestra dello show diventa il brano di Star Wars
+    document.addEventListener('dragover', e => { if ([...e.dataTransfer.items].some(i => i.type.startsWith('audio/'))) e.preventDefault(); });
+    document.addEventListener('drop', e => {
+      const f = [...e.dataTransfer.files].find(x => x.type.startsWith('audio/') || /\.(mp3|m4a|wav|aac|ogg)$/i.test(x.name));
+      if (!f || !SNS.SOUNDS.length) return;
+      e.preventDefault();
+      SNS.sounds.put(SNS.SOUNDS[0].id, f).then(refreshSounds).then(() => {
+        report();
+        const n = document.getElementById('sound');                    // conferma breve sullo show
+        const old = n.textContent; n.textContent = 'Brano caricato per ' + SNS.SOUNDS[0].title + ': ' + f.name;
+        n.classList.add('show'); setTimeout(() => { n.classList.remove('show'); n.textContent = old; }, 3500);
+      });
+    });
 
     // ── Uscita audio: SOLO il mini jack («Cuffie esterne»), mai AirPods o Bluetooth ──
     // Le AirPods servono a Jarvis e il Mac le rende uscita predefinita appena si

@@ -191,9 +191,9 @@
       <summary>Scaletta
         <span class="tabs" id="note-tabs">
           <button data-k="generale">Generale</button>
-          <button data-k="rosasco">Rosasco</button>
-          <button data-k="villa">Villa</button>
           <button data-k="benvenuto">Benvenuto</button>
+          <button data-k="villa">Villa</button>
+          <button data-k="rosasco">Rosasco</button>
           <button data-k="finale">Finale</button>
         </span>
       </summary>
@@ -555,7 +555,7 @@
         b.classList.toggle('on', on);
         b.classList.toggle('missing', missing);
         b.querySelector('span').textContent = (on ? '■ ' : '') + def.title;
-        b.querySelector('small').textContent = missing ? 'da caricare sullo show (tasto A)'
+        b.querySelector('small').textContent = missing ? 'da caricare: trascina il file sullo show'
           : (alive && show.jack === false) ? 'jack non trovato sullo show' : def.sub;
       });
     }
