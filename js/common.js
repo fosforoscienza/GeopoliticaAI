@@ -46,6 +46,8 @@ const DEFAULT_PAGES = [
   'thiel.html', 'palantir-intro.html', 'palantir-intro-2.html', 'palantir.html', 'paypal-mafia.html', 'paypal-mafia-2.html', 'paypal-mafia-3.html',
   'epistemia.html', 'pappagallo.html',
   'alba-transformer.html',
+  'quiz-emoji-1.html', 'quiz-emoji-2.html', 'quiz-emoji-3.html', 'quiz-emoji-4.html', 'quiz-emoji-5.html', 'quiz-emoji-6.html', 'quiz-emoji-7.html', 'quiz-emoji-8.html', 'quiz-emoji-9.html', 'quiz-emoji-10.html',
+  'quiz-trama-1.html', 'quiz-trama-2.html', 'quiz-trama-3.html', 'quiz-trama-4.html', 'quiz-trama-5.html', 'quiz-trama-6.html',
   'fosforo-web.html', 'fosforo-dashboard.html',
   'tom-brad.html', 'tre-fattori.html', 'confronto-ai.html'
 ];
@@ -63,13 +65,15 @@ function loadSlidesConfig() {
     if (!cfg || !Array.isArray(cfg.order)) return;
     // Only accept entries we still know about.
     const known = new Set(DEFAULT_PAGES);
-    const order = cfg.order.filter(p => known.has(p));
+    // Slides deleted from the dashboard never come back automatically.
+    const deleted = new Set(Array.isArray(cfg.deleted) ? cfg.deleted : []);
+    const order = cfg.order.filter(p => known.has(p) && !deleted.has(p));
     // Insert any new default slides at their natural DEFAULT_PAGES position
     // (right after their nearest preceding neighbour that's still in the saved
     // order) instead of appending to the end — so newly added slides appear
     // where intended even when the user has a custom saved order.
     DEFAULT_PAGES.forEach((p, i) => {
-      if (order.includes(p)) return;
+      if (order.includes(p) || deleted.has(p)) return;
       let insertAt = order.length;
       for (let j = i - 1; j >= 0; j--) {
         const idx = order.indexOf(DEFAULT_PAGES[j]);
