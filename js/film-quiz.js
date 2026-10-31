@@ -5,16 +5,16 @@
 // ════════════════════════════════════════════════════
 const FILM_QUIZ = {
   emoji: [
-    { e: '🚢🧊💔🎻',     it: 'Titanic',                      en: 'Titanic',                        y: 1997 },
-    { e: '🦁👑🌅🐗',     it: 'Il Re Leone',                  en: 'The Lion King',                  y: 1994 },
-    { e: '⚡👓🧙‍♂️🦉',     it: 'Harry Potter',                 en: 'Harry Potter',                   y: 2001 },
-    { e: '🦖🏝️🧬🚙',     it: 'Jurassic Park',                en: 'Jurassic Park',                  y: 1993 },
-    { e: '🦈🏖️🩸🚤',     it: 'Lo Squalo',                    en: 'Jaws',                           y: 1975 },
-    { e: '💍🌋🧙‍♂️🧝',     it: 'Il Signore degli Anelli',      en: 'The Lord of the Rings',          y: 2001 },
-    { e: '🔙🕰️🚗⚡',     it: 'Ritorno al futuro',            en: 'Back to the Future',             y: 1985 },
-    { e: '💊🔴🔵🕶️',     it: 'Matrix',                       en: 'The Matrix',                     y: 1999 },
-    { e: '🔍🐠🐟🌊',     it: 'Alla ricerca di Nemo',         en: 'Finding Nemo',                   y: 2003 },
-    { e: '👽🚲🌕☎️',     it: 'E.T. l\'extra-terrestre',      en: 'E.T. the Extra-Terrestrial',     y: 1982 }
+    { e: '🚢🧊',     it: 'Titanic',                      en: 'Titanic',                        y: 1997 },
+    { e: '🦁👑',     it: 'Il Re Leone',                  en: 'The Lion King',                  y: 1994 },
+    { e: '🧙‍♂️⚡👓',     it: 'Harry Potter',                 en: 'Harry Potter',                   y: 2001 },
+    { e: '🦖🏝️',     it: 'Jurassic Park',                en: 'Jurassic Park',                  y: 1993 },
+    { e: '🦈🏖️',     it: 'Lo Squalo',                    en: 'Jaws',                           y: 1975 },
+    { e: '💍🌋',     it: 'Il Signore degli Anelli',      en: 'The Lord of the Rings',          y: 2001 },
+    { e: '🚗⚡🕰️',     it: 'Ritorno al futuro',            en: 'Back to the Future',             y: 1985 },
+    { e: '🕶️💊',     it: 'Matrix',                       en: 'The Matrix',                     y: 1999 },
+    { e: '🔍🐠',     it: 'Alla ricerca di Nemo',         en: 'Finding Nemo',                   y: 2003 },
+    { e: '👽🚲🌕',     it: 'E.T. l\'extra-terrestre',      en: 'E.T. the Extra-Terrestrial',     y: 1982 }
   ],
   trama: [
     { it: 'Terminator', en: 'The Terminator', y: 1984,
@@ -64,7 +64,9 @@ const QUIZ_TXT = {
       const seg = (typeof Intl !== 'undefined' && Intl.Segmenter)
         ? [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(q.e)].map(s => s.segment)
         : Array.from(q.e);
-      seg.filter(s => s.trim()).forEach((ch, i) => {
+      const items = seg.filter(s => s.trim());
+      main.style.setProperty('--n', items.length);
+      items.forEach((ch, i) => {
         const s = document.createElement('span');
         s.className = 'quiz-emoji';
         s.style.animationDelay = (0.15 + i * 0.12) + 's';

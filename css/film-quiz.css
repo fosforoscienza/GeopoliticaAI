@@ -47,11 +47,11 @@ body.kind-trama .quiz-count { background: #f59e0b; }
 /* emoji */
 body.kind-emoji .quiz-main {
   display: flex; flex-wrap: wrap; justify-content: center;
-  gap: clamp(16px, 3vw, 56px);
+  gap: clamp(24px, 5vw, 96px);
 }
 .quiz-emoji {
   display: inline-block;
-  font-size: clamp(80px, min(15vw, 26vh), 260px); line-height: 1.1;
+  font-size: clamp(80px, min(calc(60vw / var(--n, 4)), 30vh), 300px); line-height: 1.1;
   font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
   filter: drop-shadow(0 18px 40px rgba(0,0,0,0.6));
   animation: q-pop 0.7s cubic-bezier(0.34,1.56,0.64,1) both, q-float 5s ease-in-out 1s infinite;
