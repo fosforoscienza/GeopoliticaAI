@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Console — Saturday Night Science</title>
+  <style>
+    :root {
+      --bg: #02040b; --panel: #08111f; --panel-2: #0d1a2c; --line: rgba(143,210,255,0.12);
+      --text: #f0f5fb; --muted: rgba(240,245,251,0.55); --accent: #41b7ff; --accent-soft: #8fd2ff;
+      --live: #ff4d5e; --ok: #34d399;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; background: var(--bg); color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    body { background:
+      radial-gradient(70% 40% at 50% -10%, rgba(65,183,255,0.10), transparent 70%),
+      radial-gradient(60% 40% at 50% 110%, rgba(124,92,255,0.10), transparent 70%), var(--bg);
+      background-attachment: fixed; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+
+    /* ── Barra superiore ── */
+    header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      padding: 14px clamp(16px, 3vw, 36px); background: rgba(2,4,11,0.82); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line); }
+    .brand { display: flex; flex-direction: column; line-height: 1.15; margin-right: auto; }
+    .brand small { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent-soft); }
+    .brand strong { font-size: 19px; font-weight: 700; letter-spacing: .01em; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px;
+      border: 1px solid var(--line); background: var(--panel); font-size: 13px; color: var(--muted); }
+    .pill i { width: 8px; height: 8px; border-radius: 50%; background: #64748b; }
+    .pill.ok { color: var(--text); } .pill.ok i { background: var(--ok); box-shadow: 0 0 10px var(--ok); }
+    .btn { padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel-2);
+      font-size: 14px; transition: background .15s, border-color .15s; }
+    .btn:hover { background: #12253d; border-color: rgba(143,210,255,0.3); }
+    .btn.primary { background: rgba(65,183,255,0.16); border-color: rgba(65,183,255,0.5); color: #dff2ff; }
+    .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .seg button { padding: 8px 12px; background: var(--panel); border: 0; font-size: 13px; color: var(--muted); }
+    .seg button.on { background: rgba(65,183,255,0.18); color: var(--text); }
+
+    main { padding: clamp(16px, 3vw, 36px); display: grid; gap: 32px; max-width: 1600px; margin: 0 auto; }
+
+    /* ── In onda ── */
+    .onair { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px;
+      padding: 16px 20px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); }
+    .onair .tag { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+      letter-spacing: .18em; color: var(--live); }
+    .onair .tag i { width: 9px; height: 9px; border-radius: 50%; background: var(--live); animation: blink 1.4s infinite; }
+    .onair.off .tag { color: var(--muted); } .onair.off .tag i { background: #64748b; animation: none; }
+    @keyframes blink { 50% { opacity: .35; } }
+    .onair .what { font-size: 20px; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .nav { display: flex; gap: 8px; }
+    .nav .btn { min-width: 48px; font-size: 18px; }
+    .vctl { grid-column: 1 / -1; display: none; align-items: center; gap: 12px; }
+    .onair.video .vctl { display: flex; }
+    .vctl input[type=range] { flex: 1; accent-color: var(--accent); }
+    .vctl .time { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--muted); min-width: 92px; text-align: right; }
+
+    h2 { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent-soft); font-weight: 600;
+      margin-bottom: 14px; display: flex; align-items: baseline; gap: 12px; }
+    h2 span { letter-spacing: 0; text-transform: none; color: var(--muted); font-weight: 400; font-size: 13px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 18px; }
+
+    /* ── Card ── */
+    .card { touch-action: manipulation; -webkit-tap-highlight-color: transparent; cursor: pointer; position: relative; border-radius: 14px; overflow: hidden; background: var(--panel);
+      border: 1px solid var(--line); text-align: left; padding: 0; display: flex; flex-direction: column;
+      transition: transform .15s, border-color .15s, box-shadow .15s; }
+    .card:hover { transform: translateY(-2px); border-color: rgba(143,210,255,0.35); }
+    .card.live { border-color: var(--live); box-shadow: 0 0 0 2px var(--live), 0 10px 40px rgba(255,77,94,0.18); }
+    .thumb { position: relative; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+    .thumb iframe { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; border: 0;
+      transform-origin: 0 0; pointer-events: none; }
+    .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+    .num { position: absolute; top: 10px; left: 10px; z-index: 2; min-width: 28px; height: 28px; padding: 0 8px;
+      border-radius: 8px; background: rgba(2,4,11,0.75); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+    .badge { position: absolute; top: 10px; right: 10px; z-index: 2; padding: 4px 9px; border-radius: 6px;
+      background: var(--live); font-size: 11px; font-weight: 700; letter-spacing: .14em; display: none; }
+    .card.live .badge { display: block; }
+    .meta { padding: 12px 14px 14px; display: flex; align-items: center; gap: 10px; }
+    .meta div { min-width: 0; flex: 1; }
+    .meta strong { display: block; font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .meta small { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .del { width: 30px; height: 30px; flex: none; border-radius: 8px; border: 1px solid var(--line);
+      background: transparent; color: var(--muted); font-size: 16px; line-height: 1; }
+    .del:hover { color: var(--live); border-color: var(--live); }
+
+    /* ── Caricamento video ── */
+    .drop { border: 1.5px dashed rgba(143,210,255,0.3); background: transparent; align-items: center; justify-content: center;
+      gap: 8px; min-height: 180px; color: var(--muted); font-size: 14px; text-align: center; padding: 20px; }
+    .drop strong { font-size: 30px; font-weight: 300; color: var(--accent-soft); line-height: 1; }
+    .drop.over { border-color: var(--accent); background: rgba(65,183,255,0.08); color: var(--text); }
+    .note { font-size: 13px; color: var(--muted); margin-top: 12px; }
+    
+    @media (max-width: 640px) {
+      .onair { grid-template-columns: 1fr; }
+      .nav { justify-content: stretch; } .nav .btn { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><small>Saturday Night Science</small><strong>Console di regia</strong></div>
+    <span class="pill" id="status"><i></i><span>Show non aperto</span></span>
+    <div class="seg" id="lang"><button data-lang="it">IT</button><button data-lang="en">EN</button></div>
+    <button class="btn primary" id="open-show">Apri lo show ↗</button>
+  </header>
+
+  <main>
+    <section class="onair off" id="onair">
+      <span class="tag"><i></i><span id="onair-tag">FUORI ONDA</span></span>
+      <span class="what" id="onair-what">Apri lo show per iniziare</span>
+      <div class="nav">
+        <button class="btn" id="prev" title="Precedente (←)">←</button>
+        <button class="btn" id="next" title="Successiva (→)">→</button>
+      </div>
+      <div class="vctl">
+        <button class="btn" id="v-play">Pausa</button>
+        <button class="btn" id="v-restart">Da capo</button>
+        <input type="range" id="v-seek" min="0" max="1000" value="0" aria-label="Posizione nel video" />
+        <span class="time" id="v-time">0:00 / 0:00</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Slide <span>clic per mandarla in onda</span></h2>
+      <div class="grid" id="slides"></div>
+    </section>
+
+    <section>
+      <h2>Video <span>clic per mandarlo in onda</span></h2>
+      <div class="grid" id="videos">
+        <button class="card drop" id="drop"><strong>+</strong>Carica video<br><small>oppure trascinali qui</small></button>
+      </div>
+      <input type="file" id="file" accept="video/*" multiple hidden />
+      <p class="note">I video caricati da qui restano salvati solo in questo browser: caricali sul computer collegato al proiettore e apri lo show dallo stesso browser.</p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <script src="js/sns.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    let show = null, lastSeen = 0, videoList = [];
+    let lang = localStorage.getItem('geopolitica-lang') || 'it';
+
+    // ── Slide: anteprime vive, scalate da 1920×1080 ──
+    const thumbs = [];
+    SNS.SLIDES.forEach((s, i) => {
+      const card = document.createElement('div');
+      card.className = 'card'; card.dataset.id = s.id; card.setAttribute('role', 'button'); card.tabIndex = 0;
+      card.addEventListener('keydown', e => { if (e.key === 'Enter') SNS.send({ t: 'go', id: s.id }); });
+      card.innerHTML = `<div class="thumb"><span class="num">${i + 1}</span><span class="badge">IN ONDA</span>
+        <iframe src="${s.src}" tabindex="-1" loading="lazy" title="${s.title}"></iframe></div>
+        <div class="meta"><div><strong></strong><small></small></div></div>`;
+      card.querySelector('strong').textContent = s.title;
+      card.querySelector('small').textContent = s.sub;
+      card.addEventListener('click', () => SNS.send({ t: 'go', id: s.id }));
+      $('slides').appendChild(card);
+      const f = card.querySelector('iframe');
+      f.addEventListener('load', () => { try { f.contentWindow.postMessage({ type: 'op-setlang', lang }, '*'); } catch (_) {} });
+      thumbs.push(f);
+    });
+    const ro = new ResizeObserver(entries => entries.forEach(en => {
+      const f = en.target.querySelector('iframe');
+      if (f) f.style.transform = `scale(${en.contentRect.width / 1920})`;
+    }));
+    document.querySelectorAll('#slides .thumb').forEach(t => ro.observe(t));
+
+    // ── Video ──
+    const urls = new Map();
+    function fmt(s) { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+
+    function renderVideos() {
+      document.querySelectorAll('#videos .card:not(.drop)').forEach(c => c.remove());
+      const all = SNS.VIDEOS.map(v => ({ id: v.id, name: v.title, sub: v.sub, src: v.src, poster: v.poster, fixed: true }))
+        .concat(videoList.map(v => ({ id: v.id, name: v.name, sub: 'Caricato', blob: v.blob })));
+      all.forEach((v, i) => {
+        if (v.blob && !urls.has(v.id)) urls.set(v.id, URL.createObjectURL(v.blob));
+        const card = document.createElement('div');
+        card.className = 'card'; card.dataset.id = v.id; card.setAttribute('role', 'button'); card.tabIndex = 0;
+        card.innerHTML = `<div class="thumb"><span class="num">V${i + 1}</span><span class="badge">IN ONDA</span>
+          <video muted preload="metadata" playsinline></video></div>
+          <div class="meta"><div><strong></strong><small></small></div>${v.fixed ? '' : '<button class="del" title="Elimina">×</button>'}</div>`;
+        card.querySelector('strong').textContent = v.name;
+        card.querySelector('small').textContent = v.sub;
+        const ve = card.querySelector('video');
+        if (v.poster) ve.poster = v.poster;
+        ve.src = (v.blob ? urls.get(v.id) : v.src) + '#t=0.5';
+        ve.addEventListener('loadedmetadata', () => { card.querySelector('small').textContent = v.sub + ' · ' + fmt(ve.duration); });
+        card.addEventListener('click', () => SNS.send({ t: 'go', id: v.id }));
+        card.addEventListener('keydown', e => { if (e.key === 'Enter') SNS.send({ t: 'go', id: v.id }); });
+        if (!v.fixed) card.querySelector('.del').addEventListener('click', e => {
+          e.stopPropagation();
+          if (!confirm('Eliminare «' + v.name + '» da questo browser?')) return;
+          SNS.videos.remove(v.id).then(loadVideos);
+        });
+        $('drop').before(card);
+      });
+      paintLive();
+    }
+    function loadVideos() {
+      return SNS.videos.list().then(list => {
+        const keep = new Set(list.map(v => v.id));
+        urls.forEach((u, id) => { if (!keep.has(id)) { URL.revokeObjectURL(u); urls.delete(id); } });
+        videoList = list; renderVideos();
+      });
+    }
+    function addFiles(files) {
+      const vids = [...files].filter(f => f.type.startsWith('video/') || /\.(mp4|m4v|mov|webm)$/i.test(f.name));
+      Promise.all(vids.map(f => SNS.videos.add(f))).then(loadVideos)
+        .catch(err => alert('Caricamento non riuscito: ' + (err && err.message || err)));
+    }
+    $('drop').addEventListener('click', () => $('file').click());
+    $('file').addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
+    ['dragenter', 'dragover'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); $('drop').classList.add('over'); }));
+    ['dragleave', 'drop'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); if (ev === 'drop' || !e.relatedTarget) $('drop').classList.remove('over'); }));
+    document.addEventListener('drop', e => { if (e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+
+    // ── Stato dello show ──
+    function nameOf(id) {
+      const s = SNS.SLIDES.find(x => x.id === id);
+      if (s) return (SNS.SLIDES.indexOf(s) + 1) + ' · ' + s.title;
+      const h = SNS.VIDEOS.find(x => x.id === id);
+      if (h) return 'Video · ' + h.title;
+      const v = videoList.find(x => x.id === id);
+      return v ? 'Video · ' + v.name : '—';
+    }
+    function paintLive() {
+      document.querySelectorAll('.card[data-id]').forEach(c => c.classList.toggle('live', !!show && c.dataset.id === show.id));
+    }
+    let seeking = false;
+    function paint() {
+      const alive = show && Date.now() - lastSeen < 30000;
+      $('status').classList.toggle('ok', !!alive);
+      $('status').querySelector('span').textContent = alive ? 'Show collegato' : 'Show non aperto';
+      const oa = $('onair');
+      oa.classList.toggle('off', !alive);
+      oa.classList.toggle('video', !!(alive && show.id && show.id.startsWith('video:')));
+      $('onair-tag').textContent = alive ? 'IN ONDA' : 'FUORI ONDA';
+      $('onair-what').textContent = alive ? nameOf(show.id) : 'Apri lo show per iniziare';
+      if (alive && show.id && show.id.startsWith('video:')) {
+        $('v-play').textContent = show.playing ? 'Pausa' : 'Play';
+        const t = show.playing ? Math.min(show.dur || 0, show.time + (Date.now() - (show.at || Date.now())) / 1000) : show.time;
+        $('v-time').textContent = fmt(t) + ' / ' + fmt(show.dur);
+        if (!seeking) $('v-seek').value = show.dur ? Math.round(t / show.dur * 1000) : 0;
+      }
+      paintLive();
+    }
+    SNS.listen(m => {
+      if (m.t === 'state') { show = m; lastSeen = Date.now(); paint(); }
+      else if (m.t === 'show-ready') SNS.send({ t: 'hello', net: true });
+    });
+    // Ping: ogni 2 s nello stesso browser, ogni 10 s sulla rete
+    let ticks = 0;
+    setInterval(() => { const net = ++ticks % 5 === 0; SNS.send({ t: 'hello', net }, !net); paint(); }, 2000);
+    SNS.send({ t: 'hello', net: true });
+
+    // ── Comandi ──
+    $('prev').addEventListener('click', () => SNS.send({ t: 'prev' }));
+    $('next').addEventListener('click', () => SNS.send({ t: 'next' }));
+    $('v-play').addEventListener('click', () => SNS.send({ t: 'video', op: show && show.playing ? 'pause' : 'play' }));
+    $('v-restart').addEventListener('click', () => SNS.send({ t: 'video', op: 'restart' }));
+    $('v-seek').addEventListener('input', () => { seeking = true; });
+    $('v-seek').addEventListener('change', () => {
+      seeking = false;
+      if (show && show.dur) SNS.send({ t: 'video', op: 'seek', time: $('v-seek').value / 1000 * show.dur });
+    });
+    $('open-show').addEventListener('click', () => window.open('sns-show.html', 'sns-show'));
+
+    // Il telecomando funziona anche se la finestra attiva è la console
+    document.addEventListener('keydown', e => {
+      const tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if ((e.key === ' ' || e.key === 'Enter') && tag === 'BUTTON') return;   // attiva il bottone col focus
+      if (SNS.isNext(e)) { e.preventDefault(); SNS.send({ t: 'next' }); }
+      else if (SNS.isPrev(e)) { e.preventDefault(); SNS.send({ t: 'prev' }); }
+    });
+
+    // ── Lingua (sincronizza show e anteprime) ──
+    function paintLang() { document.querySelectorAll('#lang button').forEach(b => b.classList.toggle('on', b.dataset.lang === lang)); }
+    document.querySelectorAll('#lang button').forEach(b => b.addEventListener('click', () => {
+      lang = b.dataset.lang;
+      try { localStorage.setItem('geopolitica-lang', lang); } catch (_) {}
+      thumbs.forEach(f => { try { f.contentWindow.postMessage({ type: 'op-setlang', lang }, '*'); } catch (_) {} });
+      SNS.send({ t: 'lang', lang });
+      paintLang();
+    }));
+    paintLang();
+
+    loadVideos().catch(() => {});
+    paint();
+  </script>
+</body>
+</html>

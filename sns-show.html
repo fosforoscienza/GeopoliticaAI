@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Show — Saturday Night Science</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; color: #f0f5fb;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    body.idle { cursor: none; }
+
+    .layer { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: #000;
+      opacity: 0; visibility: hidden; transition: opacity .7s ease, visibility 0s linear .7s; }
+    .layer.on { opacity: 1; visibility: visible; transition: opacity .7s ease, visibility 0s; z-index: 2; }
+    video.layer { object-fit: contain; }
+
+    /* Avvio: serve un clic per lo schermo intero e per l'audio dei video */
+    #start { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 18px; cursor: pointer;
+      background: radial-gradient(60% 50% at 50% 50%, rgba(65,183,255,0.10), transparent 70%), rgba(2,4,11,0.92);
+      transition: opacity .5s ease; }
+    #start.gone { opacity: 0; pointer-events: none; }
+    #start .btn { width: 120px; height: 120px; border-radius: 50%; border: 2px solid rgba(65,183,255,0.6);
+      background: rgba(65,183,255,0.16); box-shadow: 0 0 50px rgba(65,183,255,0.25);
+      display: flex; align-items: center; justify-content: center; }
+    #start .btn::before { content: ''; border-left: 38px solid rgba(255,255,255,0.95);
+      border-top: 24px solid transparent; border-bottom: 24px solid transparent; margin-left: 10px; }
+    #start p { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: #8fd2ff; }
+    #start small { font-size: 13px; color: rgba(240,245,251,0.5); }
+
+    /* Pallino discreto: collegamento con la console */
+    #link { position: fixed; top: 10px; right: 10px; z-index: 40; width: 8px; height: 8px; border-radius: 50%;
+      background: #34d399; opacity: 0; transition: opacity .4s; pointer-events: none; }
+    body:not(.idle) #link.show { opacity: .7; }
+  </style>
+</head>
+<body>
+  <iframe class="layer" id="frame-a" title="Slide"></iframe>
+  <iframe class="layer" id="frame-b" title="Slide"></iframe>
+  <video class="layer" id="vid" playsinline preload="auto"></video>
+
+  <div id="start" role="button" tabindex="0">
+    <div class="btn"></div>
+    <p>Avvia a tutto schermo</p>
+    <small>Frecce / telecomando per le slide · F schermo intero · la console comanda da un'altra finestra</small>
+  </div>
+  <div id="link" title="Console collegata"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <script src="js/sns.js"></script>
+  <script>
+    const frames = [document.getElementById('frame-a'), document.getElementById('frame-b')];
+    const vid = document.getElementById('vid');
+    let front = 0;                 // iframe visibile
+    let current = null;            // id dell'elemento in onda
+    let slideIdx = 0;              // ultima slide mostrata
+    let videoURL = null;
+    let lang = localStorage.getItem('geopolitica-lang') || 'it';
+    let loadToken = 0;
+
+    function state() {
+      return { t: 'state', id: current, lang,
+        playing: current && current.startsWith('video:') ? !vid.paused && !vid.ended : false,
+        time: vid.currentTime || 0, dur: isFinite(vid.duration) ? vid.duration : 0,
+        fs: !!document.fullscreenElement, at: Date.now() };
+    }
+    function report(local) { SNS.send(state(), local); }
+
+    function stopVideo() {
+      vid.pause();
+      vid.classList.remove('on');
+    }
+
+    function showSlide(i) {
+      if (i < 0 || i >= SNS.SLIDES.length) return;
+      const s = SNS.SLIDES[i];
+      slideIdx = i;
+      if (current === s.id) return;
+      current = s.id;
+      const token = ++loadToken;
+      const back = frames[1 - front];
+      back.onload = () => {
+        if (token !== loadToken) return;
+        try { back.contentWindow.postMessage({ type: 'op-setlang', lang }, '*'); } catch (_) {}
+        setTimeout(() => {
+          if (token !== loadToken) return;
+          back.classList.add('on');
+          frames[front].classList.remove('on');
+          stopVideo();
+          front = 1 - front;
+          // libera la slide precedente quando la dissolvenza è finita
+          const old = frames[1 - front];
+          setTimeout(() => { if (token === loadToken && !old.classList.contains('on')) old.removeAttribute('src'); }, 800);
+        }, 80);
+      };
+      back.src = s.src;
+      report();
+    }
+
+    function showVideo(id) {
+      const hosted = SNS.VIDEOS.find(v => v.id === id);
+      (hosted ? Promise.resolve(hosted) : SNS.videos.get(id)).then(v => {
+        if (!v) return;
+        ++loadToken;
+        current = id;
+        if (videoURL) { URL.revokeObjectURL(videoURL); videoURL = null; }
+        if (v.blob) videoURL = URL.createObjectURL(v.blob);
+        vid.src = videoURL || v.src;
+        vid.muted = false;
+        vid.classList.add('on');
+        frames.forEach(f => f.classList.remove('on'));
+        vid.play().catch(() => { /* senza clic iniziale il browser blocca l'audio: resta in pausa */ });
+        report();
+      });
+    }
+
+    function go(id) {
+      const i = SNS.SLIDES.findIndex(s => s.id === id);
+      if (i >= 0) showSlide(i);
+      else if (id && id.startsWith('video:')) showVideo(id);
+    }
+    function next() {
+      if (current && current.startsWith('video:')) showSlide(Math.min(slideIdx + 1, SNS.SLIDES.length - 1));
+      else showSlide(slideIdx + 1);
+    }
+    function prev() {
+      if (current && current.startsWith('video:')) showSlide(slideIdx);
+      else showSlide(slideIdx - 1);
+    }
+
+    function setLang(l) {
+      if (l !== 'it' && l !== 'en') return;
+      lang = l;
+      try { localStorage.setItem('geopolitica-lang', l); } catch (_) {}
+      frames.forEach(f => { try { f.contentWindow.postMessage({ type: 'op-setlang', lang: l }, '*'); } catch (_) {} });
+      report();
+    }
+
+    function toggleFullscreen() {
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      else document.documentElement.requestFullscreen().catch(() => {});
+    }
+
+    // ── Avvio ──
+    const start = document.getElementById('start');
+    function begin() {
+      if (start.classList.contains('gone')) return;
+      start.classList.add('gone');
+      document.documentElement.requestFullscreen().catch(() => {});
+      if (current && current.startsWith('video:') && vid.paused) vid.play().catch(() => {});
+    }
+    start.addEventListener('click', begin);
+
+    // ── Tastiera / telecomando ──
+    document.addEventListener('keydown', e => {
+      if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); return; }
+      if (!start.classList.contains('gone') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); begin(); return; }
+      if ((e.key === 'k' || e.key === 'K') && current && current.startsWith('video:')) {
+        vid.paused ? vid.play().catch(() => {}) : vid.pause(); return;
+      }
+      if (SNS.isNext(e)) { e.preventDefault(); next(); }
+      else if (SNS.isPrev(e)) { e.preventDefault(); prev(); }
+    });
+    // Le slide nell'iframe inoltrano qui i tasti (js/common.js, initEmbed)
+    window.addEventListener('message', e => {
+      const d = e.data || {};
+      if (d.type === 'op-nav') d.dir === 'next' ? next() : prev();
+    });
+
+    // ── Comandi dalla console ──
+    const link = document.getElementById('link');
+    let linkTimer = null;
+    SNS.listen(m => {
+      link.classList.add('show');
+      clearTimeout(linkTimer);
+      linkTimer = setTimeout(() => link.classList.remove('show'), 6000);
+      switch (m.t) {
+        case 'go': go(m.id); break;
+        case 'next': next(); break;
+        case 'prev': prev(); break;
+        case 'lang': setLang(m.lang); break;
+        case 'video':
+          if (!current || !current.startsWith('video:')) break;
+          if (m.op === 'play') vid.play().catch(() => {});
+          else if (m.op === 'pause') vid.pause();
+          else if (m.op === 'restart') { vid.currentTime = 0; vid.play().catch(() => {}); }
+          else if (m.op === 'seek' && isFinite(m.time)) vid.currentTime = m.time;
+          break;
+        case 'hello': report(!m.net); break;   // risponde sullo stesso canale del ping
+      }
+    });
+
+    let lastTick = 0;
+    vid.addEventListener('timeupdate', () => { const n = Date.now(); if (n - lastTick > 900) { lastTick = n; report(true); } });
+    ['play', 'pause', 'ended', 'loadedmetadata', 'seeked'].forEach(ev => vid.addEventListener(ev, () => report()));
+    document.addEventListener('fullscreenchange', () => report());
+
+    // Cursore nascosto dopo 2 s di inattività
+    let idleTimer = null;
+    function wake() { document.body.classList.remove('idle'); clearTimeout(idleTimer); idleTimer = setTimeout(() => document.body.classList.add('idle'), 2000); }
+    document.addEventListener('mousemove', wake);
+    wake();
+
+    showSlide(0);
+    SNS.send({ t: 'show-ready' });
+  </script>
+</body>
+</html>
