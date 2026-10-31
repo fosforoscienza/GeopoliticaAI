@@ -20,7 +20,9 @@
     #sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
     .scrim {
       position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(50% 44% at 50% 50%, rgba(2,4,11,0.86) 0%, rgba(2,4,11,0.5) 55%, rgba(2,4,11,0) 100%);
+      background:
+        radial-gradient(50% 40% at 50% 38%, rgba(2,4,11,0.86) 0%, rgba(2,4,11,0.5) 55%, rgba(2,4,11,0) 100%),
+        radial-gradient(55% 30% at 50% 84%, rgba(2,4,11,0.92) 0%, rgba(2,4,11,0.6) 55%, rgba(2,4,11,0) 100%);
     }
     .vignette { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 260px 80px rgba(0,0,0,0.75); }
 
@@ -28,21 +30,12 @@
       position: absolute; inset: 0; z-index: 3;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       text-align: center; padding: 0 clamp(16px, 4vw, 60px);
+      padding-bottom: clamp(140px, 26vh, 300px);          /* il nome sale, l'afferenza sta in basso */
     }
     @keyframes rise {
       from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
       to   { opacity: 1; transform: translateY(0); filter: blur(0); }
     }
-
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 14px;
-      font-size: clamp(13px, 1.1vw, 18px); font-weight: 700; letter-spacing: 0.36em;
-      text-transform: uppercase; color: var(--accent-soft);
-      margin-bottom: clamp(18px, 3vh, 34px);
-      animation: rise 0.9s 0.1s cubic-bezier(0.16,1,0.3,1) both;
-    }
-    .eyebrow::before, .eyebrow::after { content: ''; width: 34px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent)); }
-    .eyebrow::after { background: linear-gradient(90deg, var(--accent), transparent); }
 
     .who { margin: 0; line-height: 0.88; }
     .who .first {
@@ -84,25 +77,30 @@
     @keyframes grow { from { opacity: 0; transform: scaleX(0.2); } to { opacity: 1; transform: scaleX(1); } }
     @keyframes pulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
 
+    /* ---------- Afferenza, in basso ---------- */
+    .aff {
+      position: absolute; left: 0; right: 0; bottom: clamp(56px, 10vh, 120px); z-index: 3;
+      text-align: center; padding: 0 clamp(16px, 4vw, 60px);
+    }
     .dept {
-      font-size: clamp(30px, 3.4vw, 60px); font-weight: 800; letter-spacing: 0.12em;
+      font-size: clamp(44px, 5vw, 96px); font-weight: 800; letter-spacing: 0.12em; line-height: 1;
       color: #fff; text-transform: uppercase;
       animation: rise 1s 1s cubic-bezier(0.16,1,0.3,1) both;
     }
     .dept-full {
-      margin-top: clamp(6px, 1vh, 12px);
-      font-size: clamp(16px, 1.6vw, 28px); font-weight: 300; font-style: italic; color: #e6ecf5;
+      margin-top: clamp(10px, 1.6vh, 18px);
+      font-size: clamp(20px, 2.3vw, 44px); font-weight: 300; font-style: italic; color: #e6ecf5;
       animation: rise 1s 1.15s cubic-bezier(0.16,1,0.3,1) both;
     }
     .uni {
-      margin-top: clamp(10px, 1.6vh, 18px);
-      font-size: clamp(12px, 1vw, 17px); font-weight: 700; letter-spacing: 0.3em;
+      margin-top: clamp(12px, 2vh, 24px);
+      font-size: clamp(15px, 1.45vw, 26px); font-weight: 700; letter-spacing: 0.3em;
       text-transform: uppercase; color: var(--accent-soft);
       animation: rise 1s 1.3s cubic-bezier(0.16,1,0.3,1) both;
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .content *, .content *::after { animation: none !important; }
+      .content *, .content *::after, .aff * { animation: none !important; }
     }
 
     @media (max-aspect-ratio: 1/1) {
@@ -119,9 +117,11 @@
     <div class="vignette"></div>
 
     <div class="content">
-      <div class="eyebrow" id="eyebrow"></div>
       <h1 class="who"><span class="first" id="first"></span><span class="last" id="last"></span></h1>
       <div class="divider"></div>
+    </div>
+
+    <div class="aff">
       <div class="dept" id="dept"></div>
       <div class="dept-full" id="dept-full"></div>
       <div class="uni" id="uni"></div>
@@ -148,15 +148,14 @@
       benvenuto: { first: 'Federico', last: 'Benvenuto', dept: 'dima' }
     };
     const TXT = {
-      it: { eyebrow: 'Ne parliamo con', uni: 'Università di Genova' },
-      en: { eyebrow: 'In conversation with', uni: 'University of Genoa' }
+      it: { uni: 'Università di Genova' },
+      en: { uni: 'University of Genoa' }
     };
     const g = GUESTS[new URLSearchParams(location.search).get('id')] || GUESTS.rosasco;
     document.title = g.first + ' ' + g.last + ' — Geopolitica della AI';
 
     function renderTexts() {
       const t = TXT[lang];
-      document.getElementById('eyebrow').textContent   = t.eyebrow;
       document.getElementById('first').textContent     = g.first;
       document.getElementById('last').textContent      = g.last;
       document.getElementById('dept').textContent      = g.dept.toUpperCase();
