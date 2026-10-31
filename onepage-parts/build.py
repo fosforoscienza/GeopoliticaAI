@@ -9,9 +9,9 @@ ORDER = ["index","video","scrittura","fotografia","pechino-1","pechino-2","pechi
     "trump-amodei","anthropic-usa-1","anthropic-usa-2","anthropic-usa-3","anthropic-usa-4",
     "llm-occidentali","llm-asiatici","llm-russi","thiel","palantir-intro","palantir-intro-2",
     "palantir","paypal-mafia","paypal-mafia-2","paypal-mafia-3","epistemia","pappagallo",
-    "alba-transformer","fosforo-web","fosforo-dashboard","tom-brad","tre-fattori","confronto-ai",
+    "alba-transformer",
     "quiz-emoji-1","quiz-emoji-2","quiz-emoji-3","quiz-emoji-4","quiz-emoji-5","quiz-emoji-6","quiz-emoji-7","quiz-emoji-8","quiz-emoji-9","quiz-emoji-10",
-    "quiz-trama-1","quiz-trama-2","quiz-trama-3","quiz-trama-4","quiz-trama-5","quiz-trama-6"]
+    "quiz-trama-1","quiz-trama-2","quiz-trama-3","quiz-trama-4","quiz-trama-5","quiz-trama-6","fosforo-web","fosforo-dashboard","tom-brad","tre-fattori","confronto-ai"]
 
 # slide interattive/pesanti tenute in iframe (slug -> accento per i dot)
 IFRAME = {"video":"#41b7ff","fotografia":"#41b7ff","timeline":"#41b7ff","paesi":"#41b7ff",
