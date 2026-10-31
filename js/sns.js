@@ -16,8 +16,26 @@ const SNS = (function () {
     { id: 'slide:ospite-villa',     src: 'ospite.html?id=villa',     thumb: 'img/sns/ospite-villa.jpg',     title: 'Silvia Villa',      sub: 'Intervista · DIMA' },
     { id: 'slide:ospite-benvenuto', src: 'ospite.html?id=benvenuto', thumb: 'img/sns/ospite-benvenuto.jpg', title: 'Federico Benvenuto', sub: 'Intervista · DIMA' },
     // id usato anche da Jarvis («dammi le news»): non cambiarlo
-    { id: 'slide:news', src: 'news.html', thumb: 'img/sns/news.jpg', title: 'News', sub: 'crivellini.it' }
-  ];
+    { id: 'slide:news', src: 'news.html', thumb: 'img/sns/news.jpg', title: 'News', sub: 'crivellini.it' },
+    // Il video sul machine learning fa parte della sequenza: con → dopo il
+    // video si passa al quiz. Stesso id della galleria video.
+    { id: 'video:che-cose-il-machine-learning', video: true, thumb: 'img/che-cose-il-machine-learning-poster.jpg',
+      title: "Che cos'è il machine learning", sub: 'Video · Cicerone AI' }
+  ].concat(quizSlides());
+
+  // Quiz film (js/film-quiz-data.js): la soluzione compare sulla scheda della console.
+  function quizSlides() {
+    if (typeof FILM_QUIZ === 'undefined') return [];
+    const out = [];
+    [['emoji', 'Quiz emoji'], ['trama', 'Quiz trama']].forEach(([kind, label]) => {
+      FILM_QUIZ[kind].forEach((q, i) => out.push({
+        id: 'slide:quiz-' + kind + '-' + (i + 1), src: 'quiz-' + kind + '-' + (i + 1) + '.html',
+        thumb: 'img/sns/quiz-' + kind + '-' + (i + 1) + '.jpg',
+        title: label + ' ' + (i + 1), sub: '✓ ' + q.it + ' (' + q.y + ')', solution: q.it
+      }));
+    });
+    return out;
+  }
 
   // Video pubblicati insieme al sito (sempre presenti in galleria)
   const VIDEOS = [

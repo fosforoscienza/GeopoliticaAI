@@ -94,6 +94,18 @@
     .card.ghost { position: fixed; z-index: 100; pointer-events: none; margin: 0; opacity: 0.95;
       transform: scale(1.03) rotate(-0.6deg); box-shadow: 0 24px 60px rgba(0,0,0,0.55); border-color: var(--accent); }
     body.dragging { cursor: grabbing; -webkit-user-select: none; user-select: none; }
+    .meta .del { margin: -4px 0; }
+    .card.is-video .thumb::after { content: '▶ VIDEO'; position: absolute; right: 10px; bottom: 10px; padding: 3px 8px;
+      border-radius: 6px; background: rgba(2,4,11,0.75); font-size: 11px; font-weight: 700; letter-spacing: .12em; }
+    .meta small.sol { color: #86efac; }
+    .trash { margin-top: 16px; padding: 12px 14px; border-radius: 12px; border: 1px dashed rgba(255,77,94,0.35);
+      background: rgba(255,77,94,0.04); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .trash[hidden] { display: none; }
+    .trash .lbl { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #fca5a5; font-weight: 700; margin-right: 6px; }
+    .chip { display: inline-flex; align-items: center; gap: 8px; padding: 5px 6px 5px 12px; border-radius: 999px;
+      border: 1px solid var(--line); background: var(--panel-2); font-size: 13px; }
+    .chip button { border: 1px solid rgba(52,211,153,0.5); background: rgba(52,211,153,0.12); color: #86efac;
+      border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; }
     h2 .reset { margin-left: auto; letter-spacing: 0; text-transform: none; font-size: 13px; font-weight: 500;
       color: var(--accent-soft); background: none; border: 0; padding: 4px 0; }
 
@@ -171,8 +183,9 @@
     </details>
 
     <section>
-      <h2>Slide <span>tocca per mandarla in onda · trascina ⠿ per riordinare</span><button class="reset" id="reset-order" hidden>Ordine iniziale</button></h2>
+      <h2>Slide <span>tocca per mandarla in onda · trascina ⠿ per riordinare · × per eliminare</span><button class="reset" id="reset-order" hidden>Ordine iniziale</button></h2>
       <div class="grid" id="slides"></div>
+      <div class="trash" id="trash" hidden><span class="lbl">Eliminate</span></div>
     </section>
 
     <section>
@@ -187,6 +200,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script src="js/sns-config.js"></script>
+  <script src="js/film-quiz-data.js"></script>
   <script src="js/sns.js"></script>
   <script>
     const $ = id => document.getElementById(id);
@@ -196,19 +210,59 @@
     // ── Slide: anteprime statiche, nell'ordine della scaletta ──
     const ORDER_KEY = 'sns-console-order';
     const GRIP = '<svg viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="12" cy="4" r="1.6"/><circle cx="6" cy="9" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="6" cy="14" r="1.6"/><circle cx="12" cy="14" r="1.6"/></svg>';
-    let order = SNS.SLIDES.map(x => x.id), orderSaved = false;
+    // Slide eliminate (× sulla scheda): escono dalla sequenza dello show e
+    // restano nel cestino sotto la griglia, da cui si ripristinano.
+    const DELETED_KEY = 'sns-console-deleted';
+    let deleted = [];
+    try { const d = JSON.parse(localStorage.getItem(DELETED_KEY)); if (Array.isArray(d)) deleted = d; } catch (_) {}
+    const defaultOrder = () => SNS.SLIDES.map(x => x.id).filter(id => !deleted.includes(id));
+    let order = defaultOrder(), orderSaved = false;
+    // Tiene solo le slide note e non eliminate; quelle mancanti (nuove o
+    // ripristinate) tornano al loro posto naturale, dopo la vicina che le precede.
     function normalize(ids) {
       const known = SNS.SLIDES.map(x => x.id);
-      const out = (ids || []).filter(id => known.includes(id));
-      known.forEach(id => { if (!out.includes(id)) out.push(id); });
+      const out = (ids || []).filter(id => known.includes(id) && !deleted.includes(id));
+      known.forEach((id, i) => {
+        if (out.includes(id) || deleted.includes(id)) return;
+        let at = 0;
+        for (let j = i - 1; j >= 0; j--) { const k = out.indexOf(known[j]); if (k !== -1) { at = k + 1; break; } }
+        out.splice(at, 0, id);
+      });
       return out;
     }
     try { const saved = JSON.parse(localStorage.getItem(ORDER_KEY)); if (Array.isArray(saved)) { order = normalize(saved); orderSaved = true; } } catch (_) {}
     function saveOrder(send) {
       orderSaved = true;
-      try { localStorage.setItem(ORDER_KEY, JSON.stringify(order)); } catch (_) {}
-      $('reset-order').hidden = order.join() === SNS.SLIDES.map(x => x.id).join();
-      if (send) SNS.send({ t: 'order', ids: order });
+      try { localStorage.setItem(ORDER_KEY, JSON.stringify(order)); localStorage.setItem(DELETED_KEY, JSON.stringify(deleted)); } catch (_) {}
+      $('reset-order').hidden = order.join() === defaultOrder().join();
+      if (send) SNS.send({ t: 'order', ids: order, deleted });
+    }
+    function deleteSlide(id) {
+      const s = SNS.SLIDES.find(x => x.id === id);
+      if (order.length <= 1) { alert('Deve restare almeno una slide.'); return; }
+      if (!confirm('Eliminare «' + s.title + '» dalla sequenza?\nPotrai ripristinarla dal cestino sotto le slide.')) return;
+      deleted.push(id);
+      order = order.filter(x => x !== id);
+      saveOrder(true); renderSlides(); paint();
+    }
+    function restoreSlide(id) {
+      deleted = deleted.filter(x => x !== id);
+      order = normalize(order);
+      saveOrder(true); renderSlides(); paint();
+    }
+    function renderTrash() {
+      const t = $('trash');
+      t.querySelectorAll('.chip').forEach(c => c.remove());
+      t.hidden = !deleted.length;
+      deleted.forEach(id => {
+        const s = SNS.SLIDES.find(x => x.id === id);
+        if (!s) return;
+        const chip = document.createElement('span');
+        chip.className = 'chip'; chip.textContent = s.title;
+        const b = document.createElement('button'); b.textContent = '↺ Ripristina';
+        b.addEventListener('click', () => restoreSlide(id));
+        chip.appendChild(b); t.appendChild(chip);
+      });
     }
 
     function renderSlides() {
@@ -216,22 +270,27 @@
       order.forEach((id, i) => {
         const s = SNS.SLIDES.find(x => x.id === id);
         const card = document.createElement('div');
-        card.className = 'card'; card.dataset.id = s.id; card.setAttribute('role', 'button'); card.tabIndex = 0;
+        card.className = 'card' + (s.video ? ' is-video' : ''); card.dataset.id = s.id; card.setAttribute('role', 'button'); card.tabIndex = 0;
         card.addEventListener('keydown', e => { if (e.key === 'Enter') SNS.send({ t: 'go', id: s.id }); });
         card.innerHTML = `<div class="thumb"><span class="num">${i + 1}</span><span class="badge">IN ONDA</span>
           <img alt="" decoding="async"></div>
           <div class="meta"><div><strong></strong><small></small></div>
+          <button class="del" title="Elimina dalla sequenza">×</button>
           <button class="grip" aria-label="Trascina per spostare">${GRIP}</button></div>`;
         card.querySelector('img').src = s.thumb;
         card.querySelector('strong').textContent = s.title;
         card.querySelector('small').textContent = s.sub;
+        if (s.solution) card.querySelector('small').classList.add('sol');
+        const del = card.querySelector('.del');
+        del.addEventListener('click', e => { e.stopPropagation(); deleteSlide(s.id); });
         card.addEventListener('click', () => SNS.send({ t: 'go', id: s.id }));
         const grip = card.querySelector('.grip');
         grip.addEventListener('click', e => e.stopPropagation());
         grip.addEventListener('pointerdown', e => startDrag(card, grip, e));
         $('slides').appendChild(card);
       });
-      $('reset-order').hidden = order.join() === SNS.SLIDES.map(x => x.id).join();
+      $('reset-order').hidden = order.join() === defaultOrder().join();
+      renderTrash();
       paintLive();
     }
     function renumber() {
@@ -299,7 +358,7 @@
       if (ids.join() !== order.join()) { order = ids; saveOrder(true); paint(); }
     }
     $('reset-order').addEventListener('click', () => {
-      order = SNS.SLIDES.map(x => x.id); saveOrder(true); renderSlides(); paint();
+      order = defaultOrder(); saveOrder(true); renderSlides(); paint();
     });
     renderSlides();
 
@@ -406,7 +465,7 @@
     // ── Stato dello show ──
     function nameOf(id) {
       const s = SNS.SLIDES.find(x => x.id === id);
-      if (s) return (order.indexOf(id) + 1) + ' · ' + s.title;
+      if (s) return (order.indexOf(id) + 1) + ' · ' + s.title + (s.solution ? ' — ✓ ' + s.solution : '');
       const h = SNS.VIDEOS.find(x => x.id === id);
       if (h) return 'Video · ' + h.title;
       const v = videoList.find(x => x.id === id);
@@ -441,8 +500,11 @@
         show = m; lastSeen = Date.now();
         // ordine diverso sullo show: se qui è stato scelto lo si manda, altrimenti si adotta il suo
         if (Array.isArray(m.order) && m.order.join() !== order.join()) {
-          if (orderSaved) SNS.send({ t: 'order', ids: order });
-          else { order = normalize(m.order); renderSlides(); }
+          if (orderSaved) SNS.send({ t: 'order', ids: order, deleted });
+          else {
+            if (Array.isArray(m.deleted)) deleted = m.deleted.filter(id => SNS.SLIDES.some(x => x.id === id));
+            order = normalize(m.order); renderSlides();
+          }
         }
         paint();
       }

@@ -68,6 +68,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script src="js/sns-config.js"></script>
+  <script src="js/film-quiz-data.js"></script>
   <script src="js/sns.js"></script>
   <script>
     const frames = [document.getElementById('frame-a'), document.getElementById('frame-b')];
@@ -78,13 +79,20 @@
 
     // Ordine delle slide: lo decide la console (trascinando le schede) e lo
     // show lo ricorda in questo browser.
-    const ORDER_KEY = 'sns-show-order';
+    const ORDER_KEY = 'sns-show-order', DELETED_KEY = 'sns-show-deleted';
     let order = SNS.SLIDES.slice();
-    function setOrder(ids) {
+    let deleted = [];               // slide eliminate dalla console: fuori dalla sequenza
+    try { const d = JSON.parse(localStorage.getItem(DELETED_KEY)); if (Array.isArray(d)) deleted = d; } catch (_) {}
+    function setOrder(ids, del) {
       if (!Array.isArray(ids)) return false;
+      if (Array.isArray(del)) {
+        deleted = del;
+        try { localStorage.setItem(DELETED_KEY, JSON.stringify(deleted)); } catch (_) {}
+      }
       const byId = new Map(SNS.SLIDES.map(x => [x.id, x]));
-      const next = ids.filter(id => byId.has(id)).map(id => byId.get(id));
-      SNS.SLIDES.forEach(x => { if (!next.includes(x)) next.push(x); });   // slide nuove in coda
+      const next = ids.filter(id => byId.has(id) && !deleted.includes(id)).map(id => byId.get(id));
+      SNS.SLIDES.forEach(x => { if (!next.includes(x) && !deleted.includes(x.id)) next.push(x); });   // slide nuove in coda
+      if (!next.length) return false;
       const changed = next.some((x, i) => x !== order[i]);
       order = next;
       const cur = order.findIndex(x => x.id === current);
@@ -101,7 +109,7 @@
       return { t: 'state', id: current, lang,
         playing: current && current.startsWith('video:') ? !vid.paused && !vid.ended : false,
         time: vid.currentTime || 0, dur: isFinite(vid.duration) ? vid.duration : 0,
-        fs: !!document.fullscreenElement, order: order.map(x => x.id), blocked: tap.classList.contains('show'), muted: vid.muted, at: Date.now() };
+        fs: !!document.fullscreenElement, order: order.map(x => x.id), deleted, blocked: tap.classList.contains('show'), muted: vid.muted, at: Date.now() };
     }
     function report(local) { SNS.send(state(), local); }
 
@@ -117,6 +125,7 @@
       const s = order[i];
       slideIdx = i;
       if (current === s.id) return;
+      if (s.video) { showVideo(s.id); return; }      // video dentro la sequenza
       current = s.id;
       const token = ++loadToken;
       const back = frames[1 - front];
@@ -205,7 +214,9 @@
       else showSlide(slideIdx + 1);
     }
     function prev() {
-      if (current && current.startsWith('video:')) showSlide(slideIdx);
+      // video lanciato dalla galleria: si torna alla slide di prima;
+      // video della sequenza: si torna all'elemento che lo precede
+      if (current && current.startsWith('video:') && !(order[slideIdx] && order[slideIdx].id === current)) showSlide(slideIdx);
       else showSlide(slideIdx - 1);
     }
 
@@ -271,7 +282,7 @@
           else if (m.op === 'restart') { vid.currentTime = 0; playVideo(); }
           else if (m.op === 'seek' && isFinite(m.time)) vid.currentTime = m.time;
           break;
-        case 'order': if (setOrder(m.ids)) report(); break;
+        case 'order': if (setOrder(m.ids, m.deleted)) report(); break;
         case 'hello': report(!m.net); break;   // risponde sullo stesso canale del ping
       }
     });
