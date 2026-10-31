@@ -29,6 +29,13 @@
     #start p { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: #8fd2ff; }
     #start small { font-size: 13px; color: rgba(240,245,251,0.5); }
 
+    /* Audio bloccato dal browser: il video parte muto, un clic lo riattiva */
+    #sound { position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%); z-index: 45;
+      padding: 12px 20px; border-radius: 999px; border: 1px solid rgba(65,183,255,0.5);
+      background: rgba(2,4,11,0.85); color: #dff2ff; font-size: 15px; cursor: pointer;
+      display: none; }
+    #sound.show { display: block; }
+
     /* Pallino discreto: collegamento con la console */
     #link { position: fixed; top: 10px; right: 10px; z-index: 40; width: 8px; height: 8px; border-radius: 50%;
       background: #34d399; opacity: 0; transition: opacity .4s; pointer-events: none; }
@@ -46,6 +53,7 @@
     <small>Frecce / telecomando per le slide · F schermo intero · la console comanda da un'altra finestra</small>
   </div>
   <div id="link" title="Console collegata"></div>
+  <div id="sound" role="button">Audio disattivato dal browser — clicca qui per attivarlo</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script src="js/sns-config.js"></script>
@@ -71,6 +79,7 @@
     function stopVideo() {
       vid.pause();
       vid.classList.remove('on');
+      sound.classList.remove('show');
     }
 
     function showSlide(i) {
@@ -111,10 +120,27 @@
         vid.muted = false;
         vid.classList.add('on');
         frames.forEach(f => f.classList.remove('on'));
-        vid.play().catch(() => { /* senza clic iniziale il browser blocca l'audio: resta in pausa */ });
+        playVideo();
         report();
       });
     }
+
+    // Senza un clic sullo show il browser può bloccare l'audio: in quel caso
+    // il video parte muto e compare l'invito a riattivarlo.
+    const sound = document.getElementById('sound');
+    function playVideo() {
+      vid.play().then(() => { if (!vid.muted) sound.classList.remove('show'); }).catch(() => {
+        vid.muted = true;
+        vid.play().then(() => sound.classList.add('show')).catch(() => {});
+      });
+    }
+    function unmute() {
+      if (!vid.muted) return;
+      vid.muted = false;
+      sound.classList.remove('show');
+      if (current && current.startsWith('video:') && vid.paused) playVideo();
+    }
+    sound.addEventListener('click', e => { e.stopPropagation(); unmute(); });
 
     function go(id) {
       const i = SNS.SLIDES.findIndex(s => s.id === id);
@@ -149,7 +175,8 @@
       if (start.classList.contains('gone')) return;
       start.classList.add('gone');
       document.documentElement.requestFullscreen().catch(() => {});
-      if (current && current.startsWith('video:') && vid.paused) vid.play().catch(() => {});
+      unmute();
+      if (current && current.startsWith('video:') && vid.paused) playVideo();
     }
     start.addEventListener('click', begin);
 
@@ -158,7 +185,7 @@
       if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); return; }
       if (!start.classList.contains('gone') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); begin(); return; }
       if ((e.key === 'k' || e.key === 'K') && current && current.startsWith('video:')) {
-        vid.paused ? vid.play().catch(() => {}) : vid.pause(); return;
+        vid.paused ? playVideo() : vid.pause(); return;
       }
       if (SNS.isNext(e)) { e.preventDefault(); next(); }
       else if (SNS.isPrev(e)) { e.preventDefault(); prev(); }
@@ -176,6 +203,9 @@
       link.classList.add('show');
       clearTimeout(linkTimer);
       linkTimer = setTimeout(() => link.classList.remove('show'), 6000);
+      // Un comando della console toglie il riquadro d'avvio, che altrimenti
+      // coprirebbe slide e video (lo schermo intero resta da attivare con F o un clic).
+      if (m.t === 'go' || m.t === 'next' || m.t === 'prev' || m.t === 'video') start.classList.add('gone');
       switch (m.t) {
         case 'go': go(m.id); break;
         case 'next': next(); break;
@@ -183,9 +213,9 @@
         case 'lang': setLang(m.lang); break;
         case 'video':
           if (!current || !current.startsWith('video:')) break;
-          if (m.op === 'play') vid.play().catch(() => {});
+          if (m.op === 'play') playVideo();
           else if (m.op === 'pause') vid.pause();
-          else if (m.op === 'restart') { vid.currentTime = 0; vid.play().catch(() => {}); }
+          else if (m.op === 'restart') { vid.currentTime = 0; playVideo(); }
           else if (m.op === 'seek' && isFinite(m.time)) vid.currentTime = m.time;
           break;
         case 'hello': report(!m.net); break;   // risponde sullo stesso canale del ping

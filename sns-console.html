@@ -262,7 +262,8 @@
       seeking = false;
       if (show && show.dur) SNS.send({ t: 'video', op: 'seek', time: $('v-seek').value / 1000 * show.dur });
     });
-    $('open-show').addEventListener('click', () => window.open('sns-show.html', 'sns-show'));
+    // finestra separata, da trascinare sullo schermo del proiettore
+    $('open-show').addEventListener('click', () => window.open('sns-show.html', 'sns-show', 'popup,width=1280,height=720'));
 
     // Il telecomando funziona anche se la finestra attiva è la console
     document.addEventListener('keydown', e => {
