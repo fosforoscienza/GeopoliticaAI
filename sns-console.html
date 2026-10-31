@@ -68,8 +68,7 @@
     .card:hover { transform: translateY(-2px); border-color: rgba(143,210,255,0.35); }
     .card.live { border-color: var(--live); box-shadow: 0 0 0 2px var(--live), 0 10px 40px rgba(255,77,94,0.18); }
     .thumb { position: relative; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
-    .thumb iframe { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; border: 0;
-      transform-origin: 0 0; pointer-events: none; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
     .num { position: absolute; top: 10px; left: 10px; z-index: 2; min-width: 28px; height: 28px; padding: 0 8px;
       border-radius: 8px; background: rgba(2,4,11,0.75); backdrop-filter: blur(6px);
@@ -145,28 +144,20 @@
     let show = null, lastSeen = 0, videoList = [];
     let lang = localStorage.getItem('geopolitica-lang') || 'it';
 
-    // ── Slide: anteprime vive, scalate da 1920×1080 ──
-    const thumbs = [];
+    // ── Slide: anteprime statiche ──
     SNS.SLIDES.forEach((s, i) => {
       const card = document.createElement('div');
       card.className = 'card'; card.dataset.id = s.id; card.setAttribute('role', 'button'); card.tabIndex = 0;
       card.addEventListener('keydown', e => { if (e.key === 'Enter') SNS.send({ t: 'go', id: s.id }); });
       card.innerHTML = `<div class="thumb"><span class="num">${i + 1}</span><span class="badge">IN ONDA</span>
-        <iframe src="${s.src}" tabindex="-1" loading="lazy" title="${s.title}"></iframe></div>
+        <img alt="" decoding="async"></div>
         <div class="meta"><div><strong></strong><small></small></div></div>`;
+      card.querySelector('img').src = s.thumb;
       card.querySelector('strong').textContent = s.title;
       card.querySelector('small').textContent = s.sub;
       card.addEventListener('click', () => SNS.send({ t: 'go', id: s.id }));
       $('slides').appendChild(card);
-      const f = card.querySelector('iframe');
-      f.addEventListener('load', () => { try { f.contentWindow.postMessage({ type: 'op-setlang', lang }, '*'); } catch (_) {} });
-      thumbs.push(f);
     });
-    const ro = new ResizeObserver(entries => entries.forEach(en => {
-      const f = en.target.querySelector('iframe');
-      if (f) f.style.transform = `scale(${en.contentRect.width / 1920})`;
-    }));
-    document.querySelectorAll('#slides .thumb').forEach(t => ro.observe(t));
 
     // ── Video ──
     const urls = new Map();
@@ -174,7 +165,7 @@
 
     function renderVideos() {
       document.querySelectorAll('#videos .card:not(.drop)').forEach(c => c.remove());
-      const all = SNS.VIDEOS.map(v => ({ id: v.id, name: v.title, sub: v.sub, src: v.src, poster: v.poster, fixed: true }))
+      const all = SNS.VIDEOS.map(v => ({ id: v.id, name: v.title, sub: v.sub, src: v.src, poster: v.poster, dur: v.dur, fixed: true }))
         .concat(videoList.map(v => ({ id: v.id, name: v.name, sub: 'Caricato', blob: v.blob })));
       all.forEach((v, i) => {
         if (v.blob && !urls.has(v.id)) urls.set(v.id, URL.createObjectURL(v.blob));
@@ -186,9 +177,13 @@
         card.querySelector('strong').textContent = v.name;
         card.querySelector('small').textContent = v.sub;
         const ve = card.querySelector('video');
-        if (v.poster) ve.poster = v.poster;
-        ve.src = (v.blob ? urls.get(v.id) : v.src) + '#t=0.5';
-        ve.addEventListener('loadedmetadata', () => { card.querySelector('small').textContent = v.sub + ' · ' + fmt(ve.duration); });
+        if (v.fixed) {
+          const im = document.createElement('img'); im.alt = ''; im.src = v.poster; ve.replaceWith(im);
+          if (v.dur) card.querySelector('small').textContent = v.sub + ' · ' + fmt(v.dur);
+        } else {
+          ve.src = urls.get(v.id) + '#t=0.5';
+          ve.addEventListener('loadedmetadata', () => { card.querySelector('small').textContent = v.sub + ' · ' + fmt(ve.duration); });
+        }
         card.addEventListener('click', () => SNS.send({ t: 'go', id: v.id }));
         card.addEventListener('keydown', e => { if (e.key === 'Enter') SNS.send({ t: 'go', id: v.id }); });
         if (!v.fixed) card.querySelector('.del').addEventListener('click', e => {
@@ -283,7 +278,6 @@
     document.querySelectorAll('#lang button').forEach(b => b.addEventListener('click', () => {
       lang = b.dataset.lang;
       try { localStorage.setItem('geopolitica-lang', lang); } catch (_) {}
-      thumbs.forEach(f => { try { f.contentWindow.postMessage({ type: 'op-setlang', lang }, '*'); } catch (_) {} });
       SNS.send({ t: 'lang', lang });
       paintLang();
     }));

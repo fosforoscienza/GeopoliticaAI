@@ -6,17 +6,19 @@
 // lo show su un altro dispositivo valgono solo i VIDEOS pubblicati col sito.
 // ════════════════════════════════════════════════════
 const SNS = (function () {
+  // thumb: anteprima statica per la console (le slide vive in miniatura
+  // esauriscono la memoria dei telefoni). Si rigenera dopo ogni modifica.
   const SLIDES = [
-    { id: 'slide:saturday-night-science', src: 'saturday-night-science.html', title: 'Saturday Night Science', sub: 'Macchine che pensano da sole' },
-    { id: 'slide:dartmouth-1956',         src: 'dartmouth-1956.html',         title: 'Dartmouth 1956',         sub: 'Copertina' },
-    { id: 'slide:dartmouth-1956-2',       src: 'dartmouth-1956-2.html',       title: "La nascita dell'AI",     sub: 'Proposta · Pionieri · Promessa' }
+    { id: 'slide:saturday-night-science', src: 'saturday-night-science.html', thumb: 'img/sns/saturday-night-science.jpg', title: 'Saturday Night Science', sub: 'Macchine che pensano da sole' },
+    { id: 'slide:dartmouth-1956',         src: 'dartmouth-1956.html', thumb: 'img/sns/dartmouth-1956.jpg',         title: 'Dartmouth 1956',         sub: 'Copertina' },
+    { id: 'slide:dartmouth-1956-2',       src: 'dartmouth-1956-2.html', thumb: 'img/sns/dartmouth-1956-2.jpg',       title: "La nascita dell'AI",     sub: 'Proposta · Pionieri · Promessa' }
   ];
 
   // Video pubblicati insieme al sito (sempre presenti in galleria)
   const VIDEOS = [
     { id: 'video:che-cose-il-machine-learning', src: 'video/che-cose-il-machine-learning.mp4',
       poster: 'img/che-cose-il-machine-learning-poster.jpg',
-      title: "Che cos'è il machine learning", sub: 'Cicerone AI' }
+      title: "Che cos'è il machine learning", sub: 'Cicerone AI', dur: 138 }
   ];
 
   // ── Trasporto ──
