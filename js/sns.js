@@ -10,8 +10,8 @@ const SNS = (function () {
   // esauriscono la memoria dei telefoni). Si rigenera dopo ogni modifica.
   const SLIDES = [
     { id: 'slide:saturday-night-science', src: 'saturday-night-science.html', thumb: 'img/sns/saturday-night-science.jpg', title: 'Saturday Night Science', sub: 'Macchine che pensano da sole' },
-    { id: 'slide:dartmouth-1956',         src: 'dartmouth-1956.html', thumb: 'img/sns/dartmouth-1956.jpg',         title: 'Dartmouth 1956',         sub: 'Copertina' },
     { id: 'slide:dartmouth-1956-2',       src: 'dartmouth-1956-2.html', thumb: 'img/sns/dartmouth-1956-2.jpg',       title: "La nascita dell'AI",     sub: 'Proposta · Pionieri · Promessa' },
+    { id: 'slide:dartmouth-1956',         src: 'dartmouth-1956.html', thumb: 'img/sns/dartmouth-1956.jpg',         title: 'Dartmouth 1956',         sub: 'Copertina' },
     { id: 'slide:ospite-rosasco',   src: 'ospite.html?id=rosasco',   thumb: 'img/sns/ospite-rosasco.jpg',   title: 'Lorenzo Rosasco',   sub: 'Intervista · DIBRIS' },
     { id: 'slide:ospite-villa',     src: 'ospite.html?id=villa',     thumb: 'img/sns/ospite-villa.jpg',     title: 'Silvia Villa',      sub: 'Intervista · DIMA' },
     { id: 'slide:ospite-benvenuto', src: 'ospite.html?id=benvenuto', thumb: 'img/sns/ospite-benvenuto.jpg', title: 'Federico Benvenuto', sub: 'Intervista · DIMA' },
