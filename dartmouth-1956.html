@@ -6,242 +6,181 @@
   <title>Dartmouth 1956 — Geopolitica della AI</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    :root { --accent: #f59e0b; --accent-soft: #fbbf24; }
-    html, body { background: #07050a !important; overflow: hidden; height: 100%; margin: 0; }
+    :root { --accent: #41b7ff; --accent-soft: #8fd2ff; --gold: #8fd2ff; --ink: #02040b; }
+    html, body { background: var(--ink) !important; overflow: hidden; height: 100%; margin: 0; }
     body { font-family: inherit; }
 
-    .stage {
-      position: fixed; inset: 0;
-      background:
-        radial-gradient(70% 60% at 50% 42%, rgba(245,158,11,0.13), transparent 70%),
-        #07050a;
-      overflow: hidden;
+    .stage { position: fixed; inset: 0; overflow: hidden; background: var(--ink); }
+
+    /* ---------- La foto a tutto schermo, con i nomi sopra ----------
+       Un solo SVG 1920×1080 in «slice»: foto, linee ed etichette restano
+       allineate ai volti a qualunque risoluzione 16:9. */
+    .scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+    /* Ken Burns: zoom lento e continuo, etichette comprese */
+    .kb {
+      transform-box: view-box; transform-origin: 820px 360px;
+      animation: kb 34s cubic-bezier(0.25, 0.1, 0.25, 1) 0.2s both;
+    }
+    @keyframes kb {
+      from { transform: scale(1.0)  translate(0, 0); }
+      to   { transform: scale(1.09) translate(-14px, -8px); }
     }
 
-    /* ---------- Carta millimetrata da laboratorio anni '50 ---------- */
-    .grid {
+    /* la foto emerge dal buio e va a fuoco */
+    .photo { animation: develop 2.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    @keyframes develop {
+      from { opacity: 0; filter: grayscale(1) blur(10px) brightness(0.35) contrast(1.1); }
+      to   { opacity: 1; filter: grayscale(1) blur(0) brightness(0.92) contrast(1.08); }
+    }
+
+    /* lama di luce che attraversa il gruppo */
+    .sweep { mix-blend-mode: screen; opacity: 0; animation: sweep 2.4s 1.3s cubic-bezier(0.45, 0, 0.2, 1) forwards; }
+    @keyframes sweep {
+      0%   { opacity: 0; transform: translateX(-900px); }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { opacity: 0; transform: translateX(2100px); }
+    }
+
+    /* ---------- Nomi: pallino → linea → etichetta ---------- */
+    .pin-halo { fill: rgba(65, 183, 255, 0.35); transform-box: fill-box; transform-origin: center;
+      opacity: 0; animation: halo-in .5s ease forwards, breathe 2.8s ease-in-out infinite; }
+    .person.core .pin-halo { fill: rgba(65, 183, 255, 0.55); }
+    @keyframes halo-in { to { opacity: 1; } }
+    @keyframes breathe { 0%, 100% { transform: scale(0.8); } 50% { transform: scale(1.35); } }
+    .pin { fill: #eaf6ff; stroke: #41b7ff; stroke-width: 4; transform-box: fill-box; transform-origin: center;
+      transform: scale(0); animation: pop .55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    @keyframes pop { to { transform: scale(1); } }
+
+    .lead { fill: none; stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .6s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+    .lead.shadow { stroke: rgba(0, 0, 0, 0.7); stroke-width: 9; }
+    .lead.line   { stroke: var(--gold); stroke-width: 3.5; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+
+    .tag { opacity: 0; animation: tag-in .7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes tag-in {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .tag rect { fill: rgba(3, 8, 18, 0.86); stroke: rgba(220, 238, 255, 0.55); stroke-width: 1.5; }
+    .person.core .tag rect { stroke: var(--gold); stroke-width: 2.5; }
+    .tag .nm { font-family: inherit; font-size: 31px; font-weight: 700; fill: #fff; letter-spacing: 0.01em; }
+    .person.core .tag .nm { fill: #cfe9ff; font-weight: 800; }
+    .tag .rl { font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: 0.2em; fill: var(--accent-soft); }
+
+    /* scurisce sopra e sotto per l'intestazione e il titolo */
+    .shade {
       position: absolute; inset: 0; pointer-events: none;
       background:
-        repeating-linear-gradient(0deg, rgba(251,191,36,0.05) 0 1px, transparent 1px 48px),
-        repeating-linear-gradient(90deg, rgba(251,191,36,0.05) 0 1px, transparent 1px 48px);
-      -webkit-mask: radial-gradient(60% 60% at 50% 42%, #000 20%, transparent 75%);
-              mask: radial-gradient(60% 60% at 50% 42%, #000 20%, transparent 75%);
+        linear-gradient(to bottom, rgba(2,4,11,0.85) 0%, rgba(2,4,11,0.35) 9%, rgba(2,4,11,0) 16%),
+        linear-gradient(to top, rgba(2,4,11,0.97) 0%, rgba(2,4,11,0.9) 14%, rgba(2,4,11,0.45) 26%, rgba(2,4,11,0) 38%);
     }
-
-    /* ---------- «1956» gigante in filigrana ---------- */
-    .year {
-      position: absolute; left: 50%; top: 42%;
-      transform: translate(-50%, -50%);
-      font-size: clamp(220px, 34vw, 620px);
-      font-weight: 900; letter-spacing: -0.05em; line-height: 1;
-      color: transparent;
-      -webkit-text-stroke: 1.5px rgba(245,158,11,0.22);
-      white-space: nowrap; pointer-events: none; user-select: none;
-      animation: year-in 1.6s cubic-bezier(0.16,1,0.3,1) both;
-    }
-    @keyframes year-in {
-      from { opacity: 0; transform: translate(-50%, -50%) scale(1.06); }
-      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    }
+    .vignette { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 220px 40px rgba(0,0,0,0.65); }
 
     /* ---------- Intestazione dattiloscritta della proposta ---------- */
     .typed-wrap {
-      position: absolute; top: clamp(26px, 5.5vh, 60px); left: 0; right: 0;
+      position: absolute; top: clamp(14px, 2.6vh, 30px); left: 0; right: 0;
       text-align: center; z-index: 3;
     }
     .typed {
       display: inline-block; overflow: hidden; white-space: nowrap;
       font-family: 'Courier New', Courier, monospace;
-      font-size: clamp(11px, 0.95vw, 16px);
-      letter-spacing: 0.04em; color: rgba(253,230,138,0.62);
+      font-size: clamp(11px, 0.9vw, 16px);
+      letter-spacing: 0.04em; color: rgba(143,210,255,0.8);
       border-right: 2px solid var(--accent-soft);
       width: 0;
       animation:
-        typing 2.6s 0.5s steps(79, end) forwards,
+        typing 2.6s 0.4s steps(79, end) forwards,
         caret 0.8s step-end infinite;
     }
-    .typed b { color: #fde68a; font-weight: 700; }
+    .typed b { color: #cfe9ff; font-weight: 700; }
     @keyframes typing { to { width: calc(79ch + 3.2em); } }
     @keyframes caret { 50% { border-color: transparent; } }
-    .typed-date {
-      display: block; margin-top: 8px;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: clamp(10px, 0.8vw, 13px); letter-spacing: 0.2em;
-      color: rgba(253,230,138,0.38);
-      animation: fade 0.8s 3.1s both;
-    }
-    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-
-    /* ---------- La foto dei pionieri, con i nomi ai lati ---------- */
-    .pionieri {
-      position: absolute; left: 0; right: 0;
-      top: clamp(80px, 13vh, 140px); height: 56vh;
-      width: 100%; z-index: 3; overflow: visible;
-    }
-    .pionieri .photo {
-      animation: photo-in 1.4s .2s cubic-bezier(0.16,1,0.3,1) both;
-      transform-box: fill-box; transform-origin: center;
-    }
-    @keyframes photo-in {
-      from { opacity: 0; transform: scale(1.04); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-    .pionieri image { filter: sepia(0.38) contrast(1.06) brightness(0.92); }
-    .pionieri .frame { fill: none; stroke: rgba(251,191,36,0.35); stroke-width: 2; }
-
-    .pionieri .edge {
-      fill: none; stroke: rgba(251,191,36,0.7); stroke-width: 2;
-      stroke-dasharray: 1; stroke-dashoffset: 1;
-      animation: draw 1s cubic-bezier(0.65,0,0.35,1) forwards;
-    }
-    @keyframes draw { to { stroke-dashoffset: 0; } }
-    .pionieri .pin { fill: #fff7e0; stroke: #f59e0b; stroke-width: 3; opacity: 0; animation: fade .4s forwards; }
-
-    .pionieri .node { opacity: 0; animation: pop 0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
-    @keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-    .pionieri text { font-family: inherit; font-size: 32px; font-weight: 600; fill: #ece3cf; letter-spacing: 0.01em; }
-    .pionieri .node.core text { fill: #fde68a; font-weight: 800; font-size: 35px; }
-    .pionieri .role {
-      font-size: 16px !important; font-weight: 700 !important; letter-spacing: 0.22em;
-      fill: rgba(251,191,36,0.75) !important; text-transform: uppercase;
-    }
-    .pionieri .left text  { text-anchor: end; }
-    .pionieri .right text { text-anchor: start; }
-    .pionieri .caption {
-      font-size: 15px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase;
-      fill: rgba(253,230,138,0.55); text-anchor: middle;
-      opacity: 0; animation: fade .8s 3.2s forwards;
-    }
-
-    /* sfumatura inferiore per far respirare il titolo */
-    .fade-bottom {
-      position: absolute; inset: 0; pointer-events: none; z-index: 2;
-      background: linear-gradient(to top, #07050a 0%, rgba(7,5,10,0.94) 14%, rgba(7,5,10,0.5) 28%, rgba(7,5,10,0) 42%);
-    }
-    .vignette {
-      position: absolute; inset: 0; pointer-events: none; z-index: 2;
-      box-shadow: inset 0 0 240px 60px rgba(0,0,0,0.7);
-    }
 
     /* ---------- Titolo in basso ---------- */
     .title-bar {
-      position: absolute; left: 0; right: 0; bottom: clamp(36px, 7vh, 74px);
+      position: absolute; left: 0; right: 0; bottom: clamp(26px, 5vh, 60px);
       text-align: center; z-index: 3;
-      animation: rise 1s 0.25s cubic-bezier(0.16,1,0.3,1) both;
+      animation: rise 1.1s 4.6s cubic-bezier(0.16,1,0.3,1) both;
     }
     @keyframes rise {
-      from { opacity: 0; transform: translateY(22px); }
+      from { opacity: 0; transform: translateY(28px); letter-spacing: 0.02em; }
       to   { opacity: 1; transform: translateY(0); }
     }
     .eyebrow {
       font-size: clamp(12px, 1vw, 16px);
       font-weight: 700; letter-spacing: 0.34em;
       text-transform: uppercase; color: var(--accent-soft);
-      margin-bottom: clamp(10px, 1.6vh, 18px);
+      margin-bottom: clamp(8px, 1.2vh, 14px);
     }
     .name {
-      font-size: clamp(58px, 8vw, 132px);
+      font-size: clamp(54px, 7.2vw, 124px);
       font-weight: 900; letter-spacing: -0.03em; line-height: 0.9;
       margin: 0; text-transform: uppercase;
-      background: linear-gradient(180deg, #ffffff 28%, #fcd34d 100%);
+      background: linear-gradient(180deg, #ffffff 28%, #8fd2ff 100%);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
-      text-shadow: 0 0 70px rgba(245,158,11,0.4);
+      text-shadow: 0 0 70px rgba(65,183,255,0.4);
     }
     .subtitle {
-      font-size: clamp(15px, 1.6vw, 26px);
-      color: #d6cfc2; font-weight: 300; font-style: italic;
-      margin-top: clamp(10px, 1.6vh, 18px);
-      letter-spacing: 0.01em;
+      font-size: clamp(14px, 1.45vw, 24px);
+      color: #e6ecf5; font-weight: 300; font-style: italic;
+      margin-top: clamp(8px, 1.2vh, 14px);
+    }
+    .caption {
+      margin-top: clamp(8px, 1.2vh, 12px);
+      font-size: clamp(10px, 0.75vw, 13px); font-weight: 600; letter-spacing: 0.24em;
+      text-transform: uppercase; color: rgba(143,210,255,0.6);
     }
 
-    @media (max-aspect-ratio: 1/1) {
-      .typed-wrap { top: 84px; padding: 0 16px; }
-      .typed { white-space: normal; width: auto; max-width: 88vw; border-right: 0; animation: fade 0.8s 0.4s both; }
-      .typed-date { animation-delay: 0.8s; }
-      .pionieri { top: clamp(110px, 16vh, 170px); height: 40vh; }
-      .year { top: 36%; font-size: 46vw; }
-      .title-bar { bottom: clamp(40px, 9vh, 90px); padding: 0 16px; }
-      .name { font-size: min(15vw, 132px); }
+    @media (prefers-reduced-motion: reduce) {
+      .kb, .sweep { animation: none; }
     }
   </style>
 </head>
 <body>
 
   <div class="stage">
-    <div class="grid"></div>
-    <div class="year">1956</div>
-
-    <div class="typed-wrap">
-      <span class="typed">A PROPOSAL FOR THE DARTMOUTH SUMMER RESEARCH PROJECT ON <b>ARTIFICIAL INTELLIGENCE</b></span>
-      <span class="typed-date">J. McCARTHY · M. L. MINSKY · N. ROCHESTER · C. E. SHANNON — AUGUST 31, 1955</span>
-    </div>
-
     <!-- I pionieri sul prato davanti alla Dartmouth Hall, estate 1956.
          Identificazione secondo IEEE Spectrum (G. Solomonoff): dietro Selfridge, Rochester,
          Minsky, McCarthy; davanti Solomonoff, Peter Milner, Shannon.
-         In oro i quattro firmatari della proposta. -->
-    <svg class="pionieri" viewBox="0 0 2200 790" preserveAspectRatio="xMidYMid meet" role="img"
+         In azzurro i quattro firmatari della proposta.
+         Foto originale 1200×833: ritaglio x 60–1060, y 220–782, scala ×1.92. -->
+    <svg class="scene" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img"
          aria-label="I pionieri dell'intelligenza artificiale a Dartmouth nel 1956">
       <defs>
-        <clipPath id="clip-foto"><rect x="426" y="0" width="1348" height="760" rx="16"/></clipPath>
-        <linearGradient id="g-sfuma" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0.74" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0.12"/>
+        <linearGradient id="g-sweep" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#dff2ff" stop-opacity="0"/>
+          <stop offset="0.5" stop-color="#dff2ff" stop-opacity="0.22"/>
+          <stop offset="1" stop-color="#dff2ff" stop-opacity="0"/>
         </linearGradient>
-        <mask id="m-sfuma"><rect x="426" y="0" width="1348" height="760" fill="url(#g-sfuma)"/></mask>
       </defs>
-
-      <g class="photo">
-        <g clip-path="url(#clip-foto)" mask="url(#m-sfuma)">
-          <svg x="426" y="0" width="1348" height="760" viewBox="60 190 940 530" preserveAspectRatio="xMidYMid slice">
-            <image href="img/dartmouth-1956-pionieri.jpg" x="0" y="0" width="1200" height="833"/>
-          </svg>
-        </g>
-        <rect class="frame" x="426" y="0" width="1348" height="760" rx="16"/>
+      <g class="kb">
+        <image class="photo" href="img/dartmouth-1956-pionieri.jpg"
+               x="-115.2" y="-422.4" width="2304" height="1599.4" preserveAspectRatio="none"/>
+        <rect class="sweep" x="-300" y="-200" width="520" height="1500" fill="url(#g-sweep)" transform="skewX(-14)"/>
       </g>
-
-      <!-- linee dal nome al volto: a gomito per la fila dietro, dirette per quella davanti -->
-      <g class="edges">
-        <path class="edge" pathLength="1" d="M420 60 H1067 V214"  style="animation-delay:1.2s"/>
-        <path class="edge" pathLength="1" d="M420 140 H835 V164"  style="animation-delay:1.35s"/>
-        <path class="edge" pathLength="1" d="M420 290 L668 266"    style="animation-delay:1.5s"/>
-        <path class="edge" pathLength="1" d="M420 470 L868 350"    style="animation-delay:1.65s"/>
-        <path class="edge" pathLength="1" d="M1780 60 H1265 V196"  style="animation-delay:1.8s"/>
-        <path class="edge" pathLength="1" d="M1780 300 L1432 330"  style="animation-delay:1.95s"/>
-        <path class="edge" pathLength="1" d="M1780 520 L1196 384"  style="animation-delay:2.1s"/>
-      </g>
-      <g>
-        <circle class="pin" cx="1067" cy="214" r="8" style="animation-delay:2.1s"/>
-        <circle class="pin" cx="835"  cy="164" r="8" style="animation-delay:2.25s"/>
-        <circle class="pin" cx="668"  cy="266" r="8" style="animation-delay:2.4s"/>
-        <circle class="pin" cx="868"  cy="350" r="8" style="animation-delay:2.55s"/>
-        <circle class="pin" cx="1265" cy="196" r="8" style="animation-delay:2.7s"/>
-        <circle class="pin" cx="1432" cy="330" r="8" style="animation-delay:2.85s"/>
-        <circle class="pin" cx="1196" cy="384" r="8" style="animation-delay:3.0s"/>
-      </g>
-
-      <g class="left">
-        <g class="node core" style="animation-delay:1.0s"><text x="400" y="72">Marvin Minsky</text><text class="role" x="400" y="102">Harvard</text></g>
-        <g class="node core" style="animation-delay:1.15s"><text x="400" y="152">Nathaniel Rochester</text><text class="role" x="400" y="182">IBM</text></g>
-        <g class="node" style="animation-delay:1.3s"><text x="400" y="302">Oliver Selfridge</text><text class="role" x="400" y="332">MIT Lincoln Lab</text></g>
-        <g class="node" style="animation-delay:1.45s"><text x="400" y="482">Ray Solomonoff</text><text class="role" x="400" y="512">Technical Research Group</text></g>
-      </g>
-      <g class="right">
-        <g class="node core" style="animation-delay:1.6s"><text x="1800" y="72">John McCarthy</text><text class="role" x="1800" y="102">Dartmouth</text></g>
-        <g class="node core" style="animation-delay:1.75s"><text x="1800" y="312">Claude Shannon</text><text class="role" x="1800" y="342">Bell Labs</text></g>
-        <g class="node" style="animation-delay:1.9s"><text x="1800" y="532">Peter Milner</text><text class="role" x="1800" y="562">McGill</text></g>
-      </g>
-
-      <text class="caption" id="caption" x="1100" y="786"></text>
     </svg>
 
-    <div class="fade-bottom"></div>
+    <div class="shade"></div>
     <div class="vignette"></div>
+
+    <!-- nomi in un secondo strato sopra le sfumature, con lo stesso zoom della foto -->
+    <svg class="scene" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g class="kb"><g id="people"></g></g>
+    </svg>
+
+    <div class="typed-wrap">
+      <span class="typed">A PROPOSAL FOR THE DARTMOUTH SUMMER RESEARCH PROJECT ON <b>ARTIFICIAL INTELLIGENCE</b></span>
+    </div>
 
     <div class="title-bar">
       <div class="eyebrow" id="eyebrow"></div>
       <h1 class="name" id="name"></h1>
       <div class="subtitle" id="subtitle"></div>
+      <div class="caption" id="caption"></div>
     </div>
   </div>
 
@@ -261,12 +200,13 @@
         eyebrow: 'Hanover, New Hampshire · Estate 1956',
         name: 'Dartmouth',
         subtitle: 'L’estate in cui nacque l’Intelligenza Artificiale',
-        caption: 'Davanti alla Dartmouth Hall · in oro i firmatari della proposta'
+        caption: 'Davanti alla Dartmouth Hall · in azzurro i firmatari della proposta'
       },
       en: {
         eyebrow: 'Hanover, New Hampshire · Summer 1956',
         name: 'Dartmouth',
-        subtitle: 'The summer Artificial Intelligence was born'
+        subtitle: 'The summer Artificial Intelligence was born',
+        caption: 'In front of Dartmouth Hall · in blue, the authors of the proposal'
       }
     };
     function renderTexts() {
@@ -278,9 +218,63 @@
     }
     function onLangChange() { renderTexts(); }
 
+    // Coordinate nel riquadro 1920×1080. at: punto sulla persona; tag: centro
+    // dell'etichetta; via: gomito facoltativo della linea. In ordine di comparsa.
+    const PEOPLE = [
+      { name: 'Oliver Selfridge',    role: 'MIT Lincoln Lab',  at: [338, 262],  tag: [200, 168] },
+      { name: 'Nathaniel Rochester', role: 'IBM',              at: [547, 166],  tag: [547, 122], core: true },
+      { name: 'Ray Solomonoff',      role: 'Technical Research Group', at: [637, 408], tag: [612, 552] },
+      { name: 'Marvin Minsky',       role: 'Harvard',          at: [858, 236],  tag: [880, 160], core: true },
+      { name: 'Peter Milner',        role: 'McGill',           at: [992, 470],  tag: [1060, 640] },
+      { name: 'John McCarthy',       role: 'Dartmouth',        at: [1170, 262], tag: [1520, 200], via: [1300, 200], core: true },
+      { name: 'Claude Shannon',      role: 'Bell Labs',        at: [1332, 386], tag: [1590, 386], core: true }
+    ];
+
+    function buildPeople() {
+      const NS = 'http://www.w3.org/2000/svg';
+      const root = document.getElementById('people');
+      const el = (tag, attrs, parent) => {
+        const e = document.createElementNS(NS, tag);
+        Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+        parent.appendChild(e); return e;
+      };
+      const PADX = 22, H = 74;
+      PEOPLE.forEach((p, i) => {
+        const d = 2.0 + i * 0.38;                       // inizio della persona, in secondi
+        const g = el('g', { class: 'person' + (p.core ? ' core' : '') }, root);
+
+        // etichetta prima, per misurarla e far arrivare la linea al suo bordo
+        const tag = el('g', { class: 'tag', style: `animation-delay:${d + 0.55}s` }, g);
+        const rect = el('rect', { rx: 12 }, tag);
+        const nm = el('text', { class: 'nm', 'text-anchor': 'middle' }, tag);
+        nm.textContent = p.name;
+        const rl = el('text', { class: 'rl', 'text-anchor': 'middle' }, tag);
+        rl.textContent = p.role.toUpperCase();
+        const w = Math.max(nm.getComputedTextLength(), rl.getComputedTextLength()) + PADX * 2;
+        const [cx, cy] = p.tag;
+        rect.setAttribute('x', cx - w / 2); rect.setAttribute('y', cy - H / 2);
+        rect.setAttribute('width', w); rect.setAttribute('height', H);
+        nm.setAttribute('x', cx); nm.setAttribute('y', cy + 2);
+        rl.setAttribute('x', cx); rl.setAttribute('y', cy + 25);
+
+        // dal bordo dell'etichetta più vicino alla persona, al pallino
+        const [ax, ay] = p.at;
+        const from = p.via || [ax, ay];
+        let sx = cx, sy = cy;
+        if (Math.abs(from[0] - cx) > w / 2) sx = cx + Math.sign(from[0] - cx) * w / 2;
+        else sy = cy + Math.sign(from[1] - cy) * H / 2;
+        const path = `M${sx} ${sy}` + (p.via ? ` L${p.via[0]} ${p.via[1]}` : '') + ` L${ax} ${ay}`;
+        g.insertBefore(el('path', { class: 'lead shadow', d: path, pathLength: 1, style: `animation-delay:${d + 0.2}s` }, g), tag);
+        g.insertBefore(el('path', { class: 'lead line', d: path, pathLength: 1, style: `animation-delay:${d + 0.2}s` }, g), tag);
+        g.insertBefore(el('circle', { class: 'pin-halo', cx: ax, cy: ay, r: 16, style: `animation-delay:${d}s, ${d + 0.5}s` }, g), tag);
+        g.insertBefore(el('circle', { class: 'pin', cx: ax, cy: ay, r: 8, style: `animation-delay:${d}s` }, g), tag);
+      });
+    }
+
     initLangToggle();
     renderTexts();
     initNav();
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(buildPeople);
   </script>
 </body>
 </html>

@@ -6,19 +6,19 @@
   <title>Saturday Night Science — Geopolitica della AI</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    :root { --accent: #41b7ff; --accent-soft: #8fd2ff; --violet: #7c5cff; }
+    :root { --accent: #41b7ff; --accent-soft: #8fd2ff; --accent-deep: #1f7fd1; }
     html, body { background: #02040b !important; overflow: hidden; height: 100%; margin: 0; }
     body { font-family: inherit; }
 
     .stage {
       position: fixed; inset: 0; overflow: hidden;
       background:
-        radial-gradient(80% 55% at 50% 110%, rgba(124,92,255,0.22), transparent 70%),
+        radial-gradient(80% 55% at 50% 110%, rgba(31,127,209,0.20), transparent 70%),
         radial-gradient(60% 50% at 50% -10%, rgba(65,183,255,0.14), transparent 70%),
         #02040b;
     }
 
-    /* ---------- Cielo notturno: stelle che formano una rete neurale ---------- */
+    /* ---------- Rete neurale a strati, attraversata da segnali ---------- */
     #sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
     /* scuro al centro per far respirare il titolo */
@@ -42,27 +42,13 @@
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 14px;
-      font-size: clamp(12px, 1vw, 16px);
-      font-weight: 700; letter-spacing: 0.36em;
-      text-transform: uppercase; color: var(--accent-soft);
-      margin-bottom: clamp(18px, 3vh, 34px);
-      animation: rise 0.9s 0.1s cubic-bezier(0.16,1,0.3,1) both;
-    }
-    .eyebrow::before, .eyebrow::after {
-      content: ''; width: 34px; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent));
-    }
-    .eyebrow::after { background: linear-gradient(90deg, var(--accent), transparent); }
-
     .title { margin: 0; line-height: 0.86; }
     .title .l1 {
       display: block;
       font-size: clamp(30px, 4.6vw, 84px);
       font-weight: 300; letter-spacing: 0.32em; margin-right: -0.32em;
       text-transform: uppercase;
-      background: linear-gradient(90deg, var(--accent) 0%, #b7a6ff 55%, var(--violet) 100%);
+      background: linear-gradient(90deg, var(--accent-soft) 0%, var(--accent) 50%, var(--accent-soft) 100%);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
       filter: drop-shadow(0 0 22px rgba(65,183,255,0.45));
@@ -74,10 +60,10 @@
       font-weight: 900; letter-spacing: -0.035em;
       text-transform: uppercase;
       margin-top: clamp(4px, 1vh, 14px);
-      background: linear-gradient(180deg, #ffffff 30%, #c9dcff 78%, #9a8cff 100%);
+      background: linear-gradient(180deg, #ffffff 30%, #cfe9ff 72%, var(--accent) 100%);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
-      filter: drop-shadow(0 0 60px rgba(124,92,255,0.35));
+      filter: drop-shadow(0 0 60px rgba(65,183,255,0.35));
       animation: rise 1.1s 0.4s cubic-bezier(0.16,1,0.3,1) both;
     }
 
@@ -115,7 +101,7 @@
     }
     .partners img { display: block; width: auto; }
     .partners .fds  { height: clamp(56px, 8.2vh, 96px); }
-    .partners .dima { height: clamp(34px, 5vh, 58px); }
+    .partners .dima { height: clamp(34px, 5vh, 58px); filter: brightness(0) invert(1); }   /* logo tutto bianco */
     .partners .sep {
       width: 1px; height: clamp(48px, 7vh, 80px);
       background: linear-gradient(180deg, transparent, rgba(255,255,255,0.35), transparent);
@@ -137,7 +123,6 @@
     <div class="vignette"></div>
 
     <div class="content">
-      <div class="eyebrow" id="eyebrow"></div>
       <h1 class="title">
         <span class="l1">Saturday Night</span>
         <span class="l2">Science</span>
@@ -165,12 +150,11 @@
   <script src="js/common.js"></script>
   <script>
     const TXT = {
-      it: { eyebrow: 'Festival della Scienza · Genova', subtitle: 'Macchine che pensano da sole' },
-      en: { eyebrow: 'Festival della Scienza · Genoa',  subtitle: 'Machines that think for themselves' }
+      it: { subtitle: 'Macchine che pensano da sole' },
+      en: { subtitle: 'Machines that think for themselves' }
     };
     function renderTexts() {
       const t = TXT[lang];
-      document.getElementById('eyebrow').textContent  = t.eyebrow;
       document.getElementById('subtitle').textContent = t.subtitle;
     }
     function onLangChange() { renderTexts(); }
@@ -179,82 +163,90 @@
     renderTexts();
     initNav();
 
-    // ── Cielo-rete: stelle che si collegano e si scambiano impulsi ──
-    (function sky() {
+    // ── Rete neurale a strati: segnali che entrano da sinistra, accendono i
+    //    neuroni e si propagano strato dopo strato verso destra ──
+    (function net() {
       const cv = document.getElementById('sky'), ctx = cv.getContext('2d');
       const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let W, H, dpr, stars = [], nodes = [], pulses = [], LINK;
+      const COUNTS = [5, 8, 11, 13, 11, 8, 5];          // neuroni per strato
+      let W, H, layers = [], edges = [], pulses = [], lastWave = -1e9;
 
       function init() {
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
         W = cv.clientWidth; H = cv.clientHeight;
         cv.width = W * dpr; cv.height = H * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        LINK = Math.max(110, Math.min(W, H) * 0.2);
-        const area = W * H;
-        stars = Array.from({ length: Math.round(area / 2600) }, () => ({
-          x: Math.random() * W, y: Math.random() * H,
-          r: Math.random() * 1.1 + 0.2, a: Math.random() * 0.6 + 0.15,
-          tw: Math.random() * Math.PI * 2
-        }));
-        nodes = Array.from({ length: Math.round(area / 19000) }, () => ({
-          x: Math.random() * W, y: Math.random() * H,
-          vx: (Math.random() - 0.5) * 0.16, vy: (Math.random() - 0.5) * 0.16,
-          r: Math.random() * 1.4 + 1.1
-        }));
+        const x0 = W * 0.05, x1 = W * 0.95, top = H * 0.08, bot = H * 0.92;
+        layers = COUNTS.map((n, li) => {
+          const x = x0 + (x1 - x0) * li / (COUNTS.length - 1);
+          const span = (bot - top) * (0.45 + 0.55 * n / Math.max(...COUNTS));
+          return Array.from({ length: n }, (_, k) => ({
+            x: x + (Math.random() - 0.5) * W * 0.02,
+            y: H / 2 - span / 2 + span * (n === 1 ? 0.5 : k / (n - 1)),
+            ph: Math.random() * 6.283, act: 0, li
+          }));
+        });
+        edges = [];
+        for (let li = 0; li < layers.length - 1; li++)
+          for (const a of layers[li]) for (const b of layers[li + 1])
+            edges.push({ a, b, w: Math.random() });
         pulses = [];
       }
 
-      function links() {
-        const out = [];
-        for (let i = 0; i < nodes.length; i++)
-          for (let j = i + 1; j < nodes.length; j++) {
-            const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
-            const d = Math.hypot(dx, dy);
-            if (d < LINK) out.push([i, j, d]);
-          }
-        return out;
+      function fire(from, t) {
+        const next = layers[from.li + 1];
+        if (!next) return;
+        const k = 1 + (Math.random() * 2.4 | 0);          // ogni neurone ne eccita 1–3
+        for (let i = 0; i < k; i++) pulses.push({ a: from, b: next[Math.random() * next.length | 0], p: 0, v: 0.018 + Math.random() * 0.008 });
       }
 
-      let last = 0;
+      function pos(n, t) { return [n.x, n.y + Math.sin(t * 0.0005 + n.ph) * 5]; }
+
       function frame(t) {
         ctx.clearRect(0, 0, W, H);
-        for (const s of stars) {
-          const a = s.a * (0.65 + 0.35 * Math.sin(t * 0.0012 + s.tw));
-          ctx.fillStyle = `rgba(220,232,255,${a})`;
-          ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283); ctx.fill();
+        // un'onda di ingresso ogni ~0,8 s
+        if (t - lastWave > 800 && pulses.length < 160) {
+          lastWave = t;
+          const inp = layers[0];
+          for (let i = 0; i < 2; i++) { const n = inp[Math.random() * inp.length | 0]; n.act = 1; fire(n, t); }
         }
-        for (const n of nodes) {
-          n.x += n.vx; n.y += n.vy;
-          if (n.x < -20) n.x = W + 20; if (n.x > W + 20) n.x = -20;
-          if (n.y < -20) n.y = H + 20; if (n.y > H + 20) n.y = -20;
-        }
-        const L = links();
+        // collegamenti: tenui, più chiari dove passa un segnale
         ctx.lineWidth = 1;
-        for (const [i, j, d] of L) {
-          const a = (1 - d / LINK) * 0.32;
-          ctx.strokeStyle = `rgba(110,170,255,${a})`;
-          ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.stroke();
+        for (const e of edges) {
+          const [ax, ay] = pos(e.a, t), [bx, by] = pos(e.b, t);
+          const glow = Math.max(e.a.act, e.b.act) * 0.18;
+          ctx.strokeStyle = `rgba(65,183,255,${0.06 + e.w * 0.08 + glow})`;
+          ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
         }
-        for (const n of nodes) {
-          ctx.fillStyle = 'rgba(190,215,255,0.9)';
-          ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, 6.283); ctx.fill();
-        }
-        // nuovi impulsi: un "pensiero" che corre lungo la rete
-        if (t - last > 140 && L.length) {
-          last = t;
-          const [i, j] = L[(Math.random() * L.length) | 0];
-          pulses.push({ a: i, b: j, p: 0, hue: Math.random() < 0.5 ? '65,183,255' : '160,130,255' });
-        }
-        pulses = pulses.filter(pl => pl.p <= 1);
+        // segnali in viaggio
         for (const pl of pulses) {
-          pl.p += 0.012;
-          const A = nodes[pl.a], B = nodes[pl.b];
-          const x = A.x + (B.x - A.x) * pl.p, y = A.y + (B.y - A.y) * pl.p;
-          const g = ctx.createRadialGradient(x, y, 0, x, y, 10);
-          g.addColorStop(0, `rgba(${pl.hue},0.95)`); g.addColorStop(1, `rgba(${pl.hue},0)`);
-          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 10, 0, 6.283); ctx.fill();
-          ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 6.283); ctx.fill();
+          pl.p += pl.v;
+          const [ax, ay] = pos(pl.a, t), [bx, by] = pos(pl.b, t);
+          const x = ax + (bx - ax) * pl.p, y = ay + (by - ay) * pl.p;
+          ctx.strokeStyle = 'rgba(143,210,255,0.55)'; ctx.lineWidth = 1.6;
+          const q = Math.max(0, pl.p - 0.12);
+          ctx.beginPath(); ctx.moveTo(ax + (bx - ax) * q, ay + (by - ay) * q); ctx.lineTo(x, y); ctx.stroke();
+          const g = ctx.createRadialGradient(x, y, 0, x, y, 9);
+          g.addColorStop(0, 'rgba(143,210,255,0.95)'); g.addColorStop(1, 'rgba(65,183,255,0)');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 9, 0, 6.283); ctx.fill();
+          if (pl.p >= 1) { pl.b.act = 1; if (Math.random() < 0.8) fire(pl.b, t); }
+        }
+        pulses = pulses.filter(pl => pl.p < 1);
+        // neuroni: si accendono quando arriva un segnale e si spengono piano
+        for (const L of layers) for (const n of L) {
+          const [x, y] = pos(n, t);
+          if (n.act > 0.02) {
+            const r = 6 + n.act * 16;
+            const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+            g.addColorStop(0, `rgba(65,183,255,${0.55 * n.act})`); g.addColorStop(1, 'rgba(65,183,255,0)');
+            ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+          }
+          ctx.fillStyle = '#02040b'; ctx.beginPath(); ctx.arc(x, y, 5, 0, 6.283); ctx.fill();
+          ctx.lineWidth = 1.6;
+          ctx.strokeStyle = `rgba(143,210,255,${0.6 + n.act * 0.4})`;
+          ctx.beginPath(); ctx.arc(x, y, 5, 0, 6.283); ctx.stroke();
+          if (n.act > 0.05) { ctx.fillStyle = `rgba(255,255,255,${n.act})`; ctx.beginPath(); ctx.arc(x, y, 2, 0, 6.283); ctx.fill(); }
+          n.act *= 0.965;
         }
         if (!still) requestAnimationFrame(frame);
       }
