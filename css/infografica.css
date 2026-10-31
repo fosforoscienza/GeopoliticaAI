@@ -1,0 +1,90 @@
+/* ════════════════════════════════════════════════════
+   Infografiche SNS (adozione dei trasporti / degli LLM)
+   Stessa grafica azzurra delle altre slide: una curva a sinistra,
+   i numeri chiave a destra, le fonti in basso.
+════════════════════════════════════════════════════ */
+:root { --accent: #41b7ff; --accent-soft: #8fd2ff; --ink: #02040b; --text: #f0f5fb;
+  --muted: rgba(230,236,245,0.62); --grid: rgba(143,210,255,0.12); --panel: rgba(8,17,31,0.75); --line: rgba(143,210,255,0.16); }
+html, body { background: var(--ink) !important; overflow: hidden; height: 100%; margin: 0; }
+body { font-family: inherit; color: var(--text); }
+
+.stage {
+  position: fixed; inset: 0; overflow: hidden;
+  background:
+    radial-gradient(70% 55% at 30% 110%, rgba(31,127,209,0.18), transparent 70%),
+    radial-gradient(60% 50% at 70% -10%, rgba(65,183,255,0.12), transparent 70%),
+    var(--ink);
+  display: grid; grid-template-rows: auto 1fr auto;
+  padding: clamp(24px, 4.4vh, 54px) clamp(28px, 3.6vw, 72px) clamp(18px, 3vh, 34px);
+  gap: clamp(14px, 2.4vh, 28px);
+}
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Testata ---------- */
+.head { display: flex; align-items: flex-end; gap: clamp(20px, 2.4vw, 44px); animation: rise .8s .05s cubic-bezier(0.16,1,0.3,1) both; }
+.head h1 {
+  margin: 0; font-size: clamp(64px, 8.4vw, 160px); font-weight: 900; letter-spacing: -0.035em; line-height: 0.82;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 30%, #cfe9ff 72%, var(--accent) 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+  filter: drop-shadow(0 0 50px rgba(65,183,255,0.3));
+}
+.head .what { padding-bottom: clamp(4px, 0.8vh, 10px); }
+.head .eyebrow { font-size: clamp(13px, 1.05vw, 19px); font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: var(--accent-soft); }
+.head .sub { font-size: clamp(18px, 1.7vw, 32px); font-weight: 300; font-style: italic; color: #e6ecf5; margin-top: 8px; }
+
+/* ---------- Corpo: grafico + numeri ---------- */
+.body { display: grid; grid-template-columns: 1.55fr 1fr; gap: clamp(20px, 2.4vw, 48px); min-height: 0; }
+.chart { position: relative; min-height: 0; border-radius: 20px; background: var(--panel); border: 1px solid var(--line);
+  padding: clamp(14px, 1.6vw, 28px); animation: rise .9s .2s cubic-bezier(0.16,1,0.3,1) both; display: flex; flex-direction: column; }
+.chart h2 { margin: 0 0 6px; font-size: clamp(15px, 1.25vw, 23px); font-weight: 700; color: #fff; }
+.chart h2 small { font-weight: 400; color: var(--muted); }
+.chart svg { flex: 1; width: 100%; min-height: 0; display: block; overflow: visible; }
+
+.chart .gridline { stroke: var(--grid); stroke-width: 1; }
+.chart .axis text, .chart .tick { font-family: inherit; font-size: 15px; fill: var(--muted); }
+.chart .curve { fill: none; stroke: var(--accent); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 3.2s .6s cubic-bezier(0.45, 0, 0.2, 1) forwards; }
+.chart .area { opacity: 0; animation: fade 1.6s 2.2s ease forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes fade { to { opacity: 1; } }
+.chart .dot { fill: #eaf6ff; stroke: var(--accent); stroke-width: 3; transform-box: fill-box; transform-origin: center;
+  transform: scale(0); animation: pop .5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+@keyframes pop { to { transform: scale(1); } }
+.chart .note { opacity: 0; animation: fade .7s ease forwards; }
+.chart .note text { font-family: inherit; }
+.chart .note .big { font-size: 26px; font-weight: 800; fill: #fff; }
+.chart .note .small { font-size: 15px; fill: #cfe0f2; }
+.chart .note line { stroke: rgba(143,210,255,0.5); stroke-width: 1.5; stroke-dasharray: 3 4; }
+.chart .event line { stroke: rgba(143,210,255,0.35); stroke-width: 1.5; stroke-dasharray: 2 5; }
+.chart .event text { font-size: 15px; fill: var(--accent-soft); font-weight: 600; }
+
+.facts { display: grid; grid-auto-rows: 1fr; gap: clamp(12px, 1.6vh, 20px); min-height: 0; }
+.fact { border-radius: 18px; background: var(--panel); border: 1px solid var(--line); padding: clamp(14px, 1.4vw, 26px);
+  display: flex; flex-direction: column; justify-content: center; animation: rise .8s cubic-bezier(0.16,1,0.3,1) both; min-height: 0; }
+.fact .n { font-size: clamp(44px, 4.6vw, 88px); font-weight: 900; line-height: 0.95; letter-spacing: -0.03em; color: #fff; }
+.fact .n small { font-size: 0.42em; font-weight: 700; letter-spacing: 0; color: var(--accent-soft); margin-left: 6px; }
+.fact p { margin: 8px 0 0; font-size: clamp(15px, 1.2vw, 22px); line-height: 1.35; color: #d7e4f3; font-weight: 300; }
+.fact p b { color: #fff; font-weight: 700; }
+
+/* barre di confronto (dentro una scheda) */
+.bars { display: grid; gap: 10px; margin-top: 12px; }
+.bar { display: grid; grid-template-columns: 7.5em 1fr auto; align-items: center; gap: 12px; font-size: clamp(14px, 1.1vw, 20px); }
+.bar .lab { color: #d7e4f3; }
+.bar .track, .bar .fill { display: block; }
+.bar .track { height: 14px; border-radius: 7px; background: rgba(143,210,255,0.08); overflow: hidden; }
+.bar .fill { height: 100%; border-radius: 7px; background: rgba(143,210,255,0.45); width: 0; transition: width 1.6s cubic-bezier(0.16,1,0.3,1); }
+.bar.hi .fill { background: var(--accent); box-shadow: 0 0 16px rgba(65,183,255,0.6); }
+.bar.hi .lab, .bar.hi .val { color: #fff; font-weight: 700; }
+.bar .val { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 4.6em; text-align: right; }
+
+/* ---------- Chiusa e fonti ---------- */
+.foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; animation: rise .8s .7s cubic-bezier(0.16,1,0.3,1) both; }
+.punch { font-size: clamp(18px, 1.6vw, 30px); font-weight: 300; font-style: italic; color: #e6ecf5; }
+.punch b { color: var(--accent-soft); font-style: normal; font-weight: 700; }
+.src { font-size: clamp(11px, 0.78vw, 14px); color: rgba(230,236,245,0.45); text-align: right; max-width: 52%; line-height: 1.4; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stage *, .stage *::after { animation: none !important; transition: none !important; }
+  .chart .curve { stroke-dashoffset: 0; } .chart .area, .chart .note { opacity: 1; } .chart .dot { transform: none; }
+}

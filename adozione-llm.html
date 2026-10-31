@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adozione degli LLM — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/infografica.css" />
+  <style>
+    /* la prima scheda ha anche le barre di confronto */
+    .facts { grid-auto-rows: auto; grid-template-rows: 1.55fr 1fr 1fr; }
+    .facts .fact:first-child .n { font-size: clamp(38px, 3.8vw, 72px); }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <header class="head">
+      <h1>Mesi</h1>
+      <div class="what">
+        <div class="eyebrow">Tempi di adozione · Modelli linguistici</div>
+        <div class="sub">Quanto ci hanno messo gli LLM a entrare nella vita di tutti</div>
+      </div>
+    </header>
+
+    <main class="body">
+      <section class="chart">
+        <h2>Persone che usano ChatGPT ogni settimana <small>· milioni, dal lancio del 30 novembre 2022</small></h2>
+        <svg id="chart" role="img" aria-label="Utenti settimanali di ChatGPT: 100 milioni a novembre 2023, 400 milioni a febbraio 2025, 800 milioni a ottobre 2025, 900 milioni a febbraio 2026"></svg>
+      </section>
+
+      <aside class="facts">
+        <div class="fact" style="animation-delay:.45s">
+          <div class="n"><span data-to="2">2</span><small>mesi</small></div>
+          <p>per i primi <b>100 milioni</b> di utenti di ChatGPT</p>
+          <div class="bars">
+            <div class="bar hi"><span class="lab">ChatGPT</span><span class="track"><span class="fill" data-w="0.067"></span></span><span class="val">2 mesi</span></div>
+            <div class="bar"><span class="lab">TikTok</span><span class="track"><span class="fill" data-w="0.3"></span></span><span class="val">9 mesi</span></div>
+            <div class="bar"><span class="lab">Instagram</span><span class="track"><span class="fill" data-w="1"></span></span><span class="val">2,5 anni</span></div>
+          </div>
+        </div>
+        <div class="fact" style="animation-delay:.6s">
+          <div class="n"><span data-to="900">900</span><small>milioni</small></div>
+          <p>di persone <b>ogni settimana</b> su ChatGPT (febbraio 2026)</p>
+        </div>
+        <div class="fact" style="animation-delay:.75s">
+          <div class="n"><span data-to="950">950</span><small>milioni</small></div>
+          <p>di utenti <b>al mese</b> sull'app Gemini di Google (luglio 2026)</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="foot">
+      <div class="punch">All'auto sono serviti 40 anni per metà delle famiglie americane. ChatGPT in <b>tre anni</b> è arrivato a quasi <b>un miliardo di persone a settimana</b>.</div>
+      <div class="src">Fonti: OpenAI (utenti settimanali, nov 2023 – feb 2026); UBS su dati Similarweb (100 milioni in 2 mesi); Sensor Tower via Reuters (TikTok, Instagram); Alphabet, risultati del 2° trimestre 2026 (Gemini).</div>
+    </footer>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/infografica.js"></script>
+  <script>
+    // Mesi dal lancio (30/11/2022) → milioni di utenti settimanali dichiarati da OpenAI
+    const WEEKLY = [
+      [0, 0],        // lancio
+      [11.2, 100],   // 6 nov 2023, DevDay
+      [26.7, 400],   // feb 2025
+      [28.0, 500],   // fine mar 2025
+      [32.2, 700],   // ago 2025, «quasi 700 milioni»
+      [34.2, 800],   // 6 ott 2025, DevDay
+      [39.0, 900]    // 27 feb 2026
+    ];
+    Info.chart(document.getElementById('chart'), {
+      x: [0, 42], y: [0, 1000], points: WEEKLY,
+      yticks: [[0, '0'], [250, '250'], [500, '500'], [750, '750'], [1000, '1 mld']],
+      xticks: [[0, 'nov 2022'], [12, 'nov 2023'], [24, 'nov 2024'], [36, 'nov 2025']],
+      notes: [
+        { x: 0.2, y: 1, big: '1 milione', small: 'di utenti in 5 giorni', dx: 40, dy: -150, anchor: 'start', delay: 1.2 },
+        { x: 11.2, y: 100, big: '100 mln', small: 'nov 2023', dx: 0, dy: -110, delay: 1.9 },
+        { x: 26.7, y: 400, big: '400 mln', small: 'feb 2025', dx: -40, dy: -100, delay: 2.6 },
+        { x: 34.2, y: 800, big: '800 mln', small: 'ott 2025', dx: -60, dy: -60, delay: 3.2 },
+        { x: 39.0, y: 900, big: '900 mln', small: 'feb 2026', dx: 0, dy: -50, delay: 3.7 }
+      ]
+    });
+    Info.countUp(document);
+    Info.bars(document);
+  </script>
+</body>
+</html>

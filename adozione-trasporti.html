@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adozione dei trasporti — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/infografica.css" />
+</head>
+<body>
+  <div class="stage">
+    <header class="head">
+      <h1>Decenni</h1>
+      <div class="what">
+        <div class="eyebrow">Tempi di adozione · Trasporti</div>
+        <div class="sub">Quanto ci hanno messo auto e aereo a entrare nella vita di tutti</div>
+      </div>
+    </header>
+
+    <main class="body">
+      <section class="chart">
+        <h2>Famiglie americane con almeno un'automobile <small>· % sul totale, dati dal 1915</small></h2>
+        <svg id="chart" role="img" aria-label="Quota di famiglie americane con almeno un'automobile, dal 1915 al 2005: 10% nel 1915, oltre la metà nel 1926, 75% nel 1960, 92% nel 2000"></svg>
+      </section>
+
+      <aside class="facts">
+        <div class="fact" style="animation-delay:.45s">
+          <div class="n"><span data-to="40">40</span><small>anni</small></div>
+          <p>dall'invenzione dell'automobile (Benz, <b>1886</b>) a <b>metà delle famiglie</b> americane (1926)</p>
+        </div>
+        <div class="fact" style="animation-delay:.6s">
+          <div class="n"><span data-to="74">74</span><small>anni</small></div>
+          <p>per arrivare a <b>3 famiglie su 4</b> con un'auto (1960)</p>
+        </div>
+        <div class="fact" style="animation-delay:.75s">
+          <div class="n"><span data-to="64">64</span><small>anni</small></div>
+          <p>dalla prima compagnia aerea (<b>1909</b>) a <b>50 milioni</b> di persone che volano</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="foot">
+      <div class="punch">Le tecnologie fisiche cambiano il mondo <b>al ritmo delle generazioni</b>.</div>
+      <div class="src">Fonti: Our World in Data su dati Comin &amp; Hobijn (2004), famiglie USA con automobile; Statista, tempo per raggiungere 50 milioni di utenti.</div>
+    </footer>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/infografica.js"></script>
+  <script>
+    // Our World in Data — Technology Diffusion (Comin and Hobijn 2004 and others), «Automobile», % famiglie USA
+    const AUTO = [[1915,10],[1916,12],[1917,17],[1918,19],[1919,23],[1920,28],[1921,31],[1922,34],[1923,39],[1924,44],[1925,49],[1926,54],[1927,56],[1928,58],[1929,58.5],[1930,59],[1931,56],[1932,53],[1933,50],[1934,51],[1935,52],[1936,54],[1937,55],[1938,54],[1939,54],[1940,55],[1941,57],[1942,53],[1943,49],[1944,47],[1945,46],[1946,48],[1947,51],[1948,53],[1949,55],[1950,58],[1951,60],[1952,60],[1953,62],[1954,65],[1955,68],[1956,72],[1957,74],[1958,71],[1959,73],[1960,75],[1961,76],[1962,75],[1963,79],[1964,79],[1965,79],[1966,79],[1967,78],[1968,78.5],[1969,79],[1970,80],[1971,80],[1972,81],[1973,82],[1974,83],[1975,83],[1976,84],[1977,85],[1978,85],[1979,85],[1980,86],[1981,86],[1982,86],[1983,86.5],[1984,87],[1985,88],[1986,88],[1987,89],[1988,89.5],[1989,90],[1990,91],[1991,91],[1992,91],[1993,92],[1994,91],[1995,91],[1996,92],[1997,92],[1998,92],[1999,91],[2000,92],[2001,92],[2002,91],[2003,91],[2004,91],[2005,91]];
+
+    Info.chart(document.getElementById('chart'), {
+      x: [1880, 2006], y: [0, 100], points: AUTO,
+      yticks: [[0, '0%'], [25, '25%'], [50, '50%'], [75, '75%'], [100, '100%']],
+      xticks: [[1886, '1886'], [1908, '1908'], [1926, '1926'], [1960, '1960'], [2000, '2000']],
+      events: [
+        { x: 1886, label: 'Benz: nasce l\'automobile', h: 210 },
+        { x: 1908, label: 'Ford Model T', h: 130, side: 'left' }
+      ],
+      notes: [
+        { x: 1926, y: 54, big: '54%', small: 'più di metà delle famiglie', dx: -40, dy: -110, delay: 1.8 },
+        { x: 1932, y: 53, big: 'Grande Depressione', small: '', dx: 30, dy: 70, anchor: 'start', delay: 2.4 },
+        { x: 1960, y: 75, big: '75%', small: '3 famiglie su 4', dx: -20, dy: -90, delay: 2.8 },
+        { x: 2000, y: 92, big: '92%', small: '', dx: 0, dy: -60, delay: 3.6 }
+      ]
+    });
+    // la nota sulla Depressione è più piccola delle altre
+    document.querySelectorAll('.note .big').forEach(t => { if (t.textContent === 'Grande Depressione') t.setAttribute('class', 'small'); });
+    Info.countUp(document);
+  </script>
+</body>
+</html>
