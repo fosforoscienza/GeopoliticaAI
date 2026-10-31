@@ -248,10 +248,13 @@
       });
       return out;
     }
-    try { const saved = JSON.parse(localStorage.getItem(ORDER_KEY)); if (Array.isArray(saved)) { order = normalize(saved); orderSaved = true; } } catch (_) {}
+    try {                                     // vale solo se nato dall'ordine predefinito di adesso
+      const saved = JSON.parse(localStorage.getItem(ORDER_KEY));
+      if (saved && saved.base === SNS.ORDER_BASE && Array.isArray(saved.ids)) { order = normalize(saved.ids); orderSaved = true; }
+    } catch (_) {}
     function saveOrder(send) {
       orderSaved = true;
-      try { localStorage.setItem(ORDER_KEY, JSON.stringify(order)); localStorage.setItem(DELETED_KEY, JSON.stringify(deleted)); } catch (_) {}
+      try { localStorage.setItem(ORDER_KEY, JSON.stringify({ base: SNS.ORDER_BASE, ids: order })); localStorage.setItem(DELETED_KEY, JSON.stringify(deleted)); } catch (_) {}
       $('reset-order').hidden = order.join() === defaultOrder().join();
       if (send) SNS.send({ t: 'order', ids: order, deleted });
     }
@@ -520,9 +523,10 @@
     SNS.listen(m => {
       if (m.t === 'state') {
         show = m; lastSeen = Date.now();
-        // ordine diverso sullo show: se qui è stato scelto lo si manda, altrimenti si adotta il suo
+        // ordine diverso sullo show: se qui è stato scelto, o se lo show ne ha uno nato da
+        // un ordine predefinito vecchio, si manda il nostro; altrimenti si adotta il suo
         if (Array.isArray(m.order) && m.order.join() !== order.join()) {
-          if (orderSaved) SNS.send({ t: 'order', ids: order, deleted });
+          if (orderSaved || m.base !== SNS.ORDER_BASE) SNS.send({ t: 'order', ids: order, deleted });
           else {
             if (Array.isArray(m.deleted)) deleted = m.deleted.filter(id => SNS.SLIDES.some(x => x.id === id));
             order = normalize(m.order); renderSlides();

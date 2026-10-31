@@ -127,10 +127,13 @@
       order = next;
       const cur = order.findIndex(x => x.id === current);
       if (cur >= 0) slideIdx = cur;
-      try { localStorage.setItem(ORDER_KEY, JSON.stringify(order.map(x => x.id))); } catch (_) {}
+      try { localStorage.setItem(ORDER_KEY, JSON.stringify({ base: SNS.ORDER_BASE, ids: order.map(x => x.id) })); } catch (_) {}
       return changed;
     }
-    try { setOrder(JSON.parse(localStorage.getItem(ORDER_KEY))); } catch (_) {}
+    try {                                     // vale solo se nato dall'ordine predefinito di adesso
+      const saved = JSON.parse(localStorage.getItem(ORDER_KEY));
+      if (saved && saved.base === SNS.ORDER_BASE) setOrder(saved.ids);
+    } catch (_) {}
     let videoURL = null;
     let lang = localStorage.getItem('geopolitica-lang') || 'it';
     let loadToken = 0;
@@ -139,7 +142,7 @@
       return { t: 'state', id: current, lang,
         playing: current && current.startsWith('video:') ? !vid.paused && !vid.ended : false,
         time: vid.currentTime || 0, dur: isFinite(vid.duration) ? vid.duration : 0,
-        fs: !!document.fullscreenElement, order: order.map(x => x.id), deleted, blocked: tap.classList.contains('show'), muted: vid.muted, out: outName(), jack: jackOk, sound: soundNow, sounds: soundsLoaded, at: Date.now() };
+        fs: !!document.fullscreenElement, order: order.map(x => x.id), base: SNS.ORDER_BASE, deleted, blocked: tap.classList.contains('show'), muted: vid.muted, out: outName(), jack: jackOk, sound: soundNow, sounds: soundsLoaded, at: Date.now() };
     }
     function report(local) { SNS.send(state(), local); }
 

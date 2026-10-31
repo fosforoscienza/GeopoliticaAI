@@ -12,6 +12,10 @@ const SNS = (function () {
     { id: 'slide:saturday-night-science', src: 'saturday-night-science.html', thumb: 'img/sns/saturday-night-science.jpg', title: 'Saturday Night Science', sub: 'Macchine che pensano da sole' },
     { id: 'slide:dartmouth-1956-2',       src: 'dartmouth-1956-2.html', thumb: 'img/sns/dartmouth-1956-2.jpg',       title: "La nascita dell'AI",     sub: 'Proposta · Pionieri · Promessa' },
     { id: 'slide:dartmouth-1956',         src: 'dartmouth-1956.html', thumb: 'img/sns/dartmouth-1956.jpg',         title: 'Dartmouth 1956',         sub: 'Copertina' },
+    // Il video sul machine learning fa parte della sequenza (quarto, dopo la foto
+    // di Dartmouth). Stesso id della galleria video.
+    { id: 'video:che-cose-il-machine-learning', video: true, thumb: 'img/che-cose-il-machine-learning-poster.jpg',
+      title: "Che cos'è il machine learning", sub: 'Video · Cicerone AI' },
     { id: 'slide:ospite-benvenuto', src: 'ospite.html?id=benvenuto', thumb: 'img/sns/ospite-benvenuto.jpg', title: 'Federico Benvenuto', sub: 'Intervista · DIMA' },
     { id: 'slide:ospite-villa',     src: 'ospite.html?id=villa',     thumb: 'img/sns/ospite-villa.jpg',     title: 'Silvia Villa',      sub: 'Intervista · DIMA' },
     { id: 'slide:ospite-rosasco',   src: 'ospite.html?id=rosasco',   thumb: 'img/sns/ospite-rosasco.jpg',   title: 'Lorenzo Rosasco',   sub: 'Intervista · DIBRIS' },
@@ -19,12 +23,10 @@ const SNS = (function () {
     { id: 'slide:adozione-llm',       src: 'adozione-llm.html',       thumb: 'img/sns/adozione-llm.jpg',       title: 'Mesi',     sub: 'Tempi di adozione · LLM' },
     { id: 'slide:millennium',         src: 'millennium.html',         thumb: 'img/sns/millennium.jpg',         title: 'Una dimostrazione da $1.000.000', sub: 'Navier–Stokes e gli agenti AI' },
     // id usato anche da Jarvis («dammi le news»): non cambiarlo
-    { id: 'slide:news', src: 'news.html', thumb: 'img/sns/news.jpg', title: 'News', sub: 'crivellini.it' },
-    // Il video sul machine learning fa parte della sequenza: con → dopo il
-    // video si passa al quiz. Stesso id della galleria video.
-    { id: 'video:che-cose-il-machine-learning', video: true, thumb: 'img/che-cose-il-machine-learning-poster.jpg',
-      title: "Che cos'è il machine learning", sub: 'Video · Cicerone AI' }
+    { id: 'slide:news', src: 'news.html', thumb: 'img/sns/news.jpg', title: 'News', sub: 'crivellini.it' }
   ].concat(quizSlides());
+  // Se cambia l'ordine predefinito (qui sopra), gli ordini salvati prima non valgono più
+  const ORDER_BASE = SLIDES.map(x => x.id).join('|');
 
   // Quiz film (js/film-quiz-data.js): la soluzione compare sulla scheda della console.
   function quizSlides() {
@@ -193,5 +195,5 @@ const SNS = (function () {
 
   connectJarvis();
 
-  return { SLIDES, VIDEOS, SOUNDS, send, listen, videos, sounds, isNext, isPrev, room, online: () => netOk };
+  return { SLIDES, ORDER_BASE, VIDEOS, SOUNDS, send, listen, videos, sounds, isNext, isPrev, room, online: () => netOk };
 })();
