@@ -22,10 +22,10 @@ const SNS = (function () {
   // ── Trasporto ──
   // Stesso browser: BroadcastChannel (immediato). Dispositivi diversi (console
   // sul telefono, show sul computer del proiettore): canale broadcast di
-  // Supabase Realtime (progetto «sns-regia»), identificato dalla stanza.
-  // La libreria supabase-js va caricata prima di questo file.
-  const SUPABASE_URL = 'https://pavyvyclxluibfwlmojv.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhdnl2eWNseGx1aWJmd2xtb2p2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NDk0MjEsImV4cCI6MjEwOTAyNTQyMX0.t0I4uRvussZynr-Yj1G0A9MyCrFdcvqNkCegbsCbxTU';
+  // Supabase Realtime self-hosted sul Mac mini (api.fosforo.info), identificato
+  // dalla stanza. Prima di questo file vanno caricati supabase-js e
+  // js/sns-config.js (URL e chiave pubblica; non versionato).
+  const CONFIG = window.SNS_CONFIG || {};
   const ROOM_KEY = 'sns-regia-room';
   const room = (function () {
     const q = new URLSearchParams(location.search).get('room');
@@ -50,8 +50,8 @@ const SNS = (function () {
 
   let rt = null;
   function connect() {
-    if (!window.supabase) return;
-    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } });
+    if (!window.supabase || !CONFIG.url || !CONFIG.key) return;
+    const client = window.supabase.createClient(CONFIG.url, CONFIG.key, { auth: { persistSession: false } });
     rt = client.channel('sns-regia:' + room, { config: { broadcast: { self: false } } });
     rt.on('broadcast', { event: 'msg' }, p => deliver(p.payload));
     rt.subscribe(status => { netOk = status === 'SUBSCRIBED'; });   // la libreria si riconnette da sola
