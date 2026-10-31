@@ -48,6 +48,12 @@
     .onair .tag i { width: 9px; height: 9px; border-radius: 50%; background: var(--live); animation: blink 1.4s infinite; }
     .onair.off .tag { color: var(--muted); } .onair.off .tag i { background: #64748b; animation: none; }
     @keyframes blink { 50% { opacity: .35; } }
+    .onair .fx { grid-column: 1 / -1; order: 8; display: flex; flex-wrap: wrap; gap: 10px; }
+    .onair .fx button { padding: 10px 16px; border-radius: 10px; border: 1px solid rgba(143,210,255,0.35);
+      background: linear-gradient(180deg, #121c2c, #0a1220); font-size: 15px; font-weight: 700; letter-spacing: .04em; }
+    .onair .fx button.on { border-color: var(--live); background: rgba(255,77,94,0.18); color: #fff; }
+    .onair .fx button.missing { opacity: .55; }
+    .onair .fx small { display: block; font-size: 11px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
     .onair .out { grid-column: 1 / -1; order: 9; font-size: 13px; color: var(--muted); margin-top: -6px; }
     .onair.off .out { display: none; }
     .onair .what { font-size: 20px; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -139,7 +145,13 @@
     
     @media (max-width: 640px) {
       .onair { grid-template-columns: minmax(0, 1fr); padding: 14px 16px; }
-      .onair .out { grid-column: 1 / -1; order: 9; font-size: 13px; color: var(--muted); margin-top: -6px; }
+      .onair .fx { grid-column: 1 / -1; order: 8; display: flex; flex-wrap: wrap; gap: 10px; }
+    .onair .fx button { padding: 10px 16px; border-radius: 10px; border: 1px solid rgba(143,210,255,0.35);
+      background: linear-gradient(180deg, #121c2c, #0a1220); font-size: 15px; font-weight: 700; letter-spacing: .04em; }
+    .onair .fx button.on { border-color: var(--live); background: rgba(255,77,94,0.18); color: #fff; }
+    .onair .fx button.missing { opacity: .55; }
+    .onair .fx small { display: block; font-size: 11px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+    .onair .out { grid-column: 1 / -1; order: 9; font-size: 13px; color: var(--muted); margin-top: -6px; }
     .onair.off .out { display: none; }
     .onair .what { white-space: normal; font-size: 18px; }
       .vctl { flex-wrap: wrap; }
@@ -166,6 +178,7 @@
         <button class="btn" id="prev" title="Precedente (←)">←</button>
         <button class="btn" id="next" title="Successiva (→)">→</button>
       </div>
+      <div class="fx" id="fx"></div>
       <div class="vctl">
         <button class="btn" id="v-play">Pausa</button>
         <button class="btn" id="v-restart">Da capo</button>
@@ -494,6 +507,7 @@
         : (show.muted && show.id && show.id.startsWith('video:')) ? nameOf(show.id) + ' — senza audio: tocca lo schermo dello show'
         : nameOf(show.id);
       $('onair-out').textContent = alive && show.out ? 'Audio dei video: ' + show.out : '';
+      paintFx(alive);
       $('onair-out').style.color = alive && show.jack === false ? 'var(--live)' : '';
       if (alive && show.id && show.id.startsWith('video:')) {
         $('v-play').textContent = show.playing ? 'Pausa' : 'Play';
@@ -522,6 +536,29 @@
     let ticks = 0;
     setInterval(() => { const net = ++ticks % 5 === 0; SNS.send({ t: 'hello', net }, !net); paint(); }, 2000);
     SNS.send({ t: 'hello', net: true });
+
+    // ── Suoni (es. Star Wars): suonano sullo show, dal jack ──
+    SNS.SOUNDS.forEach(def => {
+      const b = document.createElement('button');
+      b.dataset.id = def.id;
+      b.innerHTML = '<span></span><small></small>';
+      b.querySelector('span').textContent = def.title;
+      b.querySelector('small').textContent = def.sub;
+      b.addEventListener('click', () => SNS.send({ t: 'sound', id: def.id, op: 'toggle' }));
+      $('fx').appendChild(b);
+    });
+    function paintFx(alive) {
+      $('fx').querySelectorAll('button').forEach(b => {
+        const def = SNS.SOUNDS.find(x => x.id === b.dataset.id);
+        const on = alive && show.sound === def.id;
+        const missing = alive && Array.isArray(show.sounds) && !show.sounds.includes(def.id);
+        b.classList.toggle('on', on);
+        b.classList.toggle('missing', missing);
+        b.querySelector('span').textContent = (on ? '■ ' : '') + def.title;
+        b.querySelector('small').textContent = missing ? 'da caricare sullo show (tasto A)'
+          : (alive && show.jack === false) ? 'jack non trovato sullo show' : def.sub;
+      });
+    }
 
     // ── Comandi ──
     $('prev').addEventListener('click', () => SNS.send({ t: 'prev' }));

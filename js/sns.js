@@ -130,21 +130,33 @@ const SNS = (function () {
   }
   function listen(fn) { handlers.push(fn); }
 
-  // ── Video in IndexedDB ──
-  const DB_NAME = 'sns-regia', STORE = 'videos';
+  // Suoni lanciati dalla console e suonati dallo show. Il file lo carica chi
+  // usa lo show (pannello audio, tasto A) e resta solo in quel browser: i brani
+  // protetti da diritti non vanno pubblicati con il sito.
+  const SOUNDS = [
+    { id: 'star-wars', title: 'Star Wars', sub: 'Tema dell\'Impero' }
+  ];
+
+  // ── Video e suoni in IndexedDB ──
+  const DB_NAME = 'sns-regia', STORE = 'videos', SOUND_STORE = 'sounds';
   let dbp = null;
   function db() {
     if (!dbp) dbp = new Promise((res, rej) => {
-      const r = indexedDB.open(DB_NAME, 1);
-      r.onupgradeneeded = () => r.result.createObjectStore(STORE, { keyPath: 'id' });
+      const r = indexedDB.open(DB_NAME, 2);
+      r.onupgradeneeded = () => {
+        const d = r.result;
+        if (!d.objectStoreNames.contains(STORE)) d.createObjectStore(STORE, { keyPath: 'id' });
+        if (!d.objectStoreNames.contains(SOUND_STORE)) d.createObjectStore(SOUND_STORE, { keyPath: 'id' });
+      };
       r.onsuccess = () => res(r.result);
       r.onerror = () => rej(r.error);
     });
     return dbp;
   }
-  function tx(mode, fn) {
+  function tx(mode, fn, store) {
+    store = store || STORE;
     return db().then(d => new Promise((res, rej) => {
-      const t = d.transaction(STORE, mode), s = t.objectStore(STORE);
+      const t = d.transaction(store, mode), s = t.objectStore(store);
       const r = fn(s);
       t.oncomplete = () => res(r && r.result);
       t.onerror = () => rej(t.error);
@@ -159,6 +171,11 @@ const SNS = (function () {
       return tx('readwrite', s => s.put(v)).then(() => { postCatalog(); return v; });
     },
     remove: (id) => tx('readwrite', s => s.delete(id)).then(r => { postCatalog(); return r; })
+  };
+  const sounds = {
+    list: () => tx('readonly', s => s.getAll(), SOUND_STORE).then(a => a || []),
+    get: (id) => tx('readonly', s => s.get(id), SOUND_STORE),
+    put: (id, file) => tx('readwrite', s => s.put({ id, name: file.name, type: file.type, blob: file, added: Date.now() }), SOUND_STORE)
   };
 
   function isNext(e) {
@@ -175,5 +192,5 @@ const SNS = (function () {
 
   connectJarvis();
 
-  return { SLIDES, VIDEOS, send, listen, videos, isNext, isPrev, room, online: () => netOk };
+  return { SLIDES, VIDEOS, SOUNDS, send, listen, videos, sounds, isNext, isPrev, room, online: () => netOk };
 })();
