@@ -50,13 +50,20 @@ const SNS = (function () {
   }
   if (channel) channel.addEventListener('message', e => deliver(e.data));
 
+  // Prima del collegamento i messaggi aspettano: l'invio via REST di supabase-js
+  // non è autorizzato sull'istanza del Mac mini (401).
   let rt = null;
+  const pending = [];
+  function netSend(msg) { rt.send({ type: 'broadcast', event: 'msg', payload: msg }).catch(() => {}); }
   function connect() {
     if (!window.supabase || !CONFIG.url || !CONFIG.key) return;
     const client = window.supabase.createClient(CONFIG.url, CONFIG.key, { auth: { persistSession: false } });
     rt = client.channel('sns-regia:' + room, { config: { broadcast: { self: false } } });
     rt.on('broadcast', { event: 'msg' }, p => deliver(p.payload));
-    rt.subscribe(status => { netOk = status === 'SUBSCRIBED'; });   // la libreria si riconnette da sola
+    rt.subscribe(status => {                                       // la libreria si riconnette da sola
+      netOk = status === 'SUBSCRIBED';
+      if (netOk) pending.splice(0).forEach(netSend);
+    });
   }
   connect();
 
@@ -94,7 +101,7 @@ const SNS = (function () {
     seen.add(msg.mid);
     if (channel) channel.postMessage(msg);
     toJarvis(msg);
-    if (!local && rt) rt.send({ type: 'broadcast', event: 'msg', payload: msg }).catch(() => {});
+    if (!local && rt) { if (netOk) netSend(msg); else if (pending.push(msg) > 20) pending.shift(); }
   }
   function listen(fn) { handlers.push(fn); }
 

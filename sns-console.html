@@ -38,10 +38,10 @@
     .seg button { padding: 8px 12px; background: var(--panel); border: 0; font-size: 13px; color: var(--muted); }
     .seg button.on { background: rgba(65,183,255,0.18); color: var(--text); }
 
-    main { padding: clamp(16px, 3vw, 36px); display: grid; gap: 32px; max-width: 1600px; margin: 0 auto; }
+    main { padding: clamp(16px, 3vw, 36px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; max-width: 1600px; margin: 0 auto; }
 
     /* ── In onda ── */
-    .onair { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px;
+    .onair { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px;
       padding: 16px 20px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); }
     .onair .tag { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
       letter-spacing: .18em; color: var(--live); }
@@ -92,7 +92,11 @@
     .note { font-size: 13px; color: var(--muted); margin-top: 12px; }
     
     @media (max-width: 640px) {
-      .onair { grid-template-columns: 1fr; }
+      .onair { grid-template-columns: minmax(0, 1fr); padding: 14px 16px; }
+      .onair .what { white-space: normal; font-size: 18px; }
+      .vctl { flex-wrap: wrap; }
+      .vctl input[type=range] { flex-basis: 100%; order: 3; }
+      .vctl .time { margin-left: auto; }
       .nav { justify-content: stretch; } .nav .btn { flex: 1; }
     }
   </style>
@@ -234,7 +238,10 @@
       oa.classList.toggle('off', !alive);
       oa.classList.toggle('video', !!(alive && show.id && show.id.startsWith('video:')));
       $('onair-tag').textContent = alive ? 'IN ONDA' : 'FUORI ONDA';
-      $('onair-what').textContent = alive ? nameOf(show.id) : 'Apri lo show per iniziare';
+      $('onair-what').textContent = !alive ? 'Apri lo show per iniziare'
+        : show.blocked ? nameOf(show.id) + ' — bloccato: tocca lo schermo dello show'
+        : (show.muted && show.id && show.id.startsWith('video:')) ? nameOf(show.id) + ' — senza audio: tocca lo schermo dello show'
+        : nameOf(show.id);
       if (alive && show.id && show.id.startsWith('video:')) {
         $('v-play').textContent = show.playing ? 'Pausa' : 'Play';
         const t = show.playing ? Math.min(show.dur || 0, show.time + (Date.now() - (show.at || Date.now())) / 1000) : show.time;

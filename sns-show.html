@@ -36,6 +36,16 @@
       display: none; }
     #sound.show { display: block; }
 
+    /* Avvio del video bloccato del tutto (Safari, risparmio energetico): serve un tocco */
+    #tap { position: fixed; inset: 0; z-index: 48; display: none; align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px; cursor: pointer; background: rgba(2,4,11,0.55); }
+    #tap.show { display: flex; }
+    #tap .btn { width: 120px; height: 120px; border-radius: 50%; border: 2px solid rgba(65,183,255,0.7);
+      background: rgba(65,183,255,0.2); display: flex; align-items: center; justify-content: center; }
+    #tap .btn::before { content: ''; border-left: 38px solid #fff; border-top: 24px solid transparent;
+      border-bottom: 24px solid transparent; margin-left: 10px; }
+    #tap p { font-size: 16px; letter-spacing: .12em; text-transform: uppercase; color: #dff2ff; }
+
     /* Pallino discreto: collegamento con la console */
     #link { position: fixed; top: 10px; right: 10px; z-index: 40; width: 8px; height: 8px; border-radius: 50%;
       background: #34d399; opacity: 0; transition: opacity .4s; pointer-events: none; }
@@ -53,7 +63,8 @@
     <small>Frecce / telecomando per le slide · F schermo intero · la console comanda da un'altra finestra</small>
   </div>
   <div id="link" title="Console collegata"></div>
-  <div id="sound" role="button">Audio disattivato dal browser — clicca qui per attivarlo</div>
+  <div id="sound" role="button">Audio disattivato dal browser — tocca lo schermo per attivarlo</div>
+  <div id="tap" role="button"><div class="btn"></div><p>Tocca per avviare il video</p></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script src="js/sns-config.js"></script>
@@ -72,7 +83,7 @@
       return { t: 'state', id: current, lang,
         playing: current && current.startsWith('video:') ? !vid.paused && !vid.ended : false,
         time: vid.currentTime || 0, dur: isFinite(vid.duration) ? vid.duration : 0,
-        fs: !!document.fullscreenElement, at: Date.now() };
+        fs: !!document.fullscreenElement, blocked: tap.classList.contains('show'), muted: vid.muted, at: Date.now() };
     }
     function report(local) { SNS.send(state(), local); }
 
@@ -80,6 +91,7 @@
       vid.pause();
       vid.classList.remove('on');
       sound.classList.remove('show');
+      tap.classList.remove('show');
     }
 
     function showSlide(i) {
@@ -125,21 +137,44 @@
       });
     }
 
-    // Senza un clic sullo show il browser può bloccare l'audio: in quel caso
-    // il video parte muto e compare l'invito a riattivarlo.
+    // Senza un tocco sullo show il browser può bloccare l'audio: in quel caso il
+    // video parte muto con l'invito a riattivarlo. Safari può bloccare anche il
+    // video muto: allora compare un grande pulsante da toccare.
     const sound = document.getElementById('sound');
+    const tap = document.getElementById('tap');
     function playVideo() {
+      tap.classList.remove('show');
       vid.play().then(() => { if (!vid.muted) sound.classList.remove('show'); }).catch(() => {
         vid.muted = true;
-        vid.play().then(() => sound.classList.add('show')).catch(() => {});
+        vid.play().then(() => { sound.classList.add('show'); report(); }).catch(() => { tap.classList.add('show'); report(); });
       });
     }
     function unmute() {
-      if (!vid.muted) return;
-      vid.muted = false;
-      sound.classList.remove('show');
+      tap.classList.remove('show');
+      if (vid.muted) { vid.muted = false; sound.classList.remove('show'); report(); }
       if (current && current.startsWith('video:') && vid.paused) playVideo();
     }
+    tap.addEventListener('click', e => { e.stopPropagation(); unmute(); });
+
+    // Al primo tocco sulla pagina «sblocca» l'elemento video, con l'audio: per
+    // Safari un play() non muto nato da un gesto vale anche per i video lanciati
+    // dopo dalla console. play() e pause() nello stesso istante: non si sente nulla.
+    let unlocked = false;
+    function unlockMedia() {
+      if (unlocked) return;
+      unlocked = true;
+      if (current && current.startsWith('video:')) { unmute(); return; }
+      if (!vid.getAttribute('src') && SNS.VIDEOS.length) vid.src = SNS.VIDEOS[0].src;
+      vid.muted = false;
+      const p = vid.play();
+      vid.pause();
+      if (p) p.catch(() => {});
+    }
+    ['pointerdown', 'keydown', 'touchend'].forEach(ev => document.addEventListener(ev, unlockMedia, true));
+    // Video partito muto: qualunque tocco sullo show riattiva l'audio
+    document.addEventListener('pointerdown', () => {
+      if (unlocked && vid.muted && current && current.startsWith('video:')) unmute();
+    }, true);
     sound.addEventListener('click', e => { e.stopPropagation(); unmute(); });
 
     function go(id) {
