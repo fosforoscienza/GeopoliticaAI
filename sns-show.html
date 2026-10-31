@@ -108,7 +108,8 @@
 
     // Ordine delle slide: lo decide la console (trascinando le schede) e lo
     // show lo ricorda in questo browser.
-    const ORDER_KEY = 'sns-show-order', DELETED_KEY = 'sns-show-deleted';
+    const ORDER_KEY = 'sns-show-order-2',   // -2: ordine del 31/10 sera
+          DELETED_KEY = 'sns-show-deleted';
     let order = SNS.SLIDES.slice();
     let deleted = [];               // slide eliminate dalla console: fuori dalla sequenza
     try { const d = JSON.parse(localStorage.getItem(DELETED_KEY)); if (Array.isArray(d)) deleted = d; } catch (_) {}
