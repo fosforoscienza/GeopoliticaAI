@@ -56,6 +56,8 @@
       color: #e6ecf5; font-size: 14px; display: none; }
     #out-panel.show { display: block; }
     #out-panel h4 { margin: 0 0 10px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: #8fd2ff; }
+    #out-state { font-size: 16px; font-weight: 600; color: #fff; }
+    #out-btn.warn { opacity: 1 !important; border-color: #ff4d5e; color: #ffd5da; background: rgba(60,6,14,0.9); }
     #out-panel select, #out-panel button { width: 100%; margin-top: 8px; padding: 10px; border-radius: 10px; font: inherit;
       background: #0d1a2c; color: #e6ecf5; border: 1px solid rgba(143,210,255,0.25); }
     #out-panel p { margin: 10px 0 0; color: rgba(230,236,245,0.6); font-size: 13px; line-height: 1.4; }
@@ -80,9 +82,9 @@
   <button id="out-btn" title="Uscita audio (A)">Audio: predefinita</button>
   <div id="out-panel">
     <h4>Uscita audio dei video</h4>
-    <select id="out-select"></select>
-    <button id="out-perm">Mostra i nomi dei dispositivi</button>
-    <p id="out-note">Il video esce sullo schermo (HDMI), l'audio dove scegli qui: di solito le cuffie / jack. Le AirPods restano a Jarvis.</p>
+    <div id="out-state"></div>
+    <button id="out-perm">Consenti di vedere i dispositivi audio</button>
+    <p id="out-note">L'audio dei video esce solo dal mini jack («Cuffie esterne»), mai dalle AirPods o da altri dispositivi Bluetooth. Se il jack non c'è, i video restano muti.</p>
   </div>
   <div id="sound" role="button">Audio disattivato dal browser — tocca lo schermo per attivarlo</div>
   <div id="tap" role="button"><div class="btn"></div><p>Tocca per avviare il video</p></div>
@@ -130,7 +132,7 @@
       return { t: 'state', id: current, lang,
         playing: current && current.startsWith('video:') ? !vid.paused && !vid.ended : false,
         time: vid.currentTime || 0, dur: isFinite(vid.duration) ? vid.duration : 0,
-        fs: !!document.fullscreenElement, order: order.map(x => x.id), deleted, blocked: tap.classList.contains('show'), muted: vid.muted, out: outName(), at: Date.now() };
+        fs: !!document.fullscreenElement, order: order.map(x => x.id), deleted, blocked: tap.classList.contains('show'), muted: vid.muted, out: outName(), jack: jackOk, at: Date.now() };
     }
     function report(local) { SNS.send(state(), local); }
 
@@ -177,7 +179,7 @@
         if (videoURL) { URL.revokeObjectURL(videoURL); videoURL = null; }
         if (v.blob) videoURL = URL.createObjectURL(v.blob);
         vid.src = videoURL || v.src;
-        vid.muted = false;
+        vid.muted = !jackOk;                      // senza jack niente audio, mai sulle AirPods
         vid.classList.add('on');
         frames.forEach(f => f.classList.remove('on'));
         playVideo();
@@ -199,7 +201,7 @@
     }
     function unmute() {
       tap.classList.remove('show');
-      if (vid.muted) { vid.muted = false; sound.classList.remove('show'); report(); }
+      if (vid.muted && jackOk) { vid.muted = false; sound.classList.remove('show'); report(); }
       if (current && current.startsWith('video:') && vid.paused) playVideo();
     }
     tap.addEventListener('click', e => { e.stopPropagation(); unmute(); });
@@ -211,9 +213,10 @@
     function unlockMedia() {
       if (unlocked) return;
       unlocked = true;
+      askDeviceNames();                          // serve per riconoscere il jack per nome
       if (current && current.startsWith('video:')) { unmute(); return; }
       if (!vid.getAttribute('src') && SNS.VIDEOS.length) vid.src = SNS.VIDEOS[0].src;
-      vid.muted = false;
+      vid.muted = !jackOk;
       const p = vid.play();
       vid.pause();
       if (p) p.catch(() => {});
@@ -221,7 +224,7 @@
     ['pointerdown', 'keydown', 'touchend'].forEach(ev => document.addEventListener(ev, unlockMedia, true));
     // Video partito muto: qualunque tocco sullo show riattiva l'audio
     document.addEventListener('pointerdown', () => {
-      if (unlocked && vid.muted && current && current.startsWith('video:')) unmute();
+      if (unlocked && vid.muted && jackOk && current && current.startsWith('video:')) unmute();
     }, true);
     sound.addEventListener('click', e => { e.stopPropagation(); unmute(); });
 
@@ -320,54 +323,61 @@
     document.addEventListener('mousemove', wake);
     wake();
 
-    // ── Uscita audio: video in HDMI, audio dei video sul jack, AirPods a Jarvis ──
-    // Se nessuno ha scelto, si preferiscono le cuffie/jack a un'uscita Bluetooth:
-    // quando si collegano le AirPods il Mac le rende uscita predefinita.
-    const OUT_KEY = 'sns-audio-out';
-    const WIRED = /cuffie|headphone|esterne|external|line ?out|jack/i, BT = /airpods|bluetooth|beats/i;
+    // ── Uscita audio: SOLO il mini jack («Cuffie esterne»), mai AirPods o Bluetooth ──
+    // Le AirPods servono a Jarvis e il Mac le rende uscita predefinita appena si
+    // collegano: il video quindi non usa mai l'uscita predefinita. Finché il jack
+    // non è riconosciuto e agganciato con setSinkId, i video restano muti.
+    const JACK = /cuffie esterne|external headphones|headphones|cuffie/i;
+    const BT = /airpods|bluetooth|beats|bose|sony|jbl|wireless/i;
     const canSink = typeof vid.setSinkId === 'function' && !!(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices);
     const outBtn = document.getElementById('out-btn'), outPanel = document.getElementById('out-panel');
-    const outSel = document.getElementById('out-select'), outPerm = document.getElementById('out-perm');
-    let outLabel = '';
-    function outName() { return outLabel || (canSink ? 'uscita predefinita del Mac' : 'uscita predefinita (il browser non permette di sceglierla)'); }
-    async function applyOut() {
-      if (!canSink) {
-        outSel.hidden = outPerm.hidden = true;
-        document.getElementById('out-note').textContent = 'Questo browser non permette di scegliere l\'uscita: impostala nel Mac (Impostazioni › Suono › Uscita: Cuffie). Con Chrome si sceglie da qui.';
-        return;
-      }
-      let outs = [];
-      try { outs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audiooutput'); } catch (_) {}
-      const named = outs.some(o => o.label);
-      outPerm.hidden = named;
-      let saved = null; try { saved = localStorage.getItem(OUT_KEY); } catch (_) {}
-      let pick = outs.find(o => o.label && o.label === saved);
-      if (!pick && !saved) pick = outs.find(o => WIRED.test(o.label) && !BT.test(o.label));
-      if (pick && vid.sinkId !== pick.deviceId) { try { await vid.setSinkId(pick.deviceId); } catch (_) { pick = null; } }
-      outLabel = pick ? pick.label : '';
-      outSel.textContent = '';
-      outs.forEach((o, i) => {
-        const opt = document.createElement('option');
-        opt.value = o.deviceId; opt.textContent = o.label || (o.deviceId === 'default' ? 'Predefinita del Mac' : 'Uscita ' + (i + 1));
-        opt.selected = o.deviceId === (vid.sinkId || 'default');
-        outSel.appendChild(opt);
-      });
-      outBtn.textContent = 'Audio: ' + (outLabel || 'predefinita');
-      report();
+    const outState = document.getElementById('out-state'), outPerm = document.getElementById('out-perm');
+    let jackOk = false, outLabel = '';
+    function outName() {
+      if (jackOk) return outLabel;
+      return canSink ? 'jack non trovato: video muti' : 'browser senza scelta dell\'uscita: video muti (usa Chrome)';
     }
-    outSel.addEventListener('change', async () => {
-      const o = outSel.selectedOptions[0];
-      try { await vid.setSinkId(outSel.value); localStorage.setItem(OUT_KEY, o ? o.textContent : ''); } catch (_) {}
+    async function askDeviceNames() {
+      // i nomi dei dispositivi si vedono solo dopo il permesso del microfono (subito richiuso)
+      if (!canSink) return;
+      try {
+        const outs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audiooutput');
+        if (outs.some(o => o.label)) return;
+        const st = await navigator.mediaDevices.getUserMedia({ audio: true });
+        st.getTracks().forEach(t => t.stop());
+      } catch (_) {}
       applyOut();
-    });
-    outPerm.addEventListener('click', async () => {
-      // i nomi delle uscite si vedono solo dopo il permesso del microfono (subito richiuso)
-      try { const st = await navigator.mediaDevices.getUserMedia({ audio: true }); st.getTracks().forEach(t => t.stop()); } catch (_) {}
-      applyOut();
-    });
+    }
+    async function applyOut() {
+      const was = jackOk;
+      let named = false;
+      if (canSink) {
+        let outs = [];
+        try { outs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audiooutput'); } catch (_) {}
+        named = outs.some(o => o.label);
+        // il dispositivo vero, non le voci «Predefinito»/«Comunicazioni» che lo ripetono
+        const jack = outs.find(o => o.deviceId !== 'default' && o.deviceId !== 'communications' &&
+                                    JACK.test(o.label) && !BT.test(o.label));
+        jackOk = false;
+        if (jack) {
+          try { if (vid.sinkId !== jack.deviceId) await vid.setSinkId(jack.deviceId); jackOk = vid.sinkId === jack.deviceId; } catch (_) {}
+          outLabel = jack.label;
+        }
+      }
+      if (!jackOk) vid.muted = true;
+      else if (!was && unlocked && current && current.startsWith('video:')) unmute();
+      outPerm.hidden = !canSink || named;
+      outState.textContent = jackOk ? 'Audio sul jack: ' + outLabel : 'Jack non trovato: i video restano muti';
+      if (!canSink) document.getElementById('out-note').textContent = 'Questo browser non permette di scegliere l\'uscita, quindi i video restano muti: apri lo show in Chrome.';
+      outBtn.textContent = jackOk ? 'Audio: ' + outLabel : 'Audio video: jack non trovato';
+      outBtn.classList.toggle('warn', !jackOk);
+      if (jackOk !== was) report();
+    }
+    outPerm.addEventListener('click', e => { e.stopPropagation(); askDeviceNames(); });
     outBtn.addEventListener('click', e => { e.stopPropagation(); outPanel.classList.toggle('show'); applyOut(); });
     outPanel.addEventListener('pointerdown', e => e.stopPropagation());
     if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) navigator.mediaDevices.addEventListener('devicechange', applyOut);
+    setInterval(() => { if (!jackOk) applyOut(); }, 4000);   // il jack può comparire dopo
     applyOut();
 
     showSlide(0);
