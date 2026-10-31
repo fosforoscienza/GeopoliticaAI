@@ -59,34 +59,24 @@
       max-width: 1416px; width: 100%;
       margin-bottom: clamp(22px, 3.4vh, 44px);
     }
+    .cols { margin-top: clamp(16px, 4vh, 50px); }
     .col {
-      position: relative; padding-top: clamp(40px, 5vh, 60px);
+      text-align: center;
       animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both;
     }
-    .col:nth-child(1){ animation-delay: .15s }
-    .col:nth-child(2){ animation-delay: .28s }
-    .col:nth-child(3){ animation-delay: .41s }
+    .col:nth-child(1){ animation-delay: .2s }
+    .col:nth-child(2){ animation-delay: .35s }
+    .col:nth-child(3){ animation-delay: .5s }
     .col .num {
-      position: absolute; top: 0; left: 0;
-      font-size: clamp(38px, 4.28vw, 66px); font-weight: 900;
-      line-height: 1; color: transparent;
-      -webkit-text-stroke: 1.6px rgba(65,183,255,0.75);
-      letter-spacing: -0.02em;
+      display: block; font-size: clamp(90px, 9.5vw, 180px); font-weight: 900; line-height: 0.9; letter-spacing: -0.04em;
+      background: linear-gradient(180deg, #ffffff 30%, #8fd2ff 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+      filter: drop-shadow(0 0 40px rgba(65,183,255,0.3));
     }
     .col h3 {
-      font-size: clamp(21px, 1.89vw, 33px); font-weight: 800;
-      color: #fff; margin: 0 0 clamp(8px,1.2vh,12px); letter-spacing: 0.01em;
+      margin: clamp(8px, 1.4vh, 16px) 0 0; font-size: clamp(22px, 2.1vw, 40px); font-weight: 300; color: #e2e8f0;
     }
-    .col h3::after {
-      content: ''; display: block; width: 40px; height: 3px;
-      margin-top: 10px; border-radius: 3px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-    }
-    .col p {
-      font-size: clamp(20px, 1.9vw, 34px); line-height: 1.4;
-      color: #cbd5e1; margin: 0; font-weight: 300;
-    }
-    .col p b { color: #fff; font-weight: 700; }
+    .col h3 b { color: #fff; font-weight: 700; }
 
     @media (max-aspect-ratio: 1/1) {
       .stage { justify-content: flex-start; overflow-y: auto; padding-top: clamp(40px,7vh,70px); padding-bottom: clamp(90px,13vh,120px); }
@@ -105,9 +95,9 @@
     </div>
 
     <div class="cols">
-      <div class="col"><span class="num">01</span><h3 id="h1"></h3><p id="p1"></p></div>
-      <div class="col"><span class="num">02</span><h3 id="h2"></h3><p id="p2"></p></div>
-      <div class="col"><span class="num">03</span><h3 id="h3"></h3><p id="p3"></p></div>
+      <div class="col"><span class="num">4</span><h3 id="h1"></h3></div>
+      <div class="col"><span class="num">8</span><h3 id="h2"></h3></div>
+      <div class="col"><span class="num">1</span><h3 id="h3"></h3></div>
     </div>
   </div>
 
@@ -127,24 +117,20 @@
         eyebrow: 'Dartmouth College · Estate 1956',
         name: 'La nascita dell\'AI',
         lead: '<span class="accent">«Ogni aspetto dell\'apprendimento e dell\'intelligenza può essere descritto così precisamente che una macchina potrà simularlo»</span>',
-        h1: 'La proposta', p1: 'Quattro scienziati, 7.500 dollari e una parola nuova: <b>«Artificial Intelligence»</b>.',
-        h2: 'I pionieri',  p2: 'Otto settimane a Hanover: arriva il <b>primo programma di AI</b>.',
-        h3: 'La promessa', p3: 'Pensavano bastasse un\'estate. <b>Ci sono voluti settant\'anni.</b>'
+        h1: '<b>scienziati</b> firmano la proposta', h2: '<b>settimane</b> di lavoro', h3: '<b>parola nuova</b>: «Artificial Intelligence»'
       },
       en: {
         eyebrow: 'Dartmouth College · Summer 1956',
         name: 'The birth of AI',
         lead: '<span class="accent">“Every aspect of learning or any other feature of intelligence can be so precisely described that a machine can be made to simulate it”</span>',
-        h1: 'The proposal', p1: 'Four scientists, $7,500 and a new phrase: <b>“Artificial Intelligence”</b>.',
-        h2: 'The pioneers', p2: 'Eight weeks in Hanover: here comes <b>the first AI program</b>.',
-        h3: 'The promise',  p3: 'They thought one summer would do. <b>It took seventy years.</b>'
+        h1: '<b>scientists</b> sign the proposal', h2: '<b>weeks</b> of work', h3: '<b>new phrase</b>: “Artificial Intelligence”'
       }
     };
 
     function set(id, html){ document.getElementById(id).innerHTML = html; }
     function renderTexts() {
       const t = TXT[lang];
-      ['eyebrow','name','lead','h1','p1','h2','p2','h3','p3'].forEach(k => set(k, t[k]));
+      ['eyebrow','name','lead','h1','h2','h3'].forEach(k => set(k, t[k]));
     }
     function onLangChange() { renderTexts(); }
 
