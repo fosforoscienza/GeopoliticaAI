@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════
-// Dati del quiz film (10 emoji + 6 trame). Usati dalle slide quiz-*.html
+// Dati del quiz film (10 emoji + 12 trame). Usati dalle slide quiz-*.html
 // (js/film-quiz.js) e dalla console di regia SNS (soluzioni sulle schede).
 // ════════════════════════════════════════════════════
 const FILM_QUIZ = {
@@ -39,6 +39,30 @@ const FILM_QUIZ = {
     { it: 'Shrek', en: 'Shrek', y: 2001, g: 'Animazione / commedia',
       s: ['👹🏞️', '🐴🗣️', '🏰🐉👸', '💚'],
       pit: 'Un orco burbero, accompagnato da un asino chiacchierone, deve liberare una principessa prigioniera in un castello sorvegliato da un drago… e scopre un segreto che la riguarda.',
-      pen: 'A grumpy ogre, joined by a chatty donkey, must rescue a princess locked in a dragon-guarded castle… and discovers her secret.' }
+      pen: 'A grumpy ogre, joined by a chatty donkey, must rescue a princess locked in a dragon-guarded castle… and discovers her secret.' },
+    { it: 'Pinocchio', en: 'Pinocchio', y: 1940, g: 'Animazione / fiaba',
+      s: ['👴🪵🔨', '🧚‍♀️✨', '🤥👃', '🐋👴'],
+      pit: 'Un vecchio falegname intaglia un burattino di legno che prende vita: ogni bugia gli allunga il naso, e per diventare un bambino vero dovrà salvare il suo babbo dalla pancia di una balena.',
+      pen: 'An old woodcarver makes a wooden puppet that comes to life: every lie makes its nose grow, and to become a real boy it must rescue its father from the belly of a whale.' },
+    { it: 'Toy Story', en: 'Toy Story', y: 1995, g: 'Animazione',
+      s: ['🤠🧸', '👨‍🚀🚀', '😠🤠👨‍🚀', '🤝🏠'],
+      pit: 'Quando nessuno guarda i giocattoli prendono vita: il cowboy preferito di un bambino è geloso del nuovo arrivato, un astronauta convinto di essere un vero ranger spaziale, finché i due devono collaborare per tornare a casa.',
+      pen: 'When nobody is watching, toys come to life: a boy\'s favourite cowboy grows jealous of the new arrival, a spaceman convinced he is a real space ranger, until the two must team up to get back home.' },
+    { it: 'I predatori dell\'arca perduta', en: 'Raiders of the Lost Ark', y: 1981, g: 'Avventura',
+      s: ['🤠🐍', '🗿🏃‍♂️🪨', '📦✨', '😱👻'],
+      pit: 'Un archeologo con frusta e cappello, terrorizzato dai serpenti, gira il mondo per ritrovare l\'Arca dell\'Alleanza prima dei nazisti, sfuggendo a trappole e massi rotolanti.',
+      pen: 'An archaeologist with a whip and a hat, terrified of snakes, travels the world to find the Ark of the Covenant before the Nazis, escaping traps and rolling boulders.' },
+    { it: 'Ratatouille', en: 'Ratatouille', y: 2007, g: 'Animazione / commedia',
+      s: ['🐀👃', '🇫🇷🍳', '👨‍🍳🐀', '🍆🍅🧐'],
+      pit: 'A Parigi un topo con un fiuto straordinario sogna di diventare chef: nascosto sotto il cappello di un giovane sguattero, lo guida in cucina fino a conquistare il critico più temuto della città.',
+      pen: 'In Paris a rat with an extraordinary nose dreams of becoming a chef: hidden under the hat of a young kitchen boy, he guides him at the stove until they win over the city\'s most feared critic.' },
+    { it: 'WALL·E', en: 'WALL·E', y: 2008, g: 'Animazione / fantascienza',
+      s: ['🤖🗑️🌍', '🤖💙🤖', '🌱🥾', '🚀🌍🌱'],
+      pit: 'Su una Terra abbandonata e sommersa dai rifiuti, un piccolo robot spazzino si innamora di una sonda arrivata dallo spazio e la segue fino all\'astronave dove vivono gli umani, portando con sé una pianticella.',
+      pen: 'On an abandoned Earth buried in rubbish, a little cleaning robot falls in love with a probe from space and follows her to the starship where humans live, carrying a tiny plant.' },
+    { it: '2001: Odissea nello spazio', en: '2001: A Space Odyssey', y: 1968, g: 'Fantascienza',
+      s: ['🐒🦴', '⬛🌕', '🚀🔴👁️', '👶🌌'],
+      pit: 'Un misterioso monolite nero accompagna l\'evoluzione dell\'umanità; in viaggio verso Giove, l\'equipaggio di un\'astronave deve vedersela con HAL 9000, il computer di bordo che smette di obbedire.',
+      pen: 'A mysterious black monolith accompanies human evolution; on a voyage to Jupiter, a spaceship crew must deal with HAL 9000, the onboard computer that stops obeying.' }
   ]
 };

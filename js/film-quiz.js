@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════
-// Quiz film — 10 slide emoji + 6 slide trama.
+// Quiz film — 10 slide emoji + 12 slide trama.
 // Ogni pagina dichiara <body data-quiz="emoji-3"> (o "trama-2").
 // La slide mostra solo l'indovinello: la SOLUZIONE va nella console.
 // ════════════════════════════════════════════════════
@@ -65,7 +65,7 @@ const QUIZ_TXT = {
     const now = Date.now();
     if (now - lastLog < 1500) return; // avoid duplicates (load + focus)
     lastLog = now;
-    const label = kind === 'emoji' ? 'EMOJI ' + n + '/10' : 'TRAMA ' + n + '/6';
+    const label = (kind === 'emoji' ? 'EMOJI ' : 'TRAMA ') + n + '/' + list.length;
     console.log(
       '%c🎬 SOLUZIONE ' + label + '%c  ' + q.it + (q.en !== q.it ? '  ·  ' + q.en : '') + '  (' + q.y + ')',
       'background:#41b7ff;color:#02060f;font-weight:800;padding:4px 8px;border-radius:4px;font-size:13px',
