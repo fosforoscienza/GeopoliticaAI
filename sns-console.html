@@ -104,7 +104,13 @@
     .notes summary::-webkit-details-marker { display: none; }
     .notes summary::before { content: '▸'; font-size: 14px; transition: transform .15s; }
     .notes[open] summary::before { transform: rotate(90deg); }
-    .notes summary span { letter-spacing: 0; text-transform: none; color: var(--muted); font-weight: 400; font-size: 13px; }
+    .notes summary { flex-wrap: wrap; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: 6px; }
+    .tabs button { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel-2);
+      font-size: 13px; letter-spacing: 0; text-transform: none; font-weight: 600; color: var(--muted); }
+    .tabs button.on { background: rgba(65,183,255,0.2); border-color: rgba(65,183,255,0.6); color: var(--text); }
+    .tabs button.has::after { content: ''; display: inline-block; width: 6px; height: 6px; margin-left: 6px;
+      border-radius: 50%; background: var(--accent); vertical-align: middle; }
     .notes textarea { display: block; width: calc(100% - 28px); margin: 0 14px 14px; min-height: 160px; height: 220px;
       resize: vertical; border-radius: 10px; border: 1px solid var(--line); background: #050b16; color: var(--text);
       font: 16px/1.55 'Segoe UI', system-ui, -apple-system, sans-serif; padding: 12px 14px; }
@@ -152,8 +158,16 @@
     </section>
 
     <details class="notes" id="notes-box" open>
-      <summary>Scaletta <span>appunti, restano su questo dispositivo</span></summary>
-      <textarea id="notes" placeholder="Scrivi qui la scaletta…" spellcheck="true"></textarea>
+      <summary>Scaletta
+        <span class="tabs" id="note-tabs">
+          <button data-k="generale">Generale</button>
+          <button data-k="rosasco">Rosasco</button>
+          <button data-k="villa">Villa</button>
+          <button data-k="benvenuto">Benvenuto</button>
+          <button data-k="finale">Finale</button>
+        </span>
+      </summary>
+      <textarea id="notes" spellcheck="true"></textarea>
     </details>
 
     <section>
@@ -289,17 +303,48 @@
     });
     renderSlides();
 
-    // ── Scaletta: appunti salvati su questo dispositivo ──
-    const NOTES_KEY = 'sns-scaletta', NOTES_OPEN_KEY = 'sns-scaletta-aperta';
-    try {
-      $('notes').value = localStorage.getItem(NOTES_KEY) || '';
-      if (localStorage.getItem(NOTES_OPEN_KEY) === '0') $('notes-box').open = false;
-    } catch (_) {}
+    // ── Scaletta: un testo per ogni parte (generale, intervistati, finale),
+    //    salvato su questo dispositivo ──
+    const NOTES_OPEN_KEY = 'sns-scaletta-aperta', NOTES_TAB_KEY = 'sns-scaletta-scheda';
+    const notesKey = k => k === 'generale' ? 'sns-scaletta' : 'sns-scaletta-' + k;   // «generale» tiene il testo di prima
+    const NOTE_HINT = {
+      generale: 'Scaletta generale della serata…', rosasco: 'Domande e appunti per Lorenzo Rosasco…',
+      villa: 'Domande e appunti per Silvia Villa…', benvenuto: 'Domande e appunti per Federico Benvenuto…',
+      finale: 'Chiusura della serata…'
+    };
+    let noteTab = 'generale';
+    function readNote(k) { try { return localStorage.getItem(notesKey(k)) || ''; } catch (_) { return ''; } }
+    function paintTabs() {
+      document.querySelectorAll('#note-tabs button').forEach(b => {
+        b.classList.toggle('on', b.dataset.k === noteTab);
+        b.classList.toggle('has', b.dataset.k !== noteTab && !!readNote(b.dataset.k).trim());
+      });
+    }
+    function openTab(k) {
+      noteTab = k;
+      $('notes').value = readNote(k);
+      $('notes').placeholder = NOTE_HINT[k] + ' (resta su questo dispositivo)';
+      try { localStorage.setItem(NOTES_TAB_KEY, k); } catch (_) {}
+      paintTabs();
+    }
+    document.querySelectorAll('#note-tabs button').forEach(b => b.addEventListener('click', e => {
+      e.preventDefault();                       // dentro <summary>: non chiudere il riquadro
+      e.stopPropagation();
+      saveNote();
+      openTab(b.dataset.k);
+      $('notes-box').open = true;
+    }));
     let notesTimer = null;
-    $('notes').addEventListener('input', () => {
+    function saveNote() {
       clearTimeout(notesTimer);
-      notesTimer = setTimeout(() => { try { localStorage.setItem(NOTES_KEY, $('notes').value); } catch (_) {} }, 300);
-    });
+      try { localStorage.setItem(notesKey(noteTab), $('notes').value); } catch (_) {}
+    }
+    $('notes').addEventListener('input', () => { clearTimeout(notesTimer); notesTimer = setTimeout(saveNote, 300); });
+    try {
+      if (localStorage.getItem(NOTES_OPEN_KEY) === '0') $('notes-box').open = false;
+      const t = localStorage.getItem(NOTES_TAB_KEY);
+      openTab(NOTE_HINT[t] ? t : 'generale');
+    } catch (_) { openTab('generale'); }
     $('notes-box').addEventListener('toggle', () => {
       try { localStorage.setItem(NOTES_OPEN_KEY, $('notes-box').open ? '1' : '0'); } catch (_) {}
     });

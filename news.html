@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>News — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --accent: #41b7ff; --accent-soft: #8fd2ff; --ink: #02040b; --panel: rgba(8,17,31,0.82); --line: rgba(143,210,255,0.16); }
+    html, body { background: var(--ink) !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; }
+
+    .stage {
+      position: fixed; inset: 0; overflow: hidden;
+      background:
+        radial-gradient(80% 55% at 50% 110%, rgba(31,127,209,0.18), transparent 70%),
+        radial-gradient(60% 50% at 50% -10%, rgba(65,183,255,0.12), transparent 70%),
+        var(--ink);
+      display: grid; grid-template-rows: auto 1fr auto;
+      padding: clamp(22px, 4.2vh, 50px) clamp(24px, 3.4vw, 70px) 0;
+      gap: clamp(16px, 2.8vh, 32px);
+    }
+    #sky { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.35; pointer-events: none; }
+    .stage > *:not(#sky) { position: relative; z-index: 1; }
+
+    @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+    /* ---------- Testata ---------- */
+    .head { display: flex; align-items: flex-end; gap: 28px; animation: rise .8s .05s cubic-bezier(0.16,1,0.3,1) both; }
+    .head h1 {
+      margin: 0; font-size: clamp(46px, 5.6vw, 108px); font-weight: 900; letter-spacing: -0.03em; line-height: 0.85;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 30%, #cfe9ff 72%, var(--accent) 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+      filter: drop-shadow(0 0 40px rgba(65,183,255,0.3));
+    }
+    .head .what { padding-bottom: 6px; }
+    .head .eyebrow { font-size: clamp(12px, 1vw, 17px); font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: var(--accent-soft); }
+    .head .sub { font-size: clamp(15px, 1.35vw, 24px); font-weight: 300; font-style: italic; color: #e6ecf5; margin-top: 6px; }
+    .head .live { margin-left: auto; display: flex; align-items: center; gap: 10px; padding-bottom: 8px;
+      font-size: clamp(12px, 0.95vw, 16px); font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--accent-soft); }
+    .head .live i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: blink 1.6s infinite; }
+    @keyframes blink { 50% { opacity: .35; } }
+
+    /* ---------- Griglia: notizia principale + quattro laterali ---------- */
+    .grid { display: grid; grid-template-columns: 1.45fr 1fr; gap: clamp(16px, 1.6vw, 30px); min-height: 0; }
+    .lead { position: relative; border-radius: 22px; overflow: hidden; background: #050b16; border: 1px solid var(--line);
+      animation: rise .9s .2s cubic-bezier(0.16,1,0.3,1) both; min-height: 0; }
+    .lead .img { position: absolute; inset: 0; }
+    .lead .img img { width: 100%; height: 100%; object-fit: cover; animation: kb 26s ease-out both; }
+    @keyframes kb { from { transform: scale(1.0); } to { transform: scale(1.08); } }
+    .lead::after { content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(2,4,11,0.97) 0%, rgba(2,4,11,0.82) 34%, rgba(2,4,11,0.15) 66%, rgba(2,4,11,0) 100%); }
+    .lead .body { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: clamp(20px, 2.2vw, 44px); }
+    .lead h2 { margin: 12px 0 0; font-size: clamp(28px, 2.6vw, 52px); font-weight: 800; line-height: 1.1; letter-spacing: -0.01em; color: #fff; }
+    .lead p { margin: 14px 0 0; font-size: clamp(16px, 1.25vw, 23px); line-height: 1.45; color: #d7e4f3; font-weight: 300;
+      display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .side { display: grid; grid-template-rows: repeat(4, 1fr); gap: clamp(12px, 1.4vh, 18px); min-height: 0; }
+    .item { display: grid; grid-template-columns: 38% 1fr; gap: 16px; align-items: center; min-height: 0;
+      border-radius: 16px; overflow: hidden; background: var(--panel); border: 1px solid var(--line); padding-right: 16px;
+      animation: rise .8s cubic-bezier(0.16,1,0.3,1) both; }
+    .item .img { height: 100%; min-height: 0; overflow: hidden; background: #050b16; }
+    .item .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .item h3 { margin: 8px 0 0; font-size: clamp(15px, 1.15vw, 22px); font-weight: 700; line-height: 1.25; color: #fff;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .chip { display: inline-flex; align-items: center; gap: 8px; font-size: clamp(11px, 0.78vw, 14px); font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--accent-soft); }
+    .chip b { padding: 4px 9px; border-radius: 6px; background: rgba(65,183,255,0.16); border: 1px solid rgba(65,183,255,0.4); color: #dff2ff; font-weight: 700; }
+    .chip[data-cat="geopolitica-ai"] b { background: rgba(65,183,255,0.3); border-color: var(--accent); }
+
+    /* immagine mancante o bloccata: fondo sfumato */
+    .ph { background: radial-gradient(120% 90% at 20% 10%, rgba(65,183,255,0.35), transparent 60%), linear-gradient(135deg, #0b1d33, #050b16); }
+    .ph img { display: none; }
+
+    /* ---------- Nastro con le altre notizie ---------- */
+    .ticker { margin: 0 calc(-1 * clamp(24px, 3.4vw, 70px)); border-top: 1px solid var(--line); background: rgba(3,8,18,0.9);
+      height: clamp(52px, 6.4vh, 72px); display: flex; align-items: center; overflow: hidden;
+      animation: rise .8s .6s cubic-bezier(0.16,1,0.3,1) both; }
+    .ticker .lab { position: relative; z-index: 2; box-shadow: 18px 0 24px rgba(3,8,18,0.95);
+      flex: none; height: 100%; display: flex; align-items: center; padding: 0 22px;
+      background: var(--accent); color: #02121f; font-weight: 900; letter-spacing: .2em; font-size: clamp(12px, 0.95vw, 16px); text-transform: uppercase; }
+    .ticker .track { display: flex; gap: 56px; white-space: nowrap; padding-left: 40px; animation: scroll var(--dur, 90s) linear infinite; }
+    .ticker .track span { font-size: clamp(15px, 1.2vw, 22px); color: #e6ecf5; }
+    .ticker .track span::before { content: '●'; color: var(--accent); margin-right: 14px; font-size: .7em; vertical-align: middle; }
+    @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .msg { display: flex; align-items: center; justify-content: center; font-size: 22px; color: #9fb3c8; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .stage *, .stage *::after { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <canvas id="sky"></canvas>
+    <header class="head">
+      <h1>News</h1>
+      <div class="what">
+        <div class="eyebrow" id="eyebrow">Intelligenza artificiale · Geopolitica</div>
+        <div class="sub" id="updated"></div>
+      </div>
+      <div class="live"><i></i>crivellini.it</div>
+    </header>
+    <main class="grid" id="grid"><div class="msg" id="msg">Caricamento delle notizie…</div></main>
+    <footer class="ticker"><div class="lab">Ultime</div><div class="track" id="track"></div></footer>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/rete-neurale.js"></script>
+  <script>
+    // Le stesse notizie della pagina News di crivellini.it (file statico, CORS aperto).
+    const NEWS_URL = 'https://www.crivellini.it/data/news.json';
+    const MONTHS = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+    function when(iso) {
+      const d = new Date(iso); if (isNaN(d)) return '';
+      return d.getDate() + ' ' + MONTHS[d.getMonth()] + ', ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    }
+    function img(s, eager) {
+      return s.hero_image_url
+        ? `<div class="img"><img src="${esc(s.hero_image_url)}" alt="" referrerpolicy="no-referrer" decoding="async"${eager ? ' fetchpriority="high"' : ''}></div>`
+        : '<div class="img ph"></div>';
+    }
+    function chip(s, cats) {
+      return `<span class="chip" data-cat="${esc(s.category)}"><b>${esc(cats[s.category] || s.category)}</b>${esc(when(s.published_at))}</span>`;
+    }
+
+    function render(data) {
+      const cats = Object.fromEntries((data.categories || []).map(c => [c.slug, c.name]));
+      const st = (data.stories || []).filter(s => s && s.headline);
+      if (!st.length) { document.getElementById('msg').textContent = 'Nessuna notizia disponibile.'; return; }
+      const [lead, ...rest] = st;
+      const side = rest.slice(0, 4), more = rest.slice(4);
+      document.getElementById('grid').innerHTML =
+        `<article class="lead">${img(lead, true)}<div class="body">${chip(lead, cats)}<h2>${esc(lead.headline)}</h2><p>${esc(lead.summary)}</p></div></article>` +
+        `<div class="side">${side.map((s, i) => `<article class="item" style="animation-delay:${0.35 + i * 0.12}s">${img(s)}<div>${chip(s, cats)}<h3>${esc(s.headline)}</h3></div></article>`).join('')}</div>`;
+      // immagini bloccate dalle testate: fondo sfumato al loro posto
+      document.querySelectorAll('.img img').forEach(im => {
+        const fail = () => im.parentElement.classList.add('ph');
+        im.addEventListener('error', fail);
+        if (im.complete && im.naturalWidth === 0) fail();
+      });
+      const heads = (more.length ? more : rest).map(s => `<span>${esc(s.headline)}</span>`).join('');
+      const track = document.getElementById('track');
+      track.innerHTML = heads + heads;                       // doppio, per lo scorrimento continuo
+      track.style.setProperty('--dur', Math.max(40, (more.length || rest.length) * 9) + 's');
+      const u = new Date(data.updated_at);
+      document.getElementById('updated').textContent = isNaN(u) ? '' :
+        'Aggiornate al ' + u.getDate() + ' ' + ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'][u.getMonth()] + ' ' + u.getFullYear();
+    }
+
+    let lastStamp = '';
+    function load() {
+      fetch(NEWS_URL, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(d => { if (d.updated_at !== lastStamp) { lastStamp = d.updated_at; render(d); } })
+        .catch(() => { if (!lastStamp) document.getElementById('msg').textContent = 'Notizie non raggiungibili: controlla la connessione.'; });
+    }
+    load();
+    setInterval(load, 10 * 60 * 1000);                       // si aggiorna da sola ogni 10 minuti
+    startNeuralNet(document.getElementById('sky'));
+  </script>
+</body>
+</html>
