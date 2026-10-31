@@ -46,6 +46,20 @@
       border-bottom: 24px solid transparent; margin-left: 10px; }
     #tap p { font-size: 16px; letter-spacing: .12em; text-transform: uppercase; color: #dff2ff; }
 
+    /* Uscita audio del video: pulsante discreto in basso a sinistra (o tasto A) */
+    #out-btn { position: fixed; left: 12px; bottom: 12px; z-index: 46; padding: 8px 12px; border-radius: 10px;
+      border: 1px solid rgba(143,210,255,0.3); background: rgba(2,4,11,0.8); color: #cfe9ff; font-size: 13px;
+      cursor: pointer; opacity: 0; transition: opacity .3s; }
+    body:not(.idle) #out-btn { opacity: .85; }
+    #out-panel { position: fixed; left: 12px; bottom: 56px; z-index: 47; width: min(420px, calc(100vw - 24px));
+      padding: 16px; border-radius: 14px; border: 1px solid rgba(65,183,255,0.45); background: rgba(3,8,18,0.96);
+      color: #e6ecf5; font-size: 14px; display: none; }
+    #out-panel.show { display: block; }
+    #out-panel h4 { margin: 0 0 10px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: #8fd2ff; }
+    #out-panel select, #out-panel button { width: 100%; margin-top: 8px; padding: 10px; border-radius: 10px; font: inherit;
+      background: #0d1a2c; color: #e6ecf5; border: 1px solid rgba(143,210,255,0.25); }
+    #out-panel p { margin: 10px 0 0; color: rgba(230,236,245,0.6); font-size: 13px; line-height: 1.4; }
+
     /* Pallino discreto: collegamento con la console */
     #link { position: fixed; top: 10px; right: 10px; z-index: 40; width: 8px; height: 8px; border-radius: 50%;
       background: #34d399; opacity: 0; transition: opacity .4s; pointer-events: none; }
@@ -63,6 +77,13 @@
     <small>Frecce / telecomando per le slide · F schermo intero · la console comanda da un'altra finestra</small>
   </div>
   <div id="link" title="Console collegata"></div>
+  <button id="out-btn" title="Uscita audio (A)">Audio: predefinita</button>
+  <div id="out-panel">
+    <h4>Uscita audio dei video</h4>
+    <select id="out-select"></select>
+    <button id="out-perm">Mostra i nomi dei dispositivi</button>
+    <p id="out-note">Il video esce sullo schermo (HDMI), l'audio dove scegli qui: di solito le cuffie / jack. Le AirPods restano a Jarvis.</p>
+  </div>
   <div id="sound" role="button">Audio disattivato dal browser — tocca lo schermo per attivarlo</div>
   <div id="tap" role="button"><div class="btn"></div><p>Tocca per avviare il video</p></div>
 
@@ -109,7 +130,7 @@
       return { t: 'state', id: current, lang,
         playing: current && current.startsWith('video:') ? !vid.paused && !vid.ended : false,
         time: vid.currentTime || 0, dur: isFinite(vid.duration) ? vid.duration : 0,
-        fs: !!document.fullscreenElement, order: order.map(x => x.id), deleted, blocked: tap.classList.contains('show'), muted: vid.muted, at: Date.now() };
+        fs: !!document.fullscreenElement, order: order.map(x => x.id), deleted, blocked: tap.classList.contains('show'), muted: vid.muted, out: outName(), at: Date.now() };
     }
     function report(local) { SNS.send(state(), local); }
 
@@ -247,6 +268,7 @@
     // ── Tastiera / telecomando ──
     document.addEventListener('keydown', e => {
       if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); return; }
+      if (e.key === 'a' || e.key === 'A') { outPanel.classList.toggle('show'); if (outPanel.classList.contains('show')) applyOut(); return; }
       if (!start.classList.contains('gone') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); begin(); return; }
       if ((e.key === 'k' || e.key === 'K') && current && current.startsWith('video:')) {
         vid.paused ? playVideo() : vid.pause(); return;
@@ -297,6 +319,56 @@
     function wake() { document.body.classList.remove('idle'); clearTimeout(idleTimer); idleTimer = setTimeout(() => document.body.classList.add('idle'), 2000); }
     document.addEventListener('mousemove', wake);
     wake();
+
+    // ── Uscita audio: video in HDMI, audio dei video sul jack, AirPods a Jarvis ──
+    // Se nessuno ha scelto, si preferiscono le cuffie/jack a un'uscita Bluetooth:
+    // quando si collegano le AirPods il Mac le rende uscita predefinita.
+    const OUT_KEY = 'sns-audio-out';
+    const WIRED = /cuffie|headphone|esterne|external|line ?out|jack/i, BT = /airpods|bluetooth|beats/i;
+    const canSink = typeof vid.setSinkId === 'function' && !!(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices);
+    const outBtn = document.getElementById('out-btn'), outPanel = document.getElementById('out-panel');
+    const outSel = document.getElementById('out-select'), outPerm = document.getElementById('out-perm');
+    let outLabel = '';
+    function outName() { return outLabel || (canSink ? 'uscita predefinita del Mac' : 'uscita predefinita (il browser non permette di sceglierla)'); }
+    async function applyOut() {
+      if (!canSink) {
+        outSel.hidden = outPerm.hidden = true;
+        document.getElementById('out-note').textContent = 'Questo browser non permette di scegliere l\'uscita: impostala nel Mac (Impostazioni › Suono › Uscita: Cuffie). Con Chrome si sceglie da qui.';
+        return;
+      }
+      let outs = [];
+      try { outs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audiooutput'); } catch (_) {}
+      const named = outs.some(o => o.label);
+      outPerm.hidden = named;
+      let saved = null; try { saved = localStorage.getItem(OUT_KEY); } catch (_) {}
+      let pick = outs.find(o => o.label && o.label === saved);
+      if (!pick && !saved) pick = outs.find(o => WIRED.test(o.label) && !BT.test(o.label));
+      if (pick && vid.sinkId !== pick.deviceId) { try { await vid.setSinkId(pick.deviceId); } catch (_) { pick = null; } }
+      outLabel = pick ? pick.label : '';
+      outSel.textContent = '';
+      outs.forEach((o, i) => {
+        const opt = document.createElement('option');
+        opt.value = o.deviceId; opt.textContent = o.label || (o.deviceId === 'default' ? 'Predefinita del Mac' : 'Uscita ' + (i + 1));
+        opt.selected = o.deviceId === (vid.sinkId || 'default');
+        outSel.appendChild(opt);
+      });
+      outBtn.textContent = 'Audio: ' + (outLabel || 'predefinita');
+      report();
+    }
+    outSel.addEventListener('change', async () => {
+      const o = outSel.selectedOptions[0];
+      try { await vid.setSinkId(outSel.value); localStorage.setItem(OUT_KEY, o ? o.textContent : ''); } catch (_) {}
+      applyOut();
+    });
+    outPerm.addEventListener('click', async () => {
+      // i nomi delle uscite si vedono solo dopo il permesso del microfono (subito richiuso)
+      try { const st = await navigator.mediaDevices.getUserMedia({ audio: true }); st.getTracks().forEach(t => t.stop()); } catch (_) {}
+      applyOut();
+    });
+    outBtn.addEventListener('click', e => { e.stopPropagation(); outPanel.classList.toggle('show'); applyOut(); });
+    outPanel.addEventListener('pointerdown', e => e.stopPropagation());
+    if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) navigator.mediaDevices.addEventListener('devicechange', applyOut);
+    applyOut();
 
     showSlide(0);
     SNS.send({ t: 'show-ready' });
