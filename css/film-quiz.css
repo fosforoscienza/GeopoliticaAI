@@ -1,0 +1,83 @@
+/* Quiz film — slide emoji / trama */
+html, body { background: #02060f !important; overflow: hidden; height: 100%; margin: 0; }
+
+.quiz-stage {
+  position: fixed; inset: 0; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  padding: clamp(40px, 7vh, 90px) clamp(40px, 7vw, 140px);
+  background:
+    radial-gradient(55% 60% at 50% 45%, rgba(65,183,255,0.16), transparent 70%),
+    radial-gradient(40% 50% at 85% 85%, rgba(124,92,246,0.14), transparent 70%),
+    #02060f;
+}
+body.kind-trama .quiz-stage {
+  background:
+    radial-gradient(55% 60% at 50% 45%, rgba(245,158,11,0.13), transparent 70%),
+    radial-gradient(40% 50% at 12% 85%, rgba(240,101,79,0.12), transparent 70%),
+    #02060f;
+}
+
+/* film-strip edges */
+.quiz-stage::before, .quiz-stage::after {
+  content: ''; position: absolute; left: 0; right: 0; height: 26px; opacity: 0.12;
+  background: repeating-linear-gradient(90deg, #fff 0 22px, transparent 22px 44px);
+}
+.quiz-stage::before { top: 14px; }
+.quiz-stage::after  { bottom: 14px; }
+
+.quiz-top {
+  display: flex; align-items: center; gap: 18px;
+  margin-bottom: clamp(18px, 3vh, 34px);
+  animation: q-rise 0.8s cubic-bezier(0.16,1,0.3,1) both;
+}
+.quiz-eyebrow {
+  font-size: clamp(13px, 1.15vw, 19px); font-weight: 800;
+  letter-spacing: 0.32em; text-transform: uppercase; color: #8fd2ff;
+}
+.quiz-count {
+  font-size: clamp(13px, 1.1vw, 18px); font-weight: 700; letter-spacing: 0.1em;
+  color: #02060f; background: #41b7ff; padding: 5px 12px; border-radius: 999px;
+}
+body.kind-trama .quiz-eyebrow { color: #fcd38a; }
+body.kind-trama .quiz-count { background: #f59e0b; }
+
+.quiz-main { position: relative; z-index: 2; }
+
+/* emoji */
+body.kind-emoji .quiz-main {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: clamp(16px, 3vw, 56px);
+}
+.quiz-emoji {
+  display: inline-block;
+  font-size: clamp(80px, min(15vw, 26vh), 260px); line-height: 1.1;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  filter: drop-shadow(0 18px 40px rgba(0,0,0,0.6));
+  animation: q-pop 0.7s cubic-bezier(0.34,1.56,0.64,1) both, q-float 5s ease-in-out 1s infinite;
+}
+.quiz-emoji:nth-child(even) { animation-duration: 0.7s, 6s; }
+@keyframes q-pop { from { opacity: 0; transform: scale(0.3) translateY(40px); } to { opacity: 1; transform: none; } }
+@keyframes q-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+
+/* trama */
+body.kind-trama .quiz-main {
+  max-width: 1200px;
+  font-size: clamp(24px, min(3.1vw, 5.2vh), 54px); font-weight: 300;
+  line-height: 1.38; color: #eef3fb; letter-spacing: -0.01em;
+  animation: q-rise 1s 0.15s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.quiz-hint {
+  margin-top: clamp(26px, 5vh, 60px);
+  font-size: clamp(16px, 1.5vw, 26px); font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  animation: q-rise 0.9s 0.6s cubic-bezier(0.16,1,0.3,1) both;
+}
+.quiz-hint::before { content: '🎬  '; }
+
+@keyframes q-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-emoji, .quiz-top, .quiz-hint, body.kind-trama .quiz-main { animation: none; }
+}

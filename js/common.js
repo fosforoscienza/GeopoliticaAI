@@ -46,7 +46,9 @@ const DEFAULT_PAGES = [
   'epistemia.html', 'pappagallo.html',
   'alba-transformer.html',
   'fosforo-web.html', 'fosforo-dashboard.html',
-  'tom-brad.html', 'tre-fattori.html', 'confronto-ai.html'
+  'tom-brad.html', 'tre-fattori.html', 'confronto-ai.html',
+  'quiz-emoji-1.html', 'quiz-emoji-2.html', 'quiz-emoji-3.html', 'quiz-emoji-4.html', 'quiz-emoji-5.html', 'quiz-emoji-6.html', 'quiz-emoji-7.html', 'quiz-emoji-8.html', 'quiz-emoji-9.html', 'quiz-emoji-10.html',
+  'quiz-trama-1.html', 'quiz-trama-2.html', 'quiz-trama-3.html', 'quiz-trama-4.html', 'quiz-trama-5.html', 'quiz-trama-6.html'
 ];
 
 // Mutable runtime list — dashboard can reorder and hide entries.
