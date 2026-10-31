@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Un milione di dollari — Geopolitica della AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --accent: #41b7ff; --accent-soft: #8fd2ff; --ink: #02040b; --panel: rgba(8,17,31,0.78); --line: rgba(143,210,255,0.16); }
+    html, body { background: var(--ink) !important; overflow: hidden; height: 100%; margin: 0; }
+    body { font-family: inherit; color: #f0f5fb; }
+    .stage { position: fixed; inset: 0; overflow: hidden; background: var(--ink); }
+
+    /* vortice: le particelle di un fluido che collassano verso un punto */
+    #flow { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    .shade { position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(90deg, rgba(2,4,11,0.96) 0%, rgba(2,4,11,0.88) 38%, rgba(2,4,11,0.35) 62%, rgba(2,4,11,0.05) 100%),
+                  linear-gradient(0deg, rgba(2,4,11,0.9) 0%, rgba(2,4,11,0) 22%); }
+
+    @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+    .content { position: absolute; inset: 0; z-index: 2; display: grid; grid-template-rows: auto auto 1fr auto;
+      padding: clamp(28px, 5vh, 60px) clamp(30px, 4vw, 80px) clamp(20px, 3.4vh, 38px); width: min(62%, 1180px); gap: clamp(12px, 2vh, 24px); }
+
+    .eyebrow { font-size: clamp(13px, 1.05vw, 19px); font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: var(--accent-soft);
+      animation: rise .8s .05s cubic-bezier(0.16,1,0.3,1) both; }
+    .prize { margin: 0; font-size: clamp(64px, 7.6vw, 146px); font-weight: 900; letter-spacing: -0.035em; line-height: 0.86;
+      background: linear-gradient(180deg, #ffffff 30%, #cfe9ff 72%, var(--accent) 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+      filter: drop-shadow(0 0 50px rgba(65,183,255,0.3)); animation: rise .9s .15s cubic-bezier(0.16,1,0.3,1) both; }
+    .q { font-size: clamp(20px, 2vw, 38px); font-weight: 300; line-height: 1.3; color: #e6ecf5; max-width: 30ch;
+      animation: rise .9s .3s cubic-bezier(0.16,1,0.3,1) both; }
+    .q b { color: #fff; font-weight: 700; }
+    .q i { color: var(--accent-soft); }
+
+    /* l'annuncio */
+    .news { align-self: center; animation: rise .9s .5s cubic-bezier(0.16,1,0.3,1) both; }
+    .news .when { font-size: clamp(14px, 1.15vw, 21px); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-soft); }
+    .news .what { margin-top: 8px; font-size: clamp(20px, 1.9vw, 36px); font-weight: 700; line-height: 1.25; color: #fff; max-width: 34ch; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(10px, 1.2vw, 22px); margin-top: clamp(16px, 2.6vh, 30px); }
+    .stat { border-radius: 16px; background: var(--panel); border: 1px solid var(--line); padding: clamp(12px, 1.2vw, 22px); backdrop-filter: blur(6px);
+      animation: rise .8s cubic-bezier(0.16,1,0.3,1) both; }
+    .stat .n { font-size: clamp(32px, 3.4vw, 66px); font-weight: 900; letter-spacing: -0.03em; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
+    .stat .n small { font-size: 0.42em; font-weight: 700; color: var(--accent-soft); margin-left: 4px; letter-spacing: 0; }
+    .stat p { margin: 8px 0 0; font-size: clamp(13px, 1.02vw, 19px); line-height: 1.3; color: #d7e4f3; font-weight: 300; }
+
+    .status { display: flex; gap: 14px; align-items: flex-start; padding: clamp(12px, 1.2vw, 20px) clamp(14px, 1.4vw, 24px);
+      border-radius: 14px; border: 1px solid rgba(255,196,77,0.35); background: rgba(40,28,4,0.55); margin-top: clamp(14px, 2.2vh, 26px);
+      font-size: clamp(14px, 1.12vw, 21px); line-height: 1.4; color: #f3e6c8; animation: rise .8s 1.1s cubic-bezier(0.16,1,0.3,1) both; }
+    .status b { color: #ffd58a; }
+    .status .ico { flex: none; width: 1.4em; height: 1.4em; border-radius: 50%; border: 2px solid #ffc44d; color: #ffc44d;
+      display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: .9em; }
+
+    .src { font-size: clamp(11px, 0.78vw, 14px); color: rgba(230,236,245,0.45); line-height: 1.4; animation: rise .8s 1.3s ease both; }
+
+    .core-label { position: absolute; z-index: 2; right: 18%; top: 50%; transform: translate(50%, -50%); margin-top: clamp(70px, 10vh, 120px);
+      text-align: center; font-size: clamp(13px, 1vw, 18px); font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: var(--accent-soft);
+      opacity: 0; animation: rise 1s 2.2s ease forwards; }
+    .core-label small { display: block; letter-spacing: .06em; text-transform: none; font-weight: 400; font-style: italic; color: rgba(230,236,245,0.6); margin-top: 6px; }
+
+    @media (prefers-reduced-motion: reduce) { .stage *, .stage *::after { animation: none !important; } .core-label { opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <canvas id="flow"></canvas>
+    <div class="shade"></div>
+
+    <div class="content">
+      <div class="eyebrow">Problemi del Millennio · Navier–Stokes</div>
+      <div>
+        <h1 class="prize">1.000.000 $</h1>
+        <div class="q" style="margin-top:clamp(12px,2vh,22px)">Le equazioni che descrivono <b>acqua, aria e fumo</b> possono <i>«esplodere»</i> in un punto? Una domanda aperta da quasi <b>200 anni</b>.</div>
+      </div>
+
+      <div class="news">
+        <div class="when">8 settembre 2026 · OpenAI</div>
+        <div class="what">Un gruppo di agenti AI annuncia di aver trovato la risposta: sì, una singolarità.</div>
+        <div class="stats">
+          <div class="stat" style="animation-delay:.7s"><div class="n" data-to="10000">10.000</div><p>agenti AI al lavoro insieme</p></div>
+          <div class="stat" style="animation-delay:.8s"><div class="n"><span data-to="88">88</span><small>ore</small></div><p>di ricerca autonoma</p></div>
+          <div class="stat" style="animation-delay:.9s"><div class="n"><span data-to="5">5</span><small>milioni</small></div><p>di messaggi tra gli agenti</p></div>
+          <div class="stat" style="animation-delay:1s"><div class="n"><span data-to="17">17</span><small>ore</small></div><p>per tradurla in Lean, il linguaggio che verifica le dimostrazioni</p></div>
+        </div>
+        <div class="status"><span class="ico">!</span><div><b>Ancora in verifica:</b> nessun premio assegnato. Poche ore prima un altro gruppo, Buckmaster (NYU) e Alpöge (Anthropic), aveva annunciato risultati collegati, anche loro con l'aiuto dell'AI.</div></div>
+      </div>
+
+      <div class="src">Fonti: Quanta Magazine, 8 settembre 2026; Sky TG24, 8 settembre 2026. Il premio del Clay Mathematics Institute richiede pubblicazione e verifica della comunità matematica.</div>
+    </div>
+
+    <div class="core-label">Singolarità<small>la velocità diventa infinita in un punto</small></div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/infografica.js"></script>
+  <script>
+    Info.countUp(document);
+
+    // ── Vortice di particelle che spiraleggia verso un punto e lo accende ──
+    (function vortex() {
+      const cv = document.getElementById('flow'), ctx = cv.getContext('2d');
+      const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let W, H, cx, cy, R, parts = [], flash = 0;
+      function spawn(p, anywhere) {
+        p.r = anywhere ? R * (0.08 + Math.random() * 0.92) : R * (0.85 + Math.random() * 0.15);
+        p.a = Math.random() * Math.PI * 2;
+        p.w = 0.6 + Math.random() * 0.8;
+        p.px = null;
+        return p;
+      }
+      function init() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = cv.clientWidth; H = cv.clientHeight;
+        cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        cx = W * 0.82; cy = H * 0.5; R = Math.hypot(W * 0.62, H * 0.62);
+        parts = Array.from({ length: Math.round(W * H / 1500) }, () => spawn({}, true));
+        ctx.fillStyle = '#02040b'; ctx.fillRect(0, 0, W, H);
+      }
+      function step() {
+        ctx.fillStyle = 'rgba(2,4,11,0.14)'; ctx.fillRect(0, 0, W, H);   // scie che svaniscono
+        ctx.lineWidth = 1.4;
+        for (const p of parts) {
+          const rn = p.r / R;
+          p.a += 0.0016 / Math.pow(rn + 0.02, 1.25) * p.w;             // gira più veloce vicino al centro
+          p.r -= R * 0.0006 / Math.pow(rn + 0.03, 0.5);                  // e viene risucchiata
+          const x = cx + Math.cos(p.a) * p.r, y = cy + Math.sin(p.a) * p.r * 0.62;
+          if (p.px !== null) {
+            const glow = Math.min(1, 0.08 / (rn + 0.02));
+            ctx.strokeStyle = `rgba(${Math.round(65 + 190 * glow)},${Math.round(183 + 72 * glow)},255,${0.28 + 0.6 * glow})`;
+            ctx.beginPath(); ctx.moveTo(p.px, p.py); ctx.lineTo(x, y); ctx.stroke();
+          }
+          p.px = x; p.py = y;
+          if (p.r < R * 0.012) { spawn(p, false); flash = Math.min(1, flash + 0.008); }
+        }
+        // il punto singolare
+        const k = 7 + flash * 12;
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, k * 2.4);
+        g.addColorStop(0, `rgba(255,255,255,${0.5 + flash * 0.5})`); g.addColorStop(0.25, 'rgba(143,210,255,0.5)'); g.addColorStop(1, 'rgba(65,183,255,0)');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, k * 2.4, 0, 6.283); ctx.fill();
+        flash *= 0.93;
+      }
+      function frame() { step(); if (!still) requestAnimationFrame(frame); }
+      init();
+      window.addEventListener('resize', init);
+      if (still) { for (let i = 0; i < 400; i++) step(); } else requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
