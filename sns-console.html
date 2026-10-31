@@ -84,6 +84,32 @@
       background: transparent; color: var(--muted); font-size: 16px; line-height: 1; }
     .del:hover { color: var(--live); border-color: var(--live); }
 
+    /* ── Riordino: maniglia, scheda trascinata, posto libero ── */
+    .grip { width: 44px; height: 44px; flex: none; margin: -8px -6px -8px 0; border: 0; border-radius: 10px;
+      background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center;
+      cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
+    .grip:hover { color: var(--text); background: rgba(143,210,255,0.08); }
+    .grip svg { width: 18px; height: 18px; }
+    .card.placeholder { opacity: 0.25; border-style: dashed; }
+    .card.ghost { position: fixed; z-index: 100; pointer-events: none; margin: 0; opacity: 0.95;
+      transform: scale(1.03) rotate(-0.6deg); box-shadow: 0 24px 60px rgba(0,0,0,0.55); border-color: var(--accent); }
+    body.dragging { cursor: grabbing; -webkit-user-select: none; user-select: none; }
+    h2 .reset { margin-left: auto; letter-spacing: 0; text-transform: none; font-size: 13px; font-weight: 500;
+      color: var(--accent-soft); background: none; border: 0; padding: 4px 0; }
+
+    /* ── Scaletta ── */
+    .notes { border-radius: 16px; background: var(--panel); border: 1px solid var(--line); }
+    .notes summary { list-style: none; cursor: pointer; padding: 14px 20px; display: flex; align-items: center; gap: 12px;
+      font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent-soft); font-weight: 600; }
+    .notes summary::-webkit-details-marker { display: none; }
+    .notes summary::before { content: '▸'; font-size: 14px; transition: transform .15s; }
+    .notes[open] summary::before { transform: rotate(90deg); }
+    .notes summary span { letter-spacing: 0; text-transform: none; color: var(--muted); font-weight: 400; font-size: 13px; }
+    .notes textarea { display: block; width: calc(100% - 28px); margin: 0 14px 14px; min-height: 160px; height: 220px;
+      resize: vertical; border-radius: 10px; border: 1px solid var(--line); background: #050b16; color: var(--text);
+      font: 16px/1.55 'Segoe UI', system-ui, -apple-system, sans-serif; padding: 12px 14px; }
+    .notes textarea:focus { outline: none; border-color: rgba(65,183,255,0.5); }
+
     /* ── Caricamento video ── */
     .drop { border: 1.5px dashed rgba(143,210,255,0.3); background: transparent; align-items: center; justify-content: center;
       gap: 8px; min-height: 180px; color: var(--muted); font-size: 14px; text-align: center; padding: 20px; }
@@ -125,8 +151,13 @@
       </div>
     </section>
 
+    <details class="notes" id="notes-box" open>
+      <summary>Scaletta <span>appunti, restano su questo dispositivo</span></summary>
+      <textarea id="notes" placeholder="Scrivi qui la scaletta…" spellcheck="true"></textarea>
+    </details>
+
     <section>
-      <h2>Slide <span>clic per mandarla in onda</span></h2>
+      <h2>Slide <span>tocca per mandarla in onda · trascina ⠿ per riordinare</span><button class="reset" id="reset-order" hidden>Ordine iniziale</button></h2>
       <div class="grid" id="slides"></div>
     </section>
 
@@ -148,19 +179,129 @@
     let show = null, lastSeen = 0, videoList = [];
     let lang = localStorage.getItem('geopolitica-lang') || 'it';
 
-    // ── Slide: anteprime statiche ──
-    SNS.SLIDES.forEach((s, i) => {
-      const card = document.createElement('div');
-      card.className = 'card'; card.dataset.id = s.id; card.setAttribute('role', 'button'); card.tabIndex = 0;
-      card.addEventListener('keydown', e => { if (e.key === 'Enter') SNS.send({ t: 'go', id: s.id }); });
-      card.innerHTML = `<div class="thumb"><span class="num">${i + 1}</span><span class="badge">IN ONDA</span>
-        <img alt="" decoding="async"></div>
-        <div class="meta"><div><strong></strong><small></small></div></div>`;
-      card.querySelector('img').src = s.thumb;
-      card.querySelector('strong').textContent = s.title;
-      card.querySelector('small').textContent = s.sub;
-      card.addEventListener('click', () => SNS.send({ t: 'go', id: s.id }));
-      $('slides').appendChild(card);
+    // ── Slide: anteprime statiche, nell'ordine della scaletta ──
+    const ORDER_KEY = 'sns-console-order';
+    const GRIP = '<svg viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="12" cy="4" r="1.6"/><circle cx="6" cy="9" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="6" cy="14" r="1.6"/><circle cx="12" cy="14" r="1.6"/></svg>';
+    let order = SNS.SLIDES.map(x => x.id), orderSaved = false;
+    function normalize(ids) {
+      const known = SNS.SLIDES.map(x => x.id);
+      const out = (ids || []).filter(id => known.includes(id));
+      known.forEach(id => { if (!out.includes(id)) out.push(id); });
+      return out;
+    }
+    try { const saved = JSON.parse(localStorage.getItem(ORDER_KEY)); if (Array.isArray(saved)) { order = normalize(saved); orderSaved = true; } } catch (_) {}
+    function saveOrder(send) {
+      orderSaved = true;
+      try { localStorage.setItem(ORDER_KEY, JSON.stringify(order)); } catch (_) {}
+      $('reset-order').hidden = order.join() === SNS.SLIDES.map(x => x.id).join();
+      if (send) SNS.send({ t: 'order', ids: order });
+    }
+
+    function renderSlides() {
+      $('slides').textContent = '';
+      order.forEach((id, i) => {
+        const s = SNS.SLIDES.find(x => x.id === id);
+        const card = document.createElement('div');
+        card.className = 'card'; card.dataset.id = s.id; card.setAttribute('role', 'button'); card.tabIndex = 0;
+        card.addEventListener('keydown', e => { if (e.key === 'Enter') SNS.send({ t: 'go', id: s.id }); });
+        card.innerHTML = `<div class="thumb"><span class="num">${i + 1}</span><span class="badge">IN ONDA</span>
+          <img alt="" decoding="async"></div>
+          <div class="meta"><div><strong></strong><small></small></div>
+          <button class="grip" aria-label="Trascina per spostare">${GRIP}</button></div>`;
+        card.querySelector('img').src = s.thumb;
+        card.querySelector('strong').textContent = s.title;
+        card.querySelector('small').textContent = s.sub;
+        card.addEventListener('click', () => SNS.send({ t: 'go', id: s.id }));
+        const grip = card.querySelector('.grip');
+        grip.addEventListener('click', e => e.stopPropagation());
+        grip.addEventListener('pointerdown', e => startDrag(card, grip, e));
+        $('slides').appendChild(card);
+      });
+      $('reset-order').hidden = order.join() === SNS.SLIDES.map(x => x.id).join();
+      paintLive();
+    }
+    function renumber() {
+      $('slides').querySelectorAll('.card').forEach((c, i) => { c.querySelector('.num').textContent = i + 1; });
+    }
+
+    // Trascinamento con il dito o il mouse, dalla maniglia ⠿
+    let drag = null;
+    function startDrag(card, grip, e) {
+      if (e.button > 0) return;
+      e.preventDefault(); e.stopPropagation();
+      const r = card.getBoundingClientRect();
+      const ghost = card.cloneNode(true);
+      ghost.classList.add('ghost'); ghost.classList.remove('live');
+      Object.assign(ghost.style, { width: r.width + 'px', left: r.left + 'px', top: r.top + 'px' });
+      document.body.appendChild(ghost);
+      card.classList.add('placeholder');
+      document.body.classList.add('dragging');
+      try { grip.setPointerCapture(e.pointerId); } catch (_) {}
+      drag = { card, grip, ghost, dx: e.clientX - r.left, dy: e.clientY - r.top, x: e.clientX, y: e.clientY, raf: 0 };
+      grip.addEventListener('pointermove', moveDrag);
+      grip.addEventListener('pointerup', endDrag);
+      grip.addEventListener('pointercancel', endDrag);
+      drag.raf = requestAnimationFrame(autoScroll);
+    }
+    function moveDrag(e) {
+      if (!drag) return;
+      drag.x = e.clientX; drag.y = e.clientY;
+      drag.ghost.style.left = (e.clientX - drag.dx) + 'px';
+      drag.ghost.style.top = (e.clientY - drag.dy) + 'px';
+      // la scheda più vicina al dito decide il nuovo posto
+      let best = null, bestD = Infinity;
+      $('slides').querySelectorAll('.card').forEach(c => {
+        if (c === drag.card) return;
+        const r = c.getBoundingClientRect();
+        const d = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
+        if (d < bestD) { bestD = d; best = { c, r }; }
+      });
+      if (!best) return;
+      const { c, r } = best;
+      const sameRow = Math.abs(e.clientY - (r.top + r.height / 2)) < r.height / 2;
+      const after = sameRow ? e.clientX > r.left + r.width / 2 : e.clientY > r.top + r.height / 2;
+      const ref = after ? c.nextSibling : c;
+      if (ref !== drag.card && ref !== drag.card.nextSibling) $('slides').insertBefore(drag.card, ref);
+      renumber();
+    }
+    function autoScroll() {
+      if (!drag) return;
+      const edge = 90;
+      if (drag.y < edge) window.scrollBy(0, -Math.ceil((edge - drag.y) / 6));
+      else if (drag.y > innerHeight - edge) window.scrollBy(0, Math.ceil((drag.y - innerHeight + edge) / 6));
+      drag.raf = requestAnimationFrame(autoScroll);
+    }
+    function endDrag() {
+      if (!drag) return;
+      cancelAnimationFrame(drag.raf);
+      drag.grip.removeEventListener('pointermove', moveDrag);
+      drag.grip.removeEventListener('pointerup', endDrag);
+      drag.grip.removeEventListener('pointercancel', endDrag);
+      drag.ghost.remove();
+      drag.card.classList.remove('placeholder');
+      document.body.classList.remove('dragging');
+      drag = null;
+      const ids = [...$('slides').querySelectorAll('.card')].map(c => c.dataset.id);
+      if (ids.join() !== order.join()) { order = ids; saveOrder(true); paint(); }
+    }
+    $('reset-order').addEventListener('click', () => {
+      order = SNS.SLIDES.map(x => x.id); saveOrder(true); renderSlides(); paint();
+    });
+    renderSlides();
+
+    // ── Scaletta: appunti salvati su questo dispositivo ──
+    const NOTES_KEY = 'sns-scaletta', NOTES_OPEN_KEY = 'sns-scaletta-aperta';
+    try {
+      $('notes').value = localStorage.getItem(NOTES_KEY) || '';
+      if (localStorage.getItem(NOTES_OPEN_KEY) === '0') $('notes-box').open = false;
+    } catch (_) {}
+    let notesTimer = null;
+    $('notes').addEventListener('input', () => {
+      clearTimeout(notesTimer);
+      notesTimer = setTimeout(() => { try { localStorage.setItem(NOTES_KEY, $('notes').value); } catch (_) {} }, 300);
+    });
+    $('notes-box').addEventListener('toggle', () => {
+      try { localStorage.setItem(NOTES_OPEN_KEY, $('notes-box').open ? '1' : '0'); } catch (_) {}
     });
 
     // ── Video ──
@@ -220,7 +361,7 @@
     // ── Stato dello show ──
     function nameOf(id) {
       const s = SNS.SLIDES.find(x => x.id === id);
-      if (s) return (SNS.SLIDES.indexOf(s) + 1) + ' · ' + s.title;
+      if (s) return (order.indexOf(id) + 1) + ' · ' + s.title;
       const h = SNS.VIDEOS.find(x => x.id === id);
       if (h) return 'Video · ' + h.title;
       const v = videoList.find(x => x.id === id);
@@ -251,7 +392,15 @@
       paintLive();
     }
     SNS.listen(m => {
-      if (m.t === 'state') { show = m; lastSeen = Date.now(); paint(); }
+      if (m.t === 'state') {
+        show = m; lastSeen = Date.now();
+        // ordine diverso sullo show: se qui è stato scelto lo si manda, altrimenti si adotta il suo
+        if (Array.isArray(m.order) && m.order.join() !== order.join()) {
+          if (orderSaved) SNS.send({ t: 'order', ids: order });
+          else { order = normalize(m.order); renderSlides(); }
+        }
+        paint();
+      }
       else if (m.t === 'show-ready') SNS.send({ t: 'hello', net: true });
     });
     // Ping: ogni 2 s nello stesso browser, ogni 10 s sulla rete

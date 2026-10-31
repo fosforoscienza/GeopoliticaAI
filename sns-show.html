@@ -74,7 +74,25 @@
     const vid = document.getElementById('vid');
     let front = 0;                 // iframe visibile
     let current = null;            // id dell'elemento in onda
-    let slideIdx = 0;              // ultima slide mostrata
+    let slideIdx = 0;              // posizione nella scaletta dell'ultima slide mostrata
+
+    // Ordine delle slide: lo decide la console (trascinando le schede) e lo
+    // show lo ricorda in questo browser.
+    const ORDER_KEY = 'sns-show-order';
+    let order = SNS.SLIDES.slice();
+    function setOrder(ids) {
+      if (!Array.isArray(ids)) return false;
+      const byId = new Map(SNS.SLIDES.map(x => [x.id, x]));
+      const next = ids.filter(id => byId.has(id)).map(id => byId.get(id));
+      SNS.SLIDES.forEach(x => { if (!next.includes(x)) next.push(x); });   // slide nuove in coda
+      const changed = next.some((x, i) => x !== order[i]);
+      order = next;
+      const cur = order.findIndex(x => x.id === current);
+      if (cur >= 0) slideIdx = cur;
+      try { localStorage.setItem(ORDER_KEY, JSON.stringify(order.map(x => x.id))); } catch (_) {}
+      return changed;
+    }
+    try { setOrder(JSON.parse(localStorage.getItem(ORDER_KEY))); } catch (_) {}
     let videoURL = null;
     let lang = localStorage.getItem('geopolitica-lang') || 'it';
     let loadToken = 0;
@@ -83,7 +101,7 @@
       return { t: 'state', id: current, lang,
         playing: current && current.startsWith('video:') ? !vid.paused && !vid.ended : false,
         time: vid.currentTime || 0, dur: isFinite(vid.duration) ? vid.duration : 0,
-        fs: !!document.fullscreenElement, blocked: tap.classList.contains('show'), muted: vid.muted, at: Date.now() };
+        fs: !!document.fullscreenElement, order: order.map(x => x.id), blocked: tap.classList.contains('show'), muted: vid.muted, at: Date.now() };
     }
     function report(local) { SNS.send(state(), local); }
 
@@ -95,8 +113,8 @@
     }
 
     function showSlide(i) {
-      if (i < 0 || i >= SNS.SLIDES.length) return;
-      const s = SNS.SLIDES[i];
+      if (i < 0 || i >= order.length) return;
+      const s = order[i];
       slideIdx = i;
       if (current === s.id) return;
       current = s.id;
@@ -178,12 +196,12 @@
     sound.addEventListener('click', e => { e.stopPropagation(); unmute(); });
 
     function go(id) {
-      const i = SNS.SLIDES.findIndex(s => s.id === id);
+      const i = order.findIndex(s => s.id === id);
       if (i >= 0) showSlide(i);
       else if (id && id.startsWith('video:')) showVideo(id);
     }
     function next() {
-      if (current && current.startsWith('video:')) showSlide(Math.min(slideIdx + 1, SNS.SLIDES.length - 1));
+      if (current && current.startsWith('video:')) showSlide(Math.min(slideIdx + 1, order.length - 1));
       else showSlide(slideIdx + 1);
     }
     function prev() {
@@ -253,6 +271,7 @@
           else if (m.op === 'restart') { vid.currentTime = 0; playVideo(); }
           else if (m.op === 'seek' && isFinite(m.time)) vid.currentTime = m.time;
           break;
+        case 'order': if (setOrder(m.ids)) report(); break;
         case 'hello': report(!m.net); break;   // risponde sullo stesso canale del ping
       }
     });
